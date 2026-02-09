@@ -1,0 +1,1906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, minimum-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Executor Trading Bot v4 - Live Performance Analytics & Backtesting Results. Professional cryptocurrency trading bot with proven results.">
+    <meta name="keywords" content="trading bot, cryptocurrency, bitcoin, algorithmic trading, backtesting">
+    <title>Executor Trading Bot - Performance Analytics</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #0D1B2A;
+            color: #E0E1DD;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 18px;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #E0E1DD;
+            font-size: 2.8rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #778DA9;
+            font-size: 1.2rem;
+        }
+
+        .subtitle strong {
+            color: #90EE90;
+            font-size: 1.4rem;
+        }
+
+        /* Navigation Bar */
+        .toolbar {
+            background-color: #1B263B;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .period-label {
+            font-weight: bold;
+            font-size: 16px;
+            margin-right: 20px;
+        }
+
+        .period-btn {
+            background-color: #415A77;
+            color: #E0E1DD;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+            min-height: 44px;
+            min-width: 80px;
+        }
+
+        .period-btn:hover {
+            background-color: #778DA9;
+        }
+
+        .period-btn.active {
+            background-color: #778DA9;
+        }
+
+        .period-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Performance Cards */
+        .overview-section {
+            margin-bottom: 30px;
+        }
+
+        .overview-section h2 {
+            text-align: center;
+            color: #E0E1DD;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .performance-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .perf-card {
+            background-color: #1B263B;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid #415A77;
+            transition: transform 0.3s ease;
+        }
+
+        .perf-card:hover {
+            transform: translateY(-5px);
+            border-color: #778DA9;
+        }
+
+        .perf-title {
+            color: #778DA9;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .perf-value {
+            color: #E0E1DD;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .perf-value.success {
+            color: #90EE90;
+        }
+
+        /* File Upload */
+        .upload-section {
+            background-color: #1B263B;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+        }
+
+        .upload-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .upload-group input[type="file"] {
+            background-color: #415A77;
+            color: #E0E1DD;
+            border: none;
+            padding: 8px;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        /* Sliders */
+        .sliders-container {
+            background-color: #1B263B;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+        }
+
+        .sliders-container .analysis-explanation {
+            background-color: #0D1B2A;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #415A77;
+        }
+
+        .sliders-container .analysis-explanation h3 {
+            color: #E0E1DD;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .sliders-container .analysis-explanation p {
+            color: #778DA9;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .sliders-container .analysis-explanation p:last-child {
+            margin-bottom: 0;
+        }
+
+        .sliders-container .analysis-explanation strong {
+            color: #E0E1DD;
+        }
+
+        .slider-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .slider-group label {
+            min-width: 120px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .slider-value {
+            min-width: 120px;
+            font-weight: bold;
+            color: #778DA9;
+        }
+
+        .slider {
+            flex: 1;
+            min-width: 200px;
+            height: 8px;
+            border-radius: 5px;
+            background: #415A77;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .slider:focus {
+            outline: 2px solid #90EE90;
+            outline-offset: 2px;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #778DA9;
+            cursor: pointer;
+            border: 2px solid #E0E1DD;
+            transition: all 0.2s;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            background: #90EE90;
+            transform: scale(1.1);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #778DA9;
+            cursor: pointer;
+            border: 2px solid #E0E1DD;
+            transition: all 0.2s;
+        }
+
+        .slider::-moz-range-thumb:hover {
+            background: #90EE90;
+            transform: scale(1.1);
+        }
+
+        /* Period Toggle Button */
+        .period-toggle-btn {
+            background-color: #415A77;
+            color: #E0E1DD;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 10px;
+            transition: all 0.3s;
+            min-height: 44px;
+            min-width: 100px;
+        }
+
+        .period-toggle-btn:hover {
+            background-color: #778DA9;
+        }
+
+        .period-toggle-btn.active {
+            background-color: #90EE90;
+            color: #0D1B2A;
+        }
+
+        .period-toggle-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Trading Note */
+        .trading-note {
+            background-color: #1B263B;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #90EE90;
+        }
+
+        .trading-note p {
+            color: #778DA9;
+            margin: 0;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .trading-note strong {
+            color: #E0E1DD;
+        }
+
+        /* Rolling Analysis Section */
+        #rollingAnalysis {
+            margin: 40px 0;
+            background-color: #1B263B;
+            padding: 25px;
+            border-radius: 8px;
+            border-left: 4px solid #90EE90;
+        }
+
+        .rolling-period-controls {
+            margin-bottom: 30px;
+        }
+
+        .rolling-period-controls h2 {
+            text-align: center;
+            color: #E0E1DD;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .rolling-period-controls p {
+            color: #778DA9;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-size: 16px;
+            background-color: #0D1B2A;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #415A77;
+        }
+
+        .controls-group {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            background-color: #0D1B2A;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #415A77;
+        }
+
+        .controls-group label {
+            color: #E0E1DD;
+            font-weight: bold;
+        }
+
+        .controls-group select {
+            background-color: #415A77;
+            color: #E0E1DD;
+            border: 1px solid #778DA9;
+            padding: 10px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            min-height: 44px;
+            cursor: pointer;
+        }
+
+        .controls-group select:focus {
+            outline: 2px solid #90EE90;
+            outline-offset: 2px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            margin: 0;
+        }
+
+        /* Tables Container */
+        .tables-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .table-section {
+            background-color: #0D1B2A;
+            border-radius: 8px;
+            padding: 20px;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            border: 2px solid #90EE90;
+            overflow-x: auto;
+        }
+
+        .table-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #90EE90;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #0D1B2A;
+            min-width: 300px;
+        }
+
+        .results-table th,
+        .results-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #90EE90;
+            font-size: 16px;
+        }
+
+        .results-table th {
+            background-color: #90EE90;
+            color: #0D1B2A;
+            font-weight: bold;
+        }
+
+        .results-table tr:hover {
+            background-color: #1B263B;
+        }
+
+        .metric-name {
+            font-weight: bold;
+        }
+
+        .metric-value {
+            color: #778DA9;
+            text-align: right;
+        }
+
+        /* Rolling Period Table */
+        .rolling-table-section {
+            background-color: #0D1B2A;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 2px solid #90EE90;
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .rolling-table-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #90EE90;
+        }
+
+        .rolling-results-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #0D1B2A;
+            min-width: 300px;
+        }
+
+        .rolling-results-table th,
+        .rolling-results-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #90EE90;
+            font-size: 16px;
+        }
+
+        .rolling-results-table th {
+            background-color: #90EE90;
+            color: #0D1B2A;
+            font-weight: bold;
+        }
+
+        .rolling-results-table tr:hover {
+            background-color: #1B263B;
+        }
+
+        /* Loading and Error States */
+        .loading, .error {
+            text-align: center;
+            padding: 40px;
+            font-size: 18px;
+        }
+
+        .error {
+            color: #ff6b6b;
+        }
+
+        .loading {
+            color: #778DA9;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .container {
+                max-width: 95%;
+                padding: 10px;
+            }
+
+            .performance-cards {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                gap: 15px;
+            }
+
+            .perf-card {
+                padding: 20px;
+            }
+
+            .perf-value {
+                font-size: 1.6rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                font-size: 16px;
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+                margin-bottom: 10px;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .subtitle strong {
+                font-size: 1.2rem;
+            }
+
+            .performance-cards {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 10px;
+            }
+
+            .perf-card {
+                padding: 15px;
+            }
+
+            .perf-title {
+                font-size: 12px;
+            }
+
+            .perf-value {
+                font-size: 1.4rem;
+            }
+
+            .slider-group {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .slider-group label {
+                min-width: auto;
+                font-size: 14px;
+            }
+
+            .slider-value {
+                min-width: auto;
+                font-size: 14px;
+            }
+
+            .slider {
+                width: 100%;
+                min-width: auto;
+            }
+
+            .tables-container {
+                flex-direction: column;
+            }
+
+            .table-section, .rolling-table-section {
+                min-width: 100%;
+                max-width: none;
+                margin: 0;
+                padding: 15px;
+            }
+
+            .results-table th,
+            .results-table td,
+            .rolling-results-table th,
+            .rolling-results-table td {
+                padding: 8px;
+                font-size: 14px;
+            }
+
+            .toolbar {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 10px;
+            }
+
+            .controls-group {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .controls-group select {
+                width: 100%;
+                max-width: 200px;
+            }
+
+            .trading-note {
+                padding: 10px;
+            }
+
+            .trading-note p {
+                font-size: 14px;
+            }
+
+            .footer {
+                margin-top: 30px;
+            }
+
+            .disclaimer, .contact-info {
+                padding: 15px;
+            }
+
+            .disclaimer p, .contact-info p {
+                font-size: 14px;
+            }
+
+            .raw-data-section {
+                padding: 20px;
+            }
+
+            .csv-table {
+                font-size: 11px;
+            }
+
+            .csv-table th,
+            .csv-table td {
+                padding: 6px 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                font-size: 14px;
+                padding: 5px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .subtitle {
+                font-size: 0.9rem;
+                margin-bottom: 20px;
+            }
+
+            .performance-cards {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+
+            .perf-card {
+                padding: 12px;
+            }
+
+            .perf-title {
+                font-size: 11px;
+                margin-bottom: 8px;
+            }
+
+            .perf-value {
+                font-size: 1.1rem;
+            }
+
+            .sliders-container, 
+            .upload-section,
+            #rollingAnalysis,
+            .disclaimer,
+            .contact-info {
+                padding: 10px;
+                margin-bottom: 15px;
+            }
+
+            .table-section, .rolling-table-section {
+                padding: 10px;
+            }
+
+            .table-title, .rolling-table-title {
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
+
+            .results-table th,
+            .results-table td,
+            .rolling-results-table th,
+            .rolling-results-table td {
+                padding: 6px;
+                font-size: 12px;
+            }
+
+            .metric-name {
+                word-break: break-word;
+            }
+
+            .period-toggle-btn {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+
+            .controls-group {
+                gap: 10px;
+            }
+
+            .controls-group label {
+                font-size: 12px;
+            }
+
+            .controls-group select {
+                font-size: 12px;
+                padding: 6px 8px;
+            }
+
+            .raw-data-section {
+                padding: 15px;
+            }
+
+            .csv-table-container {
+                padding: 10px;
+                max-height: 400px;
+            }
+
+            .csv-table {
+                font-size: 10px;
+                min-width: 600px;
+            }
+
+            .csv-table th,
+            .csv-table td {
+                padding: 4px 6px;
+            }
+
+            .data-summary {
+                gap: 8px;
+            }
+
+            .summary-item {
+                padding: 8px 10px;
+                min-width: 80px;
+            }
+
+            .summary-label {
+                font-size: 10px;
+            }
+
+            .summary-value {
+                font-size: 12px;
+            }
+        }
+
+        /* Status indicator */
+        .status {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .status.success {
+            background-color: #2d5a2d;
+            color: #90ee90;
+        }
+
+        .status.warning {
+            background-color: #5a4d2d;
+            color: #ffeb3b;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 50px;
+            border-top: 2px solid #415A77;
+            padding-top: 30px;
+        }
+
+        .disclaimer, .contact-info {
+            background-color: #1B263B;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #778DA9;
+        }
+
+        .disclaimer h3, .contact-info h3 {
+            color: #E0E1DD;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .disclaimer p {
+            color: #778DA9;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .contact-info p {
+            color: #778DA9;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .contact-details {
+            background-color: #415A77;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+
+        .contact-details p {
+            color: #E0E1DD;
+            margin-bottom: 8px;
+        }
+
+        .contact-details strong {
+            color: #E0E1DD;
+        }
+
+        /* Raw Data Table */
+        .raw-data-section {
+            margin: 40px 0;
+            background-color: #1B263B;
+            padding: 25px;
+            border-radius: 8px;
+            border-left: 4px solid #778DA9;
+        }
+
+        .raw-data-section h2 {
+            text-align: center;
+            color: #E0E1DD;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .raw-data-description {
+            color: #778DA9;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-size: 16px;
+            background-color: #0D1B2A;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #415A77;
+        }
+
+        .csv-table-container {
+            background-color: #0D1B2A;
+            border-radius: 8px;
+            padding: 15px;
+            border: 2px solid #778DA9;
+            overflow-x: auto;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .csv-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #0D1B2A;
+            min-width: 800px;
+            font-size: 12px;
+        }
+
+        .csv-table th,
+        .csv-table td {
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid #415A77;
+            white-space: nowrap;
+        }
+
+        .csv-table th {
+            background-color: #415A77;
+            color: #E0E1DD;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .csv-table tr:nth-child(even) {
+            background-color: #1B263B;
+        }
+
+        .csv-table tr:hover {
+            background-color: #415A77;
+        }
+
+        .csv-table .profit-positive {
+            color: #90EE90;
+            font-weight: bold;
+        }
+
+        .csv-table .profit-negative {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+        .csv-table .trade-type-buy {
+            color: #90EE90;
+        }
+
+        .csv-table .trade-type-sell {
+            color: #ffeb3b;
+        }
+
+        .data-summary {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .summary-item {
+            background-color: #0D1B2A;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: 1px solid #415A77;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .summary-label {
+            color: #778DA9;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .summary-value {
+            color: #E0E1DD;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .data-update-info {
+            margin-top: 20px;
+            background-color: #0D1B2A;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #90EE90;
+        }
+
+        .data-update-info p {
+            color: #778DA9;
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .data-update-info strong {
+            color: #E0E1DD;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Executor Trading Bot</h1>
+        <div class="subtitle">
+            <p>Live Performance Analytics & Backtesting Results</p>
+        </div>
+        
+        <!-- Performance Overview -->
+        <div class="overview-section">
+            <h2>🎯 Key Performance Metrics</h2>
+            <div class="performance-cards">
+                <div class="perf-card">
+                    <div class="perf-title">Backtest Return (2018-2026)</div>
+                    <div class="perf-value success">$100 → $18,342</div>
+                </div>
+                <div class="perf-card">
+                    <div class="perf-title">Live Trading</div>
+                    <div class="perf-value success">1+ Year</div>
+                </div>
+                <div class="perf-card">
+                    <div class="perf-title">Bot Version</div>
+                    <div class="perf-value">Version 4</div>
+                </div>
+                <div class="perf-card">
+                    <div class="perf-title">Current Status</div>
+                    <div class="perf-value">Private → Public</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- File Upload Section -->
+        <div class="upload-section" style="display: none;">
+            <div class="upload-group">
+                <label for="tradeFiles">Trade CSV Files (up to 4):</label>
+                <input type="file" id="tradeFiles" accept=".csv" multiple>
+            </div>
+            <div class="upload-group">
+                <label for="priceFile">Price CSV File:</label>
+                <input type="file" id="priceFile" accept=".csv">
+            </div>
+            <div id="status" class="status" style="display: none;"></div>
+        </div>
+
+        <!-- Navigation Bar -->
+        <div class="toolbar" style="display: none;">
+            <span class="period-label" id="periodLabel">Analysis Period: 30 days</span>
+            <button class="period-btn active" onclick="setIterPeriod(30)">30 days</button>
+            <button class="period-btn" onclick="setIterPeriod(60)">60 days</button>
+            <button class="period-btn" onclick="setIterPeriod(90)">90 days</button>
+            <button class="period-btn" onclick="setIterPeriod(180)">180 days</button>
+            <button class="period-btn" onclick="setIterPeriod(365)">365 days</button>
+        </div>
+
+        <!-- Sliders -->
+        <div class="sliders-container">
+            <div class="analysis-explanation">
+                <h3>📊 Performance Analysis Controls</h3>
+                <p><strong>Date Range Selection:</strong> Use the sliders below to analyze the bot's performance over any specific time period. You can examine performance during bull markets, bear markets, or any custom date range to understand how the bot adapts to different market conditions.</p>
+                <p><strong>Fixed Period Mode:</strong> Toggle "Fix Period" to lock the analysis window to a specific duration (e.g., always analyze 90-day periods). This is useful for consistent comparisons across different starting dates and understanding performance consistency over fixed time frames.</p>
+            </div>
+            
+            <div class="slider-group">
+                <label for="startSlider">Start Date:</label>
+                <span class="slider-value" id="startDateLabel">-</span>
+                <input type="range" class="slider" id="startSlider" min="0" max="100" value="0" 
+                       aria-label="Select start date for analysis period">
+            </div>
+            <div class="slider-group">
+                <label for="endSlider">End Date:</label>
+                <span class="slider-value" id="endDateLabel">-</span>
+                <input type="range" class="slider" id="endSlider" min="0" max="100" value="100"
+                       aria-label="Select end date for analysis period">
+            </div>
+            <div class="slider-group">
+                <label>Fix Period:</label>
+                <span class="slider-value" id="periodLabel2">OFF</span>
+                <button class="period-toggle-btn" id="periodToggle" onclick="toggleFixPeriod()"
+                        aria-label="Toggle fixed period analysis">Toggle Fix Period</button>
+                <input type="range" class="slider" id="periodSlider" min="7" max="730" value="30" style="display: none;"
+                       aria-label="Select fixed period duration in days">
+            </div>
+            <div class="trading-note">
+                <p><strong>📈 Trading Pattern:</strong> This bot typically has more losing trades than winning trades, but losses are kept small while wins are maximized. This risk management approach leads to overall profitability despite lower win rate.</p>
+            </div>
+        </div>
+
+        <!-- Results Tables -->
+        <div class="tables-container" id="tablesContainer">
+            <div class="loading">Loading Executor Bot performance data...</div>
+        </div>
+
+        <!-- Raw Trading Data -->
+        <div class="raw-data-section" id="rawDataSection" style="display: none;">
+            <h2>📊 Complete Trading History</h2>
+            <div class="raw-data-description">
+                <p><strong>Transparency & Verification:</strong> Below is the complete, unfiltered trading history from the Executor Bot. This data includes every trade decision, entry/exit prices, and profit/loss calculations. You can verify all performance metrics shown above using this raw data.</p>
+            </div>
+            
+            <div class="data-summary" id="dataSummary">
+                <!-- Summary will be populated by JavaScript -->
+            </div>
+            
+            <div class="csv-table-container">
+                <table class="csv-table" id="csvTable">
+                    <thead id="csvTableHead">
+                        <!-- Headers will be populated by JavaScript -->
+                    </thead>
+                    <tbody id="csvTableBody">
+                        <!-- Data will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="data-update-info">
+                <p><strong>📅 Last Updated:</strong> February 9, 2026 - This trading data reflects all bot decisions up to this date. Live trading continues with real-time updates to be published regularly.</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="disclaimer">
+                <h3>📊 Important Information</h3>
+                <p><strong>Backtest vs Live Performance:</strong> The results shown above are primarily from comprehensive backtesting on historical data (2018-2026). The bot has been trading live for over 1 year with performance consistent with backtest results.</p>
+                
+                <p><strong>Fees & Costs:</strong> Trading fees are not included in these backtest results. In worst-case scenarios, expect approximately -10% impact annually from fees and slippage. Always factor in exchange fees, network costs, and potential slippage when evaluating performance.</p>
+                
+                <p><strong>Risk Disclaimer:</strong> Cryptocurrency trading involves substantial risk. Never invest more than you can afford to lose. Past performance does not guarantee future results, and market conditions can change rapidly.</p>
+            </div>
+            <div class="contact-info">
+                <h3>� About Executor Bot v4</h3>
+                <p><strong>Developer Experience:</strong> Built by a developer with 6+ years of crypto trading experience (since 2020) and 6+ years of programming expertise. This is the 4th iteration of our trading bot, refined through continuous development and testing.</p>
+                
+                <p><strong>Current Status:</strong> Currently operating in a private copy trading group with proven live results. Public release coming soon with full transparency and verified track record.</p>
+                
+                <p><strong>Technology:</strong> Advanced algorithmic trading system using machine learning, technical analysis, and risk management protocols tested across multiple market cycles.</p>
+                
+                <div class="contact-details">
+                    <p><strong>Interested in Early Access?</strong></p>
+                    <p><strong>Developer:</strong> Alperen Ölçer</p>
+                    <p><strong>Email:</strong> alperenlcr@gmail.com</p>
+                    <p><strong>Status:</strong> Private Beta → Public Launch Soon</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Global variables
+        let tradeTables = [];
+        let priceData = [];
+        let minDate = null;
+        let maxDate = null;
+        let startDate = null;
+        let endDate = null;
+        let period = 0;
+        let iterPeriod = 30;
+        let latestIterPeriod = -1;
+        let avgMoney = 0;
+        let minMoney = 0;
+        let maxMoney = 0;
+        let dateRange = [];
+        let periodicResults = {};
+
+        // File upload handlers (disabled for embedded mode)
+        // document.getElementById('tradeFiles').addEventListener('change', handleTradeFiles);
+        // document.getElementById('priceFile').addEventListener('change', handlePriceFile);
+
+        // Initialize with repository data
+        window.addEventListener('load', function() {
+            loadRepositoryData();
+        });
+
+        async function loadRepositoryData() {
+            try {
+                // Show loading state
+                const container = document.getElementById('tablesContainer');
+                container.innerHTML = '<div class="loading">Loading Executor Bot performance data...</div>';
+                
+                // Load trade data from repository
+                const tradeResponse = await fetch('./executor_bot_decisions.csv');
+                if (!tradeResponse.ok) throw new Error(`Failed to load trade data: ${tradeResponse.status} ${tradeResponse.statusText}`);
+                const tradeText = await tradeResponse.text();
+                const tradeData = parseCSV(tradeText);
+                
+                if (tradeData.length === 0) {
+                    throw new Error('No trade data found in CSV file');
+                }
+                
+                console.log(`Loaded ${tradeData.length} trade records`);
+                console.log('Sample trade record:', tradeData[0]);
+                
+                tradeTables = [{ name: 'Executor Bot Results', data: tradeData }];
+                
+                // Load price data from repository
+                const priceResponse = await fetch('./executor_bot_prices.csv');
+                if (!priceResponse.ok) throw new Error(`Failed to load price data: ${priceResponse.status} ${priceResponse.statusText}`);
+                const priceText = await priceResponse.text();
+                priceData = parseCSV(priceText);
+                
+                if (priceData.length === 0) {
+                    throw new Error('No price data found in CSV file');
+                }
+                
+                console.log(`Loaded ${priceData.length} price records`);
+                console.log('Sample price record:', priceData[0]);
+                
+                priceData.sort((a, b) => new Date(a.CANDLE_START) - new Date(b.CANDLE_START));
+                
+                // Calculate date range and setup
+                calculateDateRange();
+                setupSliders();
+                
+                // Show success status
+                showStatus('Executor Bot performance data loaded successfully', 'success');
+                
+                // Start analysis
+                analyzeData();
+                
+                // Show raw data table
+                displayRawData();
+            } catch (error) {
+                showStatus('Error loading Executor Bot data: ' + error.message, 'error');
+                console.error('Load error:', error);
+                
+                // Show error in container as well
+                const container = document.getElementById('tablesContainer');
+                container.innerHTML = `<div class="error">Failed to load data: ${error.message}<br><br>Please ensure the CSV files are available and try refreshing the page.</div>`;
+            }
+        }
+
+        // Slider handlers
+        document.getElementById('startSlider').addEventListener('input', updateStartDate);
+        document.getElementById('endSlider').addEventListener('input', updateEndDate);
+        document.getElementById('periodSlider').addEventListener('input', updatePeriod);
+
+        function showStatus(message, type = 'success') {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 3000);
+        }
+
+        function parseCSV(text) {
+            const lines = text.split('\n');
+            const headers = lines[0].split(',').map(h => h.trim());
+            const data = [];
+            
+            for (let i = 1; i < lines.length; i++) {
+                if (lines[i].trim()) {
+                    const values = lines[i].split(',');
+                    const row = {};
+                    headers.forEach((header, index) => {
+                        let value = values[index] ? values[index].trim() : '';
+                        
+                        // Handle completely empty values
+                        if (value === '' || value === null || value === undefined) {
+                            row[header] = '';
+                            return;
+                        }
+                        
+                        // Parse dates - only for specific date columns
+                        if (header === 'TRADE_START' || header === 'TRADE_END' || header.includes('DATE')) {
+                            try {
+                                const parsedDate = new Date(value);
+                                if (isNaN(parsedDate.getTime())) {
+                                    console.warn(`Invalid date value: ${value} for header: ${header}`);
+                                    value = '';
+                                } else {
+                                    value = parsedDate;
+                                }
+                            } catch (error) {
+                                console.warn(`Error parsing date: ${value} for header: ${header}`, error);
+                                value = '';
+                            }
+                        }
+                        // Parse numbers - for price, percent, and money columns
+                        else if ((header.includes('PRICE') || header.includes('PERCENT') || header === 'MONEY') && 
+                                 !isNaN(value) && value !== '') {
+                            value = parseFloat(value);
+                        }
+                        // Keep other values as strings
+                        
+                        row[header] = value;
+                    });
+                    data.push(row);
+                }
+            }
+            return data;
+        }
+
+        async function handleTradeFiles(event) {
+            const files = Array.from(event.target.files).slice(0, 4); // Limit to 4 files
+            tradeTables = [];
+            
+            try {
+                for (const file of files) {
+                    const text = await file.text();
+                    const data = parseCSV(text);
+                    tradeTables.push({ name: file.name, data: data });
+                }
+                
+                if (tradeTables.length > 0) {
+                    calculateDateRange();
+                    setupSliders();
+                    showStatus(`Loaded ${tradeTables.length} trade file(s)`);
+                    
+                    if (priceData.length > 0) {
+                        analyzeData();
+                    }
+                }
+            } catch (error) {
+                showStatus('Error loading trade files: ' + error.message, 'error');
+            }
+        }
+
+        async function handlePriceFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            try {
+                const text = await file.text();
+                priceData = parseCSV(text);
+                priceData.sort((a, b) => new Date(a.CANDLE_START) - new Date(b.CANDLE_START));
+                
+                showStatus('Price data loaded successfully');
+                
+                if (tradeTables.length > 0) {
+                    analyzeData();
+                }
+            } catch (error) {
+                showStatus('Error loading price file: ' + error.message, 'error');
+            }
+        }
+
+        function calculateDateRange() {
+            if (tradeTables.length === 0) return;
+            
+            try {
+                const allDates = tradeTables.flatMap(table => 
+                    table.data
+                        .map(row => new Date(row.TRADE_START))
+                        .filter(date => !isNaN(date.getTime())) // Filter out invalid dates
+                );
+                
+                if (allDates.length === 0) {
+                    throw new Error('No valid dates found in trade data');
+                }
+                
+                minDate = new Date(Math.min(...allDates));
+                maxDate = new Date(Math.max(...allDates));
+                startDate = new Date(minDate);
+                endDate = new Date(maxDate);
+                
+                console.log(`Date range: ${minDate.toISOString()} to ${maxDate.toISOString()}`);
+            } catch (error) {
+                console.error('Error calculating date range:', error);
+                // Set default date range if calculation fails
+                const now = new Date();
+                const oneYearAgo = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+                minDate = oneYearAgo;
+                maxDate = now;
+                startDate = new Date(minDate);
+                endDate = new Date(maxDate);
+            }
+        }
+
+        function setupSliders() {
+            const daysRange = Math.ceil((maxDate - minDate) / (1000 * 60 * 60 * 24));
+            
+            document.getElementById('startSlider').max = daysRange;
+            document.getElementById('endSlider').max = daysRange;
+            document.getElementById('startSlider').value = 0;
+            document.getElementById('endSlider').value = daysRange;
+            
+            updateDateLabels();
+        }
+
+        function updateDateLabels() {
+            document.getElementById('startDateLabel').textContent = startDate.toISOString().split('T')[0];
+            document.getElementById('endDateLabel').textContent = endDate.toISOString().split('T')[0];
+        }
+
+        function updateStartDate(event) {
+            const value = parseInt(event.target.value);
+            startDate = new Date(minDate.getTime() + value * 24 * 60 * 60 * 1000);
+            
+            if (period > 0) {
+                const newEndValue = Math.min(value + period, parseInt(event.target.max));
+                document.getElementById('endSlider').value = newEndValue;
+                endDate = new Date(minDate.getTime() + newEndValue * 24 * 60 * 60 * 1000);
+            }
+            
+            updateDateLabels();
+            analyzeData();
+        }
+
+        function updateEndDate(event) {
+            if (period > 0) return;
+            
+            const value = parseInt(event.target.value);
+            endDate = new Date(minDate.getTime() + value * 24 * 60 * 60 * 1000);
+            updateDateLabels();
+            analyzeData();
+        }
+
+        function updatePeriod(event) {
+            period = parseInt(event.target.value);
+            document.getElementById('periodLabel2').textContent = `${period} days`;
+            
+            if (period > 0) {
+                const startValue = parseInt(document.getElementById('startSlider').value);
+                const maxDays = parseInt(document.getElementById('startSlider').max);
+                const newEndValue = Math.min(startValue + period, maxDays);
+                
+                document.getElementById('endSlider').value = newEndValue;
+                endDate = new Date(minDate.getTime() + newEndValue * 24 * 60 * 60 * 1000);
+                updateDateLabels();
+            }
+            
+            analyzeData();
+        }
+
+        function toggleFixPeriod() {
+            const slider = document.getElementById('periodSlider');
+            const label = document.getElementById('periodLabel2');
+            const button = document.getElementById('periodToggle');
+            
+            if (slider.style.display === 'none') {
+                // Turn ON
+                slider.style.display = 'block';
+                period = parseInt(slider.value);
+                label.textContent = `${period} days`;
+                button.classList.add('active');
+                button.textContent = 'Turn OFF';
+                
+                // Update end date based on current period
+                const startValue = parseInt(document.getElementById('startSlider').value);
+                const maxDays = parseInt(document.getElementById('startSlider').max);
+                const newEndValue = Math.min(startValue + period, maxDays);
+                
+                document.getElementById('endSlider').value = newEndValue;
+                endDate = new Date(minDate.getTime() + newEndValue * 24 * 60 * 60 * 1000);
+                updateDateLabels();
+            } else {
+                // Turn OFF
+                slider.style.display = 'none';
+                period = 0;
+                label.textContent = 'OFF';
+                button.classList.remove('active');
+                button.textContent = 'Turn ON';
+            }
+            
+            analyzeData();
+        }
+
+        function minSumSubarray(arr) {
+            const n = arr.length;
+            let minSum = Infinity;
+            let currentSum = 0;
+            let startIndex = -1;
+            let endIndex = -1;
+            let tempStart = 0;
+
+            for (let i = 0; i < n; i++) {
+                currentSum += arr[i];
+                if (currentSum < minSum) {
+                    minSum = currentSum;
+                    startIndex = tempStart;
+                    endIndex = i;
+                }
+                if (currentSum > 0) {
+                    currentSum = 0;
+                    tempStart = i + 1;
+                }
+            }
+
+            if (startIndex === -1 || endIndex === -1) {
+                return { startIndex: -1, endIndex: -1, lossPercent: 0 };
+            }
+
+            const subset = arr.slice(startIndex, endIndex + 1);
+            let start = 100;
+            for (const v of subset) {
+                start *= (1 + v / 100);
+            }
+            const lossPercent = start - 100;
+
+            return { startIndex, endIndex, lossPercent };
+        }
+
+        function analyzeData() {
+            if (tradeTables.length === 0 || priceData.length === 0) return;
+
+            try {
+                const container = document.getElementById('tablesContainer');
+                container.innerHTML = '';
+
+                // Clear rolling analysis container
+                const rollingContainer = document.getElementById('rollingAnalysisResults');
+                if (rollingContainer) {
+                    rollingContainer.innerHTML = '';
+                }
+
+                tradeTables.forEach((table, index) => {
+                    const filtered = table.data.filter(row => {
+                        const tradeDate = new Date(row.TRADE_START);
+                        // Ensure we have valid dates for comparison
+                        if (isNaN(tradeDate.getTime()) || !startDate || !endDate) {
+                            return false;
+                        }
+                        return tradeDate >= startDate && tradeDate <= endDate;
+                    });
+
+                    // Fill NaN values with 0
+                    filtered.forEach(row => {
+                        if (isNaN(row.PROFIT_PERCENT)) row.PROFIT_PERCENT = 0;
+                    });
+
+                    const buyData = filtered.filter(row => row.TRADE_TYPE === 'buy');
+                    const sellData = filtered.filter(row => row.TRADE_TYPE === 'sell');
+
+                    const buyWins = buyData.filter(row => row.PROFIT_PERCENT > 0).length;
+                    const buyLosses = buyData.filter(row => row.PROFIT_PERCENT < 0).length;
+                    const sellWins = sellData.filter(row => row.PROFIT_PERCENT > 0).length;
+                    const sellLosses = sellData.filter(row => row.PROFIT_PERCENT < 0).length;
+
+                    // Calculate averages for wins and losses
+                    const buyWinAvg = buyWins > 0 ? (buyData.filter(row => row.PROFIT_PERCENT > 0).reduce((sum, row) => sum + row.PROFIT_PERCENT, 0) / buyWins).toFixed(2) : 0;
+                    const buyLossAvg = buyLosses > 0 ? (buyData.filter(row => row.PROFIT_PERCENT < 0).reduce((sum, row) => sum + row.PROFIT_PERCENT, 0) / buyLosses).toFixed(2) : 0;
+                    const sellWinAvg = sellWins > 0 ? (sellData.filter(row => row.PROFIT_PERCENT > 0).reduce((sum, row) => sum + row.PROFIT_PERCENT, 0) / sellWins).toFixed(2) : 0;
+                    const sellLossAvg = sellLosses > 0 ? (sellData.filter(row => row.PROFIT_PERCENT < 0).reduce((sum, row) => sum + row.PROFIT_PERCENT, 0) / sellLosses).toFixed(2) : 0;
+
+                    // Calculate final money
+                    let money = 100.0;
+                    for (const row of filtered) {
+                        money *= (1 + row.PROFIT_PERCENT / 100);
+                    }
+                    money = Math.round(money * 100) / 100;
+
+                    // Max loss period
+                    const profits = filtered.map(row => row.PROFIT_PERCENT);
+                    const { startIndex, endIndex, lossPercent } = minSumSubarray(profits);
+                    
+                    let lossStart = 'N/A';
+                    let lossEnd = 'N/A';
+                    if (startIndex !== -1 && endIndex !== -1 && filtered[startIndex] && filtered[endIndex]) {
+                        const startTradeDate = new Date(filtered[startIndex].TRADE_START);
+                        const endTradeDate = new Date(filtered[endIndex].TRADE_START);
+                        if (!isNaN(startTradeDate.getTime()) && !isNaN(endTradeDate.getTime())) {
+                            lossStart = startTradeDate.toISOString().split('T')[0];
+                            lossEnd = endTradeDate.toISOString().split('T')[0];
+                        }
+                    }
+
+                    // Buy & Hold calculation
+                    let buyAndHold = 'N/A';
+                    if (priceData.length > 0 && startDate && endDate) {
+                        const startPrice = findClosestPrice(startDate);
+                        const endPrice = findClosestPrice(endDate);
+                        
+                        if (startPrice && endPrice && startPrice > 0) {
+                            buyAndHold = Math.round(100.0 * endPrice / startPrice * 100) / 100;
+                        }
+                    }
+
+                    // Periodic Analysis
+                    if (iterPeriod !== latestIterPeriod) {
+                        calculatePeriodicAnalysis(table, index);
+                    }
+
+                    // Main metrics (without rolling period data)
+                    const mainMetrics = [
+                        [`Successful Long Positions (Avg: ${buyWinAvg}%)`, buyWins],
+                        [`Losing Long Positions (Avg: ${buyLossAvg}%)`, buyLosses],
+                        [`Successful Short Positions (Avg: ${sellWinAvg}%)`, sellWins],
+                        [`Losing Short Positions (Avg: ${sellLossAvg}%)`, sellLosses],
+                        ['Maximum Drawdown Period (%)', Math.round(lossPercent * 100) / 100],
+                        ['Drawdown Period Start Date', lossStart],
+                        ['Drawdown Period End Date', lossEnd],
+                        ['Buy & Hold Strategy ($)', buyAndHold],
+                        ['Executor Bot Final Value ($)', money]
+                    ];
+
+                    // Rolling period metrics (separate table)
+                    const rollingMetrics = [
+                        ['Average Return - Rolling Period ($)', periodicResults[index]?.avg || 0],
+                        ['Minimum Return - Rolling Period ($)', periodicResults[index]?.min || 0],
+                        ['Maximum Return - Rolling Period ($)', periodicResults[index]?.max || 0]
+                    ];
+
+                    createTable(container, table.name, mainMetrics);
+                    
+                    // Create rolling table in the rolling analysis section
+                    const rollingAnalysisResults = document.getElementById('rollingAnalysisResults') || createRollingAnalysisContainer();
+                    createRollingTable(rollingAnalysisResults, 'Rolling Period Results', rollingMetrics);
+                });
+
+                latestIterPeriod = iterPeriod;
+            } catch (error) {
+                console.error('Error in analyzeData:', error);
+                const container = document.getElementById('tablesContainer');
+                container.innerHTML = `<div class="error">Error analyzing data: ${error.message}</div>`;
+            }
+        }
+
+        function findClosestPrice(targetDate) {
+            if (priceData.length === 0) return null;
+            
+            let closest = priceData[0];
+            let minDiff = Math.abs(new Date(closest.CANDLE_START) - targetDate);
+            
+            for (const row of priceData) {
+                const diff = Math.abs(new Date(row.CANDLE_START) - targetDate);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    closest = row;
+                }
+            }
+            
+            return closest.CLOSE_PRICE;
+        }
+
+        function calculatePeriodicAnalysis(table, tableIndex) {
+            if (priceData.length === 0) return;
+            
+            const start = new Date(priceData[0].CANDLE_START);
+            start.setDate(start.getDate() + 1);
+            start.setHours(0, 0, 0, 0);
+            
+            const end = new Date(priceData[priceData.length - 1].CANDLE_START);
+            end.setDate(end.getDate() - iterPeriod);
+            end.setHours(0, 0, 0, 0);
+            
+            const results = [];
+            const current = new Date(start);
+            
+            while (current <= end) {
+                let moneyIter = 100.0;
+                const endWindow = new Date(current);
+                endWindow.setDate(endWindow.getDate() + iterPeriod);
+                
+                for (const row of table.data) {
+                    const tradeDate = new Date(row.TRADE_START);
+                    if (tradeDate >= current && tradeDate < endWindow) {
+                        if (!isNaN(row.PROFIT_PERCENT)) {
+                            moneyIter *= (1 + row.PROFIT_PERCENT / 100);
+                        }
+                    }
+                }
+                
+                results.push(Math.round(moneyIter * 100) / 100);
+                current.setDate(current.getDate() + 1);
+            }
+            
+            if (!periodicResults[tableIndex]) {
+                periodicResults[tableIndex] = {};
+            }
+            
+            periodicResults[tableIndex].avg = results.length > 0 ? 
+                Math.round(results.reduce((a, b) => a + b, 0) / results.length * 100) / 100 : 0;
+            periodicResults[tableIndex].min = results.length > 0 ? Math.min(...results) : 0;
+            periodicResults[tableIndex].max = results.length > 0 ? Math.max(...results) : 0;
+        }
+
+        function createRollingAnalysisContainer() {
+            // First, ensure the rolling analysis section exists
+            let section = document.getElementById('rollingAnalysis');
+            if (!section) {
+                section = document.createElement('div');
+                section.id = 'rollingAnalysis';
+                section.innerHTML = `
+                    <div class="rolling-period-controls">
+                        <h2>Rolling Period Analysis</h2>
+                        <p>This analysis shows how the bot would perform during rolling periods of the selected time frame. For example, if you select "1 year", it shows the bot's performance over every consecutive 365-day period within your selected date range.</p>
+                        <div class="controls-group">
+                            <label for="periodSelect">Rolling Period Duration:</label>
+                            <select id="periodSelect">
+                                <option value="30">30 Days</option>
+                                <option value="90" selected>90 Days (3 Months)</option>
+                                <option value="180">180 Days (6 Months)</option>
+                                <option value="365">1 Year</option>
+                                <option value="730">2 Years</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="rollingAnalysisResults"></div>
+                `;
+                
+                // Insert the section after the main results
+                const tablesContainer = document.getElementById('tablesContainer');
+                tablesContainer.parentNode.insertBefore(section, tablesContainer.nextSibling);
+                
+                // Add event listeners
+                document.getElementById('periodSelect').addEventListener('change', function() {
+                    iterPeriod = parseInt(this.value);
+                    analyzeData();
+                });
+            }
+            
+            return document.getElementById('rollingAnalysisResults');
+        }
+
+        function createTable(container, title, metrics) {
+            const section = document.createElement('div');
+            section.className = 'table-section';
+            
+            const titleElement = document.createElement('div');
+            titleElement.className = 'table-title';
+            titleElement.textContent = title;
+            
+            const table = document.createElement('table');
+            table.className = 'results-table';
+            
+            const thead = document.createElement('thead');
+            thead.innerHTML = '<tr><th>Metric</th><th>Value</th></tr>';
+            
+            const tbody = document.createElement('tbody');
+            metrics.forEach(([metric, value]) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="metric-name">${metric}</td>
+                    <td class="metric-value">${value}</td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            table.appendChild(thead);
+            table.appendChild(tbody);
+            section.appendChild(titleElement);
+            section.appendChild(table);
+            container.appendChild(section);
+        }
+
+        function createRollingTable(container, title, metrics) {
+            const section = document.createElement('div');
+            section.className = 'rolling-table-section';
+            
+            const titleElement = document.createElement('div');
+            titleElement.className = 'rolling-table-title';
+            titleElement.textContent = title;
+            
+            const table = document.createElement('table');
+            table.className = 'rolling-results-table';
+            
+            const thead = document.createElement('thead');
+            thead.innerHTML = '<tr><th>Rolling Period Metric</th><th>Value</th></tr>';
+            
+            const tbody = document.createElement('tbody');
+            metrics.forEach(([metric, value]) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="metric-name">${metric}</td>
+                    <td class="metric-value">${value}</td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            table.appendChild(thead);
+            table.appendChild(tbody);
+            section.appendChild(titleElement);
+            section.appendChild(table);
+            container.appendChild(section);
+        }
+
+        function displayRawData() {
+            if (tradeTables.length === 0) return;
+
+            const rawDataSection = document.getElementById('rawDataSection');
+            const dataSummary = document.getElementById('dataSummary');
+            const csvTableHead = document.getElementById('csvTableHead');
+            const csvTableBody = document.getElementById('csvTableBody');
+
+            // Get the trade data
+            const tradeData = tradeTables[0].data;
+            
+            // Create summary statistics
+            const totalTrades = tradeData.length;
+            const buyTrades = tradeData.filter(row => row.TRADE_TYPE === 'buy').length;
+            const sellTrades = tradeData.filter(row => row.TRADE_TYPE === 'sell').length;
+            const profitableTrades = tradeData.filter(row => row.PROFIT_PERCENT > 0).length;
+            const losingTrades = tradeData.filter(row => row.PROFIT_PERCENT < 0).length;
+            
+            // Calculate average profits and losses
+            const winningTrades = tradeData.filter(row => row.PROFIT_PERCENT > 0);
+            const losingTradesData = tradeData.filter(row => row.PROFIT_PERCENT < 0);
+            
+            const avgWinProfit = winningTrades.length > 0 ? 
+                (winningTrades.reduce((sum, row) => sum + row.PROFIT_PERCENT, 0) / winningTrades.length).toFixed(2) : 0;
+            const avgLossProfit = losingTradesData.length > 0 ? 
+                (losingTradesData.reduce((sum, row) => sum + row.PROFIT_PERCENT, 0) / losingTradesData.length).toFixed(2) : 0;
+            
+            // Calculate date range
+            const dates = tradeData.map(row => new Date(row.TRADE_START)).filter(date => !isNaN(date.getTime())).sort((a, b) => a - b);
+            const startDate = dates[0];
+            const endDate = dates[dates.length - 1];
+            const daysDiff = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+
+            dataSummary.innerHTML = `
+                <div class="summary-item">
+                    <div class="summary-label">Total Trades</div>
+                    <div class="summary-value">${totalTrades}</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Profitable</div>
+                    <div class="summary-value" style="color: #90EE90">${profitableTrades}</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Losing</div>
+                        <div class="summary-value" style="color: #ff6b6b">${losingTrades}</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">Avg Win Profit</div>
+                            <div class="summary-value" style="color: #90EE90">+${avgWinProfit}%</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">Avg Loss Profit</div>
+                            <div class="summary-value" style="color: #ff6b6b">${avgLossProfit}%</div>
+                        </div>
+            `;
+
+            // Create table headers
+            if (tradeData.length > 0) {
+                const headers = Object.keys(tradeData[0]);
+                csvTableHead.innerHTML = '<tr>' + headers.map(header => `<th>${header}</th>`).join('') + '</tr>';
+
+                // Create table rows - sort from oldest to newest (chronological order)
+                csvTableBody.innerHTML = '';
+                const sortedData = [...tradeData].sort((a, b) => {
+                    const dateA = new Date(a.TRADE_START);
+                    const dateB = new Date(b.TRADE_START);
+                    return dateA - dateB; // Sort ascending (oldest first, chronological order)
+                });
+                
+                sortedData.forEach(row => {
+                        const tr = document.createElement('tr');
+                        headers.forEach(header => {
+                            const td = document.createElement('td');
+                            let value = row[header];
+                            
+                            // Handle empty, undefined, null values
+                            if (value === undefined || value === null || value === '' || 
+                                (typeof value === 'number' && isNaN(value))) {
+                                value = '-';
+                            }
+                            // Format dates - only for specific date columns
+                            else if (header === 'TRADE_START' || header === 'TRADE_END') {
+                                try {
+                                    if (value instanceof Date && !isNaN(value.getTime())) {
+                                        value = value.toISOString().split('T')[0] + ' ' + 
+                                               value.toTimeString().split(' ')[0];
+                                    } else if (typeof value === 'string' && value !== '') {
+                                        const parsedDate = new Date(value);
+                                        if (!isNaN(parsedDate.getTime())) {
+                                            value = parsedDate.toISOString().split('T')[0] + ' ' + 
+                                                   parsedDate.toTimeString().split(' ')[0];
+                                        } else {
+                                            value = '-';
+                                        }
+                                    } else {
+                                        value = '-';
+                                    }
+                                } catch (error) {
+                                    console.warn('Error formatting date:', value, error);
+                                    value = '-';
+                                }
+                            }
+                            // Format numbers - only if they are valid numbers
+                            else if (typeof value === 'number' && !isNaN(value) && isFinite(value)) {
+                                if (header === 'START_PRICE' || header === 'STOP_PRICE') {
+                                    value = '$' + value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                                } else if (header === 'PROFIT_PERCENT') {
+                                    value = value.toFixed(2) + '%';
+                                } else if (header === 'MONEY') {
+                                    value = '$' + Math.round(value).toLocaleString('en-US');
+                                } else {
+                                    value = value.toFixed(2);
+                                }
+                            }
+                            // For any other case (like strings that couldn't be parsed as numbers)
+                            else if (typeof value === 'string' && value.trim() === '') {
+                                value = '-';
+                            }
+                            
+                            td.textContent = value;
+                            
+                            // Add styling based on content
+                            if (header === 'PROFIT_PERCENT') {
+                                if (row[header] > 0) {
+                                    td.className = 'profit-positive';
+                                } else if (row[header] < 0) {
+                                    td.className = 'profit-negative';
+                                }
+                            }
+                            
+                            if (header === 'TRADE_TYPE') {
+                                if (row[header] === 'buy') {
+                                    td.className = 'trade-type-buy';
+                                } else if (row[header] === 'sell') {
+                                    td.className = 'trade-type-sell';
+                                }
+                            }
+                            
+                            tr.appendChild(td);
+                        });
+                        csvTableBody.appendChild(tr);
+                    });
+            }
+
+            // Show the raw data section
+            rawDataSection.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
