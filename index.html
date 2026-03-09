@@ -159,6 +159,9 @@
                 padding: 18px 20px 18px;
                 gap: 0;
             }
+            .page-header-text {
+                width: 100%;
+            }
             .lang-toggle {
                 position: static;
                 transform: none;
@@ -983,13 +986,44 @@
             }
 
             .rolling-controls {
-                grid-template-columns: 1fr;
+                grid-template-columns: auto auto;
                 gap: 8px;
+                justify-content: space-between;
+            }
+
+            .rolling-controls select {
+                width: auto;
+                min-width: 110px;
             }
 
             .leverage-group {
-                grid-template-columns: 1fr;
+                grid-template-columns: auto auto;
                 gap: 8px;
+                justify-content: space-between;
+            }
+
+            .leverage-select {
+                width: auto;
+                min-width: 110px;
+            }
+
+            .initial-money-group {
+                grid-template-columns: auto auto;
+                gap: 8px;
+                justify-content: space-between;
+            }
+
+            .initial-money-wrapper {
+                width: auto;
+                min-width: 110px;
+            }
+
+            .initial-money-input {
+                width: 110px;
+            }
+
+            .date-section {
+                min-height: auto;
             }
 
             .leverage-info {
