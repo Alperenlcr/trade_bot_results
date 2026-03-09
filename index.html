@@ -86,6 +86,93 @@
         }
 
         /* Date Slider Section */
+        .page-header {
+            background: linear-gradient(135deg, #252a34 0%, #1e2329 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 22px 28px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .page-header:hover {
+            border-color: rgba(79, 172, 254, 0.15);
+        }
+
+        .page-header-text h1 {
+            color: #ffffff;
+            font-size: 32px;
+            font-weight: 800;
+            line-height: 1.2;
+            letter-spacing: -0.3px;
+            text-align: center;
+        }
+
+        .page-header-text p {
+            color: #8b949e;
+            font-size: 18px;
+            text-align: center;
+            margin-top: 4px;
+        }
+
+        .lang-toggle {
+            position: absolute;
+            right: 24px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #2a2f3a 0%, #1e2329 100%);
+            border: 1px solid rgba(79, 172, 254, 0.3);
+            border-radius: 8px;
+            padding: 7px 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .lang-toggle:hover {
+            border-color: #4facfe;
+            box-shadow: 0 0 0 2px rgba(79, 172, 254, 0.2);
+        }
+
+        .lang-active { color: #4facfe; }
+        .lang-sep { color: rgba(255,255,255,0.2); }
+        .lang-inactive { color: #8b949e; }
+
+        .header-divider {
+            display: none;
+        }
+
+        @media (max-width: 640px) {
+            .page-header {
+                flex-direction: column;
+                align-items: center;
+                padding: 18px 20px 18px;
+                gap: 0;
+            }
+            .lang-toggle {
+                position: static;
+                transform: none;
+                margin-top: 0;
+            }
+            .header-divider {
+                display: block;
+                width: 100%;
+                height: 1px;
+                background: rgba(255,255,255,0.1);
+                margin: 14px 0;
+            }
+        }
+
         .date-section {
             background: linear-gradient(135deg, #252a34 0%, #1e2329 100%);
             padding: 20px 20px 40px 20px;
@@ -93,6 +180,7 @@
             margin-bottom: 20px;
             border: 1px solid rgba(255, 255, 255, 0.08);
             transition: all 0.3s ease;
+            min-height: 888px;
         }
 
         .date-section:hover {
@@ -161,6 +249,7 @@
             height: 8px;
             flex: 1;
             min-width: 200px;
+            margin-bottom: 12px;
         }
 
         .range-slider-container::before {
@@ -295,6 +384,8 @@
             padding: 24px;
             border: 1px solid rgba(255, 255, 255, 0.08);
             transition: all 0.3s ease;
+            min-height: 888px;
+            max-height: 888px;
         }
 
         .bot-specs:hover {
@@ -315,7 +406,7 @@
 
         .specs-textarea {
             width: 100%;
-            min-height: 800px;
+            min-height: 780px;
             border: 1px solid rgba(79, 172, 254, 0.3);
             border-radius: 12px;
             padding: 16px;
@@ -350,6 +441,50 @@
 
         .leverage-label {
             color: #e8eaed;
+        }
+
+        .initial-money-group {
+            display: grid;
+            grid-template-columns: 145px 1fr;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .initial-money-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .initial-money-prefix {
+            position: absolute;
+            left: 12px;
+            color: #8b949e;
+            font-size: 14px;
+            font-weight: 600;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .initial-money-input {
+            background: linear-gradient(135deg, #2a2f3a 0%, #1e2329 100%);
+            border: 1px solid rgba(79, 172, 254, 0.3);
+            border-radius: 8px;
+            padding: 10px 14px 10px 26px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #e8eaed;
+            outline: none;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .initial-money-input:focus,
+        .initial-money-input:hover {
+            border-color: #4facfe;
+            background: linear-gradient(135deg, #323743 0%, #252a34 100%);
+            box-shadow: 0 0 0 2px rgba(79, 172, 254, 0.25);
         }
 
         .leverage-select {
@@ -512,9 +647,65 @@
             text-align: right;
         }
 
+        /* Rolling Window Image Modal */
+        .rw-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 100001;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .rw-modal-overlay.active {
+            display: flex;
+        }
+
+        .rw-modal-box {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+
+        .rw-modal-img {
+            max-width: 90vw;
+            max-height: 85vh;
+            border-radius: 18px;
+            box-shadow: 0 16px 64px rgba(0, 0, 0, 0.6);
+            display: block;
+        }
+
+        .rw-modal-close {
+            position: absolute;
+            top: -14px;
+            right: -14px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border: 2px solid #fff;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .rw-modal-close:hover {
+            transform: scale(1.15);
+            box-shadow: 0 6px 20px rgba(79,172,254,0.5);
+        }
+
         /* Rolling Period Controls */
         .rolling-controls {
-            margin-bottom: 0;
+            margin-bottom: 12px;
             display: grid;
             grid-template-columns: 145px 1fr;
             align-items: center;
@@ -588,7 +779,8 @@
             transition: all 0.3s ease;
             width: 100%;
             max-width: 100%;
-            max-height: 920px;
+            min-height: 888px;
+            max-height: 888px;
         }
 
         .history-section:hover {
@@ -616,7 +808,7 @@
             flex: 1;
             overflow-y: auto;
             min-height: 400px;
-            max-height: 920px;
+            max-height: 888px;
             width: 100%;
             max-width: 100%;
             align-self: flex-start;
@@ -820,49 +1012,30 @@
 </head>
 <body>
     <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-header-text">
+                <h1 data-i18n="pageTitle">Executor Trading Bot</h1>
+                <p data-i18n="pageSubtitle">Past Analysis &amp; Specifications</p>
+            </div>
+            <div class="header-divider"></div>
+            <button class="lang-toggle" id="langToggle" onclick="toggleLanguage()">
+                <span class="lang-active" id="langActive">ENG</span>
+                <span class="lang-sep">|</span>
+                <span class="lang-inactive" id="langInactive">TR</span>
+            </button>
+        </div>
         <!-- Main Content Layout -->
         <div class="main-layout">
             <!-- Tables Column (BP + PA) -->
             <div class="tables-column">
-                <!-- Date Range Section -->
+                <!-- Performance Analysis Section -->
                 <div class="date-section">
-                    <h3><div class="help-icon" data-help-key="bpTitle">?
-                            <div class="help-tooltip">Select the date range for analysis. Drag the handles to adjust start and end dates.</div>
-                        </div>Backtest Parameters
-                    </h3>
+                    <h3 data-i18n="sectionPA">Performance Analysis</h3>
                     <div class="slider-group">
-                        <div class="leverage-group">
-                            <label class="leverage-label bp-row-label" for="leverageSelect"><span class="help-icon" data-help-key="leverage">?
-                                    <span class="help-tooltip">Select leverage multiplier. All profit/loss calculations will be multiplied by this factor.</span>
-                                </span>Leverage
-                            </label>
-                            <select class="leverage-select" id="leverageSelect">
-                                <option value="1">1x</option>
-                                <option value="2" selected>2x</option>
-                                <option value="3">3x</option>
-                            </select>
-                        </div>
-
-                        <div class="rolling-controls">
-                            <label class="bp-row-label" for="periodSelect"><span class="help-icon" data-help-key="rollingPeriod">?
-                                    <span class="help-tooltip">Choose the rolling period duration for analysis (e.g., 90 days shows performance over every consecutive 90-day period).</span>
-                                </span>Rolling Period
-                            </label>
-                            <select id="periodSelect">
-                                <option value="30">1 Month</option>
-                                <option value="90">3 Months</option>
-                                <option value="180">6 Months</option>
-                                <option value="365" selected>1 Year</option>
-                                <option value="730">2 Years</option>
-                            </select>
-                        </div>
-
                         <div class="date-labels">
                             <span class="date-range-inline-label bp-row-label">
-                                <span class="help-icon" data-help-key="dateRange">?
-                                    <span class="help-tooltip">Select start and end dates for the backtest period.</span>
-                                </span>
-                                Date Range
+                                <span data-i18n="dateRange">Date Range</span>
                             </span>
                             <span class="slider-value" id="startDateLabel">-</span>
                             <span class="slider-value" id="endDateLabel">-</span>
@@ -873,25 +1046,52 @@
                             <input type="range" class="range-slider range-slider-max" id="endSlider" min="0" max="100" value="100"
                                    aria-label="Select end date for analysis period">
                         </div>
+
+                        <div class="leverage-group">
+                            <label class="leverage-label bp-row-label" for="leverageSelect"><span class="help-icon" data-help-key="leverage">?
+                                    <span class="help-tooltip">Select leverage multiplier. All profit/loss calculations will be multiplied by this factor.</span>
+                                </span><span data-i18n="leverage">Leverage</span>
+                            </label>
+                            <select class="leverage-select" id="leverageSelect">
+                                <option value="1">1x</option>
+                                <option value="2" selected>2x</option>
+                                <option value="3">3x</option>
+                            </select>
+                        </div>
+
+                        <div class="initial-money-group">
+                            <label class="bp-row-label" for="initialMoneyInput"><span class="help-icon" data-help-key="initialMoney">?<span class="help-tooltip"></span></span><span data-i18n="startBalance">Start Balance</span></label>
+                            <div class="initial-money-wrapper">
+                                <span class="initial-money-prefix">$</span>
+                                <input type="text" inputmode="numeric" class="initial-money-input" id="initialMoneyInput" value="100" placeholder="100">
+                            </div>
+                        </div>
+
+                        <div class="rolling-controls">
+                            <label class="bp-row-label" for="periodSelect"><span class="help-icon" data-help-key="rollingPeriod">?
+                                    <span class="help-tooltip">Choose the rolling period duration for analysis (e.g., 90 days shows performance over every consecutive 90-day period).</span>
+                                </span><span data-i18n="rollingPeriod">Rolling Period</span>
+                            </label>
+                            <select id="periodSelect">
+                                <option value="30" data-i18n="period30">1 Month</option>
+                                <option value="90" data-i18n="period90">3 Months</option>
+                                <option value="180" data-i18n="period180">6 Months</option>
+                                <option value="365" selected data-i18n="period365">1 Year</option>
+                                <option value="730" data-i18n="period730">2 Years</option>
+                            </select>
+                        </div>
+                        <!-- Performance metrics table (title is the section h3 above) -->
+                        <div id="executorResults" data-no-title="1">
+                            <div class="loading">Loading performance data...</div>
+                        </div>
                     </div>
-                </div>
-                <!-- Performance Analysis -->
-                <div class="table-section" id="executorResults">
-                    <div class="table-title"><div class="help-icon" data-help-key="performanceAnalysis">?
-                            <div class="help-tooltip">Performance metrics for the trading bot within the selected date range.</div>
-                        </div>Performance Analysis
-                    </div>
-                    <div class="loading">Loading performance data...</div>
                 </div>
             </div>
 
             <!-- Trading History Column (TP, spans rows) -->
             <div class="history-column">
                 <div class="history-section" id="tradingHistory">
-                    <div class="history-title"><div class="help-icon" data-help-key="tradingHistory">?
-                            <div class="help-tooltip">Detailed list of all trades within the selected date range. Updates automatically when you change dates.</div>
-                        </div>Trade Positions
-                    </div>
+                    <div class="history-title" data-i18n="tradePositions">Trade Positions</div>
                     <div class="csv-table-container">
                         <table class="csv-table" id="csvTable">
                             <thead id="csvTableHead">
@@ -908,9 +1108,7 @@
             <div class="additional-boxes">
                 <!-- Bot Specifications -->
                 <div class="bot-specs">
-                    <div class="box-title">
-                        Information & Notes
-                    </div>
+                    <div class="box-title" data-i18n="infoNotes">Information &amp; Notes</div>
                     <textarea 
                         class="specs-textarea" 
                         id="botSpecs" 
@@ -923,7 +1121,7 @@ The bot is typically used with 2x leverage to improve capital efficiency while k
 
 The strategy trades BTC futures, which include maker/taker fees and funding rates. However, the system does not trade frequently, and based on long-term live usage the combined impact of fees and funding has historically remained below ~5% annually.
 
-No trading strategy is completely risk-free. While long-term results show strong stability, short-term drawdowns are possible. All performance statistics on this page are based on historical analysis and past live trading results. Past performance does not guarantee future results. Always invest only capital you are willing to risk.
+No trading strategy is risk-free. Short-term drawdowns can occur, and past performance does not guarantee future results. Only trade with capital you are willing to risk.
 
 For further information, questions, or suggestions, please contact the developer at alperenlcr@gmail.com</textarea>
 
@@ -932,23 +1130,186 @@ For further information, questions, or suggestions, please contact the developer
         </div>
     </div>
 
+    <!-- Rolling Window Explanation Modal -->
+    <div class="rw-modal-overlay" id="rwModal">
+        <div class="rw-modal-box">
+            <button class="rw-modal-close" id="rwModalClose" aria-label="Close">&#x2715;</button>
+            <img class="rw-modal-img" src="./rolling_window_eng.png" alt="Rolling Window Explanation">
+        </div>
+    </div>
+
     <script>
-        // Help tooltip text dictionary (edit these texts as needed)
-        const HELP_TEXTS = {
-            bpTitle: "Select the desired parameters for backtesting, it will affect performance analysis table and trading history data.",
-            leverage: "Select leverage multiplier for all trades. This will scale all profit and loss calculations by the chosen factor for each trade.",
-            rollingPeriod: "Choose the Rolling Period for performance analysis below. It simulates that given in date range a trading window of rolling period will be calculated with starting 100$ and analysis of average, worst and best performance.",
-            dateRange: "Select start and end dates for the backtest period.",
-            performanceAnalysis: "Performance analysis for the trading bot for backtest parameters selected above.",
-            tradingHistory: "Detailed list of all trades within the selected date range.",
-            metricSuccessful: "Total count of profitable positions during selected date range. The average value below is the mean gain per successful position.",
-            metricLosing: "Total count of losing positions during selected date range. The average value below is the mean loss per losing position.",
-            metricBuyHold: "Performance of buying once at start date and holding until end date, starting from 100$.",
-            metricFinalValue: "Final portfolio value after applying all trade results in sequence, starting from 100$.",
-            metricRollingAvg: "Average final value across all rolling windows for selected rolling period in selected date range, each window starts with 100$.",
-            metricRollingMin: "Worst final value observed across all rolling windows for selected rolling period in selected date range, each window starts with 100$.",
-            metricRollingMax: "Best final value observed across all rolling windows for selected rolling period in selected date range, each window starts with 100$."
+        // ── i18n ──────────────────────────────────────────────────────────────
+        let currentLang = 'en';
+        const TRANSLATIONS = {
+            en: {
+                pageTitle: 'Executor Trading Bot',
+                pageSubtitle: 'Past Analysis & Specifications',
+                sectionPA: 'Performance Analysis',
+                dateRange: 'Date Range',
+                leverage: 'Leverage',
+                startBalance: 'Start Balance',
+                rollingPeriod: 'Rolling Period',
+                period30: '1 Month', period90: '3 Months', period180: '6 Months',
+                period365: '1 Year', period730: '2 Years',
+                tradePositions: 'Trade Positions',
+                infoNotes: 'Information & Notes',
+                metricCol: 'Metric', valueCol: 'Value',
+                avgRolling: 'Average Rolling Window',
+                minRolling: 'Minimum Rolling Window',
+                maxRolling: 'Maximum Rolling Window',
+                successfulPos: 'Successful Positions',
+                losingPos: 'Losing Positions',
+                buyHold: 'Buy & Hold Strategy',
+                finalValue: 'Final Balance',
+                startBalanceSub: (v) => `Start Balance: $${v}`,
+                avgSub: (v) => `Average: ${v}%`,
+                posLong: (n) => `Long ${n}x`,
+                posShort: (n) => `Short ${n}x`,
+                colPosition: 'Position', colEntryDate: 'Entry Date', colEntryPrice: 'Entry Price',
+                colCloseDate: 'Close Date', colClosePrice: 'Close Price', colROI: 'ROI',
+                noTrades: 'No trades in selected date range',
+                rwImg: './rolling_window_eng.png',
+                help_leverage: 'Select leverage multiplier for all trades. This will scale all profit and loss calculations by the chosen factor for each trade.',
+                help_initialMoney: (v) => `Set the starting capital for all calculations. Must be at least $${v}. Final Value, Buy & Hold, and all rolling window results will be based on this amount.`,
+                help_rollingPeriod: '⬅ Click to see a visual explanation of rolling windows.',
+                help_dateRange: 'Select start and end dates for the backtest period.',
+                help_performanceAnalysis: 'Performance analysis for the trading bot for the selected backtest parameters.',
+                help_tradingHistory: 'Detailed list of all trades within the selected date range.',
+                help_metricSuccessful: 'Total count of profitable positions during selected date range. The average value below is the mean gain per successful position.',
+                help_metricLosing: 'Total count of losing positions during selected date range. The average value below is the mean loss per losing position.',
+                help_metricBuyHold: (v) => `Performance of buying once at start date and holding until end date, starting from $${v}.`,
+                help_metricFinalValue: (v) => `Final portfolio value after applying all trade results in sequence, starting from $${v}.`,
+                help_metricRollingAvg: '⬅ Click to see a visual explanation of rolling windows.',
+                help_metricRollingMin: '⬅ Click to see a visual explanation of rolling windows.',
+                help_metricRollingMax: '⬅ Click to see a visual explanation of rolling windows.',
+                botSpecsContent: `This bot is a BTC-only trend-following system designed to capture large market moves while keeping losses small. Built on a multi-layer long-term strategy, it follows a simple rule: small losses, large wins, allowing profitability even if most trades are negative.
+
+This system was developed based on 5+ years of crypto trading and programming experience. The strategy is currently in its 5th version (March 2026) and has been live traded for 1+ year in a private copy trading group. After extensive testing and live usage, it is planned to be released publicly on Binance in March 2026. Historical analysis shows over 100% average annual ROI in past performance. Shorter time periods may experience temporary drawdowns, but over longer horizons (around one year) the strategy has historically remained profitable.
+
+The bot is typically used with 2x leverage to improve capital efficiency while keeping exposure relatively conservative. Backtests shown on this page assume 100% capital usage, while in live trading the system typically uses around 85% of available capital to provide an additional buffer.
+
+The strategy trades BTC futures, which include maker/taker fees and funding rates. However, the system does not trade frequently, and based on long-term live usage the combined impact of fees and funding has historically remained below ~5% annually.
+
+No trading strategy is risk-free. Short-term drawdowns can occur, and past performance does not guarantee future results. Only trade with capital you are willing to risk.
+
+For further information, questions, or suggestions, please contact the developer at alperenlcr@gmail.com`,
+            },
+            tr: {
+                pageTitle: 'Executor Trading Bot',
+                pageSubtitle: 'Geçmiş Analiz & Özellikler',
+                sectionPA: 'Performans Analizi',
+                dateRange: 'Tarih Aralığı',
+                leverage: 'Kaldıraç',
+                startBalance: 'Başlangıç',
+                rollingPeriod: 'Hareketli Aralık',
+                period30: '1 Ay', period90: '3 Ay', period180: '6 Ay',
+                period365: '1 Yıl', period730: '2 Yıl',
+                tradePositions: 'İşlem Geçmişi',
+                infoNotes: 'Bilgi & Notlar',
+                metricCol: 'Metrik', valueCol: 'Değer',
+                avgRolling: 'Ortalama Hareketli Aralık',
+                minRolling: 'Minimum Hareketli Aralık',
+                maxRolling: 'Maksimum Hareketli Aralık',
+                successfulPos: 'Başarılı Pozisyonlar',
+                losingPos: 'Zararlı Pozisyonlar',
+                buyHold: 'Al & Tut Stratejisi',
+                finalValue: 'Son Bakiye',
+                startBalanceSub: (v) => `Başlangıç: $${v}`,
+                avgSub: (v) => `Ortalama: %${v}`,
+                posLong: (n) => `Long ${n}x`,
+                posShort: (n) => `Short ${n}x`,
+                colPosition: 'Pozisyon', colEntryDate: 'Giriş Tarihi', colEntryPrice: 'Giriş Fiyatı',
+                colCloseDate: 'Çıkış Tarihi', colClosePrice: 'Çıkış Fiyatı', colROI: 'Getiri',
+                noTrades: 'Seçili tarih aralığında işlem yok',
+                rwImg: './rolling_window_tr.png',
+                help_leverage: 'Tüm işlemler için kaldıraç çarpanını seçin. Bu, seçilen faktöre göre tüm kâr ve zarar hesaplamalarını ölçeklendirecektir.',
+                help_initialMoney: (v) => `Tüm hesaplamalar için başlangıç sermayesini belirleyin. En az $${v} olmalıdır. Hareketli Aralık, Son Değer ve Al & Tut sonuçları bu miktara göre hesaplanacaktır.`,
+                help_rollingPeriod: '⬅ Hareketli aralıkların görsel açıklamasını görmek için tıklayın.',
+                help_dateRange: 'Analiz dönemi için başlangıç ve bitiş tarihlerini seçin.',
+                help_performanceAnalysis: 'Seçili parametreler için ticaret botunun performans analizi.',
+                help_tradingHistory: 'Seçili tarih aralığındaki tüm işlemlerin detaylı listesi.',
+                help_metricSuccessful: 'Seçili tarih aralığında kârlı pozisyonların toplam sayısı ve ortalama kazanç değeri.',
+                help_metricLosing: 'Seçili tarih aralığında zararlı pozisyonların toplam sayısı ve ortalama kayıp değeri.',
+                help_metricBuyHold: (v) => `$${v} ile başlayarak başlangıç tarihinde bir kez alıp bitiş tarihine kadar tutma stratejisinin performansı.`,
+                help_metricFinalValue: (v) => `$${v} ile başlayarak tüm işlem sonuçlarını sırayla uyguladıktan sonraki son portföy değeri.`,
+                help_metricRollingAvg: '⬅ Hareketli aralıkların görsel açıklamasını görmek için tıklayın.',
+                help_metricRollingMin: '⬅ Hareketli aralıkların görsel açıklamasını görmek için tıklayın.',
+                help_metricRollingMax: '⬅ Hareketli aralıkların görsel açıklamasını görmek için tıklayın.',
+                botSpecsContent: `Bu bot, BTC üzerinde çalışan bir trend-following sistemidir. Amacı, büyük piyasa hareketlerini yakalarken kayıpları küçük tutmaktır. Temel mantığı basittir: küçük kayıplar, büyük kazançlar. Bu nedenle işlemlerin önemli bir kısmı zararla sonuçlansa bile sistem genel olarak kârlı kalabilir.
+
+Sistem, 5 yılı aşkın kripto trading ve yazılım geliştirme deneyimi üzerine kurulmuştur. Strateji şu anda 5. versiyonundadır (Mart 2026) ve 1 yıldan uzun süredir özel bir copy trading grubunda canlı olarak kullanılmaktadır. Yapılan testler ve canlı kullanım sonuçlarının ardından, Mart 2026’da Binance üzerinde herkese açık olarak yayınlanması planlanmaktadır. Geçmiş veriler incelendiğinde, tarihsel performansın yıllık ortalama %100’ün üzerinde ROI ürettiği görülmektedir. Kısa vadede düşüş dönemleri yaşanabilir, ancak yaklaşık bir yıl ve üzeri zaman dilimlerinde strateji bugüne kadar kârlı kalmıştır.
+
+Bot genellikle 2x kaldıraç ile kullanılmaktadır. Bu sayfadaki backtest sonuçlarında %100 sermaye kullanımı varsayılmıştır. Gerçek kullanımda ise sistem genellikle toplam sermayenin yaklaşık %85’ini kullanarak bir miktar güvenlik payı bırakır.
+
+Strateji BTC futures işlemleri yapar. Bu işlemlerde maker/taker komisyonları ve funding ücretleri bulunur. Ancak sistem çok sık işlem yapmadığı için, uzun vadeli canlı kullanım verilerine göre bu maliyetlerin toplam etkisi yıllık yaklaşık %5’in altında kalmıştır.
+
+Hiçbir trading sistemi risksiz değildir. Geçmiş performans gelecekteki sonuçları garanti etmez. Yalnızca risk alabileceğiniz sermaye ile işlem yapın.
+
+Daha fazla bilgi, soru veya öneri için geliştiriciye şu adresten ulaşabilirsiniz: alperenlcr@gmail.com`,
+            }
         };
+        function t(key, ...args) {
+            const tr = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+            const val = tr[key] !== undefined ? tr[key] : (TRANSLATIONS.en[key] ?? key);
+            return typeof val === 'function' ? val(...args) : val;
+        }
+        function applyTranslations() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                el.textContent = t(el.dataset.i18n);
+            });
+            // update select option texts
+            document.querySelectorAll('select#periodSelect option[data-i18n]').forEach(opt => {
+                opt.textContent = t(opt.dataset.i18n);
+            });
+            const a = document.getElementById('langActive');
+            const i = document.getElementById('langInactive');
+            if (a) a.textContent = currentLang === 'en' ? 'ENG' : 'TR';
+            if (i) i.textContent = currentLang === 'en' ? 'TR' : 'ENG';
+            // swap rolling window image src
+            const rwImg = document.querySelector('.rw-modal-img');
+            if (rwImg) rwImg.src = t('rwImg');
+            // update notes textarea
+            const botSpecs = document.getElementById('botSpecs');
+            if (botSpecs) botSpecs.value = t('botSpecsContent');
+            // refresh any currently-visible tooltip texts
+            document.querySelectorAll('.help-icon').forEach(icon => {
+                const key = icon.dataset.helpKey;
+                if (!key) return;
+                const tooltip = icon.querySelector('.help-tooltip');
+                if (tooltip) tooltip.textContent = getHelpTexts()[key] || '';
+            });
+        }
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'tr' : 'en';
+            applyTranslations();
+            latestIterPeriod = -1;
+            periodicResults = {};
+            analyzeData();
+            displayRawData();
+            setTimeout(matchHistoryHeight, 100);
+        }
+        // ── End i18n ──────────────────────────────────────────────────────────
+
+        // Help tooltip text dictionary (edit these texts as needed)
+        function getHelpTexts() {
+            return {
+                bpTitle:              t('help_leverage'),
+                leverage:             t('help_leverage'),
+                initialMoney:         t('help_initialMoney', 100),
+                rollingPeriod:        t('help_rollingPeriod'),
+                dateRange:            t('help_dateRange'),
+                performanceAnalysis:  t('help_performanceAnalysis'),
+                tradingHistory:       t('help_tradingHistory'),
+                metricSuccessful:     t('help_metricSuccessful'),
+                metricLosing:         t('help_metricLosing'),
+                metricBuyHold:        t('help_metricBuyHold', initialMoney),
+                metricFinalValue:     t('help_metricFinalValue', initialMoney),
+                metricRollingAvg:     t('help_metricRollingAvg'),
+                metricRollingMin:     t('help_metricRollingMin'),
+                metricRollingMax:     t('help_metricRollingMax'),
+            };
+        }
 
         function positionHelpTooltip(icon, tooltip) {
             const margin = 12;
@@ -984,6 +1345,24 @@ For further information, questions, or suggestions, please contact the developer
             });
         }
 
+        const ROLLING_MODAL_KEYS = new Set(['rollingPeriod', 'metricRollingAvg', 'metricRollingMin', 'metricRollingMax']);
+
+        function openRwModal() {
+            document.getElementById('rwModal').classList.add('active');
+        }
+
+        function closeRwModal() {
+            document.getElementById('rwModal').classList.remove('active');
+        }
+
+        document.getElementById('rwModalClose').addEventListener('click', closeRwModal);
+        document.getElementById('rwModal').addEventListener('click', function(e) {
+            if (e.target === this) closeRwModal();
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeRwModal();
+        });
+
         function initializeHelpTooltips() {
             const helpIcons = document.querySelectorAll('.help-icon');
 
@@ -994,11 +1373,13 @@ For further information, questions, or suggestions, please contact the developer
                 if (!tooltip) return;
 
                 const key = icon.dataset.helpKey;
-                if (key && HELP_TEXTS[key]) {
-                    tooltip.textContent = HELP_TEXTS[key];
+                if (key && getHelpTexts()[key]) {
+                    tooltip.textContent = getHelpTexts()[key];
                 }
 
                 const showTooltip = () => {
+                    const text = getHelpTexts()[key];
+                    if (text) tooltip.textContent = text;
                     positionHelpTooltip(icon, tooltip);
                 };
 
@@ -1010,6 +1391,16 @@ For further information, questions, or suggestions, please contact the developer
                 icon.addEventListener('mouseleave', hideTooltip);
                 icon.addEventListener('focusin', showTooltip);
                 icon.addEventListener('focusout', hideTooltip);
+
+                if (ROLLING_MODAL_KEYS.has(key)) {
+                    icon.style.cursor = 'pointer';
+                    icon.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        hideTooltip();
+                        openRwModal();
+                    });
+                }
+
                 icon.dataset.helpBound = '1';
             });
 
@@ -1042,6 +1433,7 @@ For further information, questions, or suggestions, please contact the developer
         let latestIterPeriod = -1;
         let periodicResults = {};
         let leverage = 2; // Default leverage set to 2x
+        let initialMoney = 100; // Default initial money
 
         // Initialize
         window.addEventListener('load', function() {
@@ -1054,6 +1446,31 @@ For further information, questions, or suggestions, please contact the developer
         document.getElementById('endSlider').addEventListener('input', updateEndDate);
         document.getElementById('periodSelect').addEventListener('change', updateRollingPeriod);
         document.getElementById('leverageSelect').addEventListener('change', updateLeverage);
+        document.getElementById('initialMoneyInput').addEventListener('change', updateInitialMoney);
+        document.getElementById('initialMoneyInput').addEventListener('keydown', function(e) {
+            // Allow: backspace, delete, tab, escape, enter, arrow keys
+            if ([8,9,13,27,46,37,38,39,40].indexOf(e.keyCode) !== -1) return;
+            // Block anything that isn't a digit
+            if (e.key < '0' || e.key > '9') e.preventDefault();
+        });
+        document.getElementById('initialMoneyInput').addEventListener('input', function() {
+            // Strip any non-digit characters as they type
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+
+        function updateInitialMoney() {
+            const input = document.getElementById('initialMoneyInput');
+            let val = parseInt(input.value.replace(/[^0-9]/g, ''), 10);
+            if (isNaN(val) || val < 100) {
+                val = 100;
+                input.value = 100;
+            }
+            initialMoney = val;
+            latestIterPeriod = -1;
+            periodicResults = {};
+            analyzeData();
+            setTimeout(matchHistoryHeight, 100);
+        }
 
         function updateLeverage() {
             leverage = parseInt(document.getElementById('leverageSelect').value);
@@ -1407,7 +1824,7 @@ For further information, questions, or suggestions, please contact the developer
                     const sellLossAvg = sellLosses > 0 ? (sellData.filter(row => row.PROFIT_PERCENT < 0).reduce((sum, row) => sum + (row.PROFIT_PERCENT * leverage), 0) / sellLosses).toFixed(2) : '0.00';
 
                     // Calculate final money with leverage applied
-                    let money = 100.0;
+                    let money = initialMoney;
                     for (const row of filtered) {
                         money *= (1 + (row.PROFIT_PERCENT * leverage) / 100);
                     }
@@ -1420,7 +1837,7 @@ For further information, questions, or suggestions, please contact the developer
                         const endPrice = findClosestPrice(endDate);
                         
                         if (startPrice && endPrice && startPrice > 0) {
-                            buyAndHold = Math.round(100.0 * endPrice / startPrice * 100) / 100;
+                            buyAndHold = Math.round(initialMoney * endPrice / startPrice * 100) / 100;
                         }
                     }
 
@@ -1441,31 +1858,31 @@ For further information, questions, or suggestions, please contact the developer
                     const combinedLosingAvg = totalLosing > 0 ? 
                         Math.round((buyLosses * parseFloat(buyLossAvg) + sellLosses * parseFloat(sellLossAvg)) / totalLosing) : 0;
                     
-                    // Main metrics
-                    const mainMetrics = [
-                        { label: 'Successful Positions', subLabel: `Average: ${combinedSuccessfulAvg}%`, value: formatWholeNumber(totalSuccessful), helpKey: 'metricSuccessful' },
-                        { label: 'Losing Positions', subLabel: `Average: ${combinedLosingAvg}%`, value: formatWholeNumber(totalLosing), helpKey: 'metricLosing' },
-                        { label: 'Buy & Hold Strategy', subLabel: 'Initial Money: 100$', value: formatWholeNumber(buyAndHold), helpKey: 'metricBuyHold' },
-                        { label: 'Final Value', subLabel: 'Initial Money: 100$', value: formatWholeNumber(money), helpKey: 'metricFinalValue' }
-                    ];
-
                     // Rolling metrics
                     let rollingMetrics;
                     if (iterPeriod > 0 && periodicResults[index] && periodicResults[index].avg !== undefined) {
                         rollingMetrics = [
-                            { label: 'Average Rolling Window', subLabel: 'Initial Money: 100$', value: formatWholeNumber(periodicResults[index].avg), helpKey: 'metricRollingAvg', sectionBreak: true },
-                            { label: 'Minimum Rolling Window', subLabel: 'Initial Money: 100$', value: formatWholeNumber(periodicResults[index].min), helpKey: 'metricRollingMin' },
-                            { label: 'Maximum Rolling Window', subLabel: 'Initial Money: 100$', value: formatWholeNumber(periodicResults[index].max), helpKey: 'metricRollingMax' }
+                            { label: t('avgRolling'), subLabel: t('startBalanceSub', initialMoney), value: formatWholeNumber(periodicResults[index].avg), helpKey: 'metricRollingAvg' },
+                            { label: t('minRolling'), subLabel: t('startBalanceSub', initialMoney), value: formatWholeNumber(periodicResults[index].min), helpKey: 'metricRollingMin' },
+                            { label: t('maxRolling'), subLabel: t('startBalanceSub', initialMoney), value: formatWholeNumber(periodicResults[index].max), helpKey: 'metricRollingMax' }
                         ];
                     } else {
                         rollingMetrics = [
-                            { label: 'Average Rolling Window', subLabel: 'Initial Money: 100$', value: 'N/A', helpKey: 'metricRollingAvg', sectionBreak: true },
-                            { label: 'Minimum Rolling Window', subLabel: 'Initial Money: 100$', value: 'N/A', helpKey: 'metricRollingMin' },
-                            { label: 'Maximum Rolling Window', subLabel: 'Initial Money: 100$', value: 'N/A', helpKey: 'metricRollingMax' }
+                            { label: t('avgRolling'), subLabel: t('startBalanceSub', initialMoney), value: 'N/A', helpKey: 'metricRollingAvg' },
+                            { label: t('minRolling'), subLabel: t('startBalanceSub', initialMoney), value: 'N/A', helpKey: 'metricRollingMin' },
+                            { label: t('maxRolling'), subLabel: t('startBalanceSub', initialMoney), value: 'N/A', helpKey: 'metricRollingMax' }
                         ];
                     }
 
-                    const combinedMetrics = [...mainMetrics, ...rollingMetrics];
+                    // Main metrics
+                    const mainMetrics = [
+                        { label: t('successfulPos'), subLabel: t('avgSub', combinedSuccessfulAvg), value: formatWholeNumber(totalSuccessful), helpKey: 'metricSuccessful', sectionBreak: true },
+                        { label: t('losingPos'), subLabel: t('avgSub', combinedLosingAvg), value: formatWholeNumber(totalLosing), helpKey: 'metricLosing' },
+                        { label: t('buyHold'), subLabel: t('startBalanceSub', initialMoney), value: formatWholeNumber(buyAndHold), helpKey: 'metricBuyHold' },
+                        { label: t('finalValue'), subLabel: t('startBalanceSub', initialMoney), value: formatWholeNumber(money), helpKey: 'metricFinalValue' }
+                    ];
+
+                    const combinedMetrics = [...rollingMetrics, ...mainMetrics];
                     createTable(document.getElementById('executorResults'), 'Performance Analysis', combinedMetrics);
                 });
 
@@ -1511,7 +1928,7 @@ For further information, questions, or suggestions, please contact the developer
             const current = new Date(start);
             
             while (current <= end) {
-                let moneyIter = 100.0;
+                let moneyIter = initialMoney;
                 const endWindow = new Date(current);
                 endWindow.setDate(endWindow.getDate() + iterPeriod);
                 
@@ -1539,14 +1956,17 @@ For further information, questions, or suggestions, please contact the developer
         }
 
         function createTable(container, title, metrics, keepControls = false) {
-            const titleElement = container.querySelector('.table-title');
+            const skipTitle = container.dataset.noTitle === '1';
+            const titleElement = skipTitle ? null : container.querySelector('.table-title');
             const controlsElement = container.querySelector('.rolling-controls');
-            const cleanedTitleHTML = titleElement
-                ? titleElement.outerHTML.replace(/\sdata-help-bound="1"/g, '')
-                : `<div class="table-title">${title}</div>`;
+            const cleanedTitleHTML = skipTitle
+                ? ''
+                : (titleElement
+                    ? titleElement.outerHTML.replace(/\sdata-help-bound="1"/g, '')
+                    : `<div class="table-title">${title}</div>`);
             
             let tableHTML = '';
-            if (!keepControls || !controlsElement) {
+            if (!skipTitle && (!keepControls || !controlsElement)) {
                 tableHTML += cleanedTitleHTML;
             }
             
@@ -1557,7 +1977,7 @@ For further information, questions, or suggestions, please contact the developer
             tableHTML += `
                 <table class="results-table">
                     <thead>
-                        <tr><th>Metric</th><th>Value</th></tr>
+                        <tr><th>${t('metricCol')}</th><th>${t('valueCol')}</th></tr>
                     </thead>
                     <tbody>
                         ${metrics.map((metric) => {
@@ -1586,12 +2006,12 @@ For further information, questions, or suggestions, please contact the developer
             if (tradeTables.length === 0) return;
 
             const headerLabels = {
-                TRADE_TYPE: 'Position',
-                TRADE_START: 'Entry Date',
-                START_PRICE: 'Entry Price',
-                TRADE_END: 'Close Date',
-                STOP_PRICE: 'Close Price',
-                PROFIT_PERCENT: 'ROI'
+                TRADE_TYPE: t('colPosition'),
+                TRADE_START: t('colEntryDate'),
+                START_PRICE: t('colEntryPrice'),
+                TRADE_END: t('colCloseDate'),
+                STOP_PRICE: t('colClosePrice'),
+                PROFIT_PERCENT: t('colROI')
             };
 
             let tradeData = tradeTables[0].data;
@@ -1668,9 +2088,9 @@ For further information, questions, or suggestions, please contact the developer
                         else if (header === 'TRADE_TYPE' && typeof value === 'string') {
                             const normalized = value.trim().toLowerCase();
                             if (normalized === 'buy') {
-                                value = 'Long';
+                                value = t('posLong', leverage);
                             } else if (normalized === 'sell') {
-                                value = 'Short';
+                                value = t('posShort', leverage);
                             }
                         }
                         else if (typeof value === 'string' && value.trim() === '') {
@@ -1683,7 +2103,7 @@ For further information, questions, or suggestions, please contact the developer
                     csvTableBody.appendChild(tr);
                 });
             } else {
-                csvTableHead.innerHTML = '<tr><td colspan="100%" style="text-align: center; padding: 20px;">No trades in selected date range</td></tr>';
+                csvTableHead.innerHTML = `<tr><td colspan="100%" style="text-align: center; padding: 20px;">${t('noTrades')}</td></tr>`;
                 csvTableBody.innerHTML = '';
             }
         }
