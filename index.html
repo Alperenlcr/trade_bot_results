@@ -98,6 +98,7 @@
             justify-content: center;
             position: relative;
             transition: all 0.3s ease;
+            min-width: 441px;
         }
 
         .page-header:hover {
@@ -184,6 +185,7 @@
             border: 1px solid rgba(255, 255, 255, 0.08);
             transition: all 0.3s ease;
             min-height: 888px;
+            min-width: 441px;
         }
 
         .date-section:hover {
@@ -389,6 +391,7 @@
             transition: all 0.3s ease;
             min-height: 888px;
             max-height: 888px;
+            min-width: 441px;
         }
 
         .bot-specs:hover {
@@ -548,6 +551,7 @@
             border: 1px solid rgba(255, 255, 255, 0.08);
             transition: all 0.3s ease;
             margin-bottom: 20px;
+            min-width: 441px;
         }
 
         .table-section:hover {
@@ -784,6 +788,7 @@
             max-width: 100%;
             min-height: 888px;
             max-height: 888px;
+            min-width: 441px;
         }
 
         .history-section:hover {
@@ -1041,6 +1046,123 @@
                 padding: 6px 8px;
                 white-space: normal;
             }
+
+            .equity-section {
+                padding: 0 0 24px;
+                margin-top: 20px;
+            }
+            .equity-card {
+                border-radius: 8px;
+                padding: 14px 8px 14px 8px;
+            }
+            .equity-header {
+                padding: 0 2px 0 4px;
+            }
+        }
+
+        /* ── Equity Chart ──────────────────────────────────────── */
+        .equity-section {
+            margin: 40px auto 0;
+            max-width: 1400px;
+            min-width: 441px;
+        }
+        .equity-card {
+            background: linear-gradient(135deg, #252a34 0%, #1e2329 100%);
+            border-radius: 12px;
+            padding: 20px 12px 20px 12px;
+        }
+        .equity-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding: 0 4px 0 8px;
+        }
+        .equity-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #e8eaed;
+            letter-spacing: 0.02em;
+        }
+        .equity-subtitle {
+            font-size: 0.8rem;
+            color: #9da5b4;
+            margin-top: 2px;
+        }
+        .equity-period-btns {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .equity-period-btn {
+            background: #2a2f3a;
+            border: 1px solid #3a4050;
+            color: #9da5b4;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .equity-period-btn:hover {
+            background: #3a4050;
+            color: #e8eaed;
+        }
+        .equity-period-btn.active {
+            background: #3d7eff22;
+            border-color: #3d7eff;
+            color: #5b9dff;
+        }
+        .equity-canvas-wrap {
+            position: relative;
+            width: 100%;
+            height: 340px;
+            cursor: crosshair;
+        }
+        #equityChart {
+            display: block;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0; left: 0;
+        }
+        #equityOverlay {
+            display: block;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0; left: 0;
+            pointer-events: none;
+        }
+        .equity-sel-stats {
+            position: absolute;
+            background: #1a1e26ee;
+            border: 1px solid #3d7eff88;
+            border-radius: 8px;
+            padding: 9px 14px;
+            font-size: 0.8rem;
+            color: #e8eaed;
+            pointer-events: none;
+            display: none;
+            z-index: 10;
+            white-space: nowrap;
+            line-height: 1.7;
+        }
+        .equity-tooltip {
+            position: fixed;
+            background: #1e2329ee;
+            border: 1px solid #3d7eff66;
+            border-radius: 8px;
+            padding: 8px 14px;
+            color: #e8eaed;
+            font-size: 0.82rem;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.1s;
+            z-index: 1000;
+            white-space: nowrap;
         }
     </style>
 </head>
@@ -1164,6 +1286,32 @@ For further information, questions, or suggestions, please contact the developer
         </div>
     </div>
 
+    <!-- Equity Chart Section -->
+    <div class="equity-section">
+        <div class="equity-card">
+            <div class="equity-header">
+                <div>
+                    <div class="equity-title"><span class="help-icon" data-help-key="equityCurve" style="margin-right:4px;vertical-align:middle;font-size:0.82rem">?<span class="help-tooltip"></span></span><span data-i18n="equityCurveTitle">Portfolio Equity Curve</span></div>
+                    <div class="equity-subtitle" id="equitySubtitle"></div>
+                </div>
+                <div class="equity-period-btns">
+                    <button class="equity-period-btn" data-months="3">3M</button>
+                    <button class="equity-period-btn" data-months="6">6M</button>
+                    <button class="equity-period-btn" data-months="12">1Y</button>
+                    <button class="equity-period-btn" data-months="36">3Y</button>
+                    <button class="equity-period-btn" data-months="60">5Y</button>
+                    <button class="equity-period-btn active" data-months="0">ALL</button>
+                </div>
+            </div>
+            <div class="equity-canvas-wrap">
+                <canvas id="equityChart"></canvas>
+                <canvas id="equityOverlay"></canvas>
+                <div class="equity-sel-stats" id="equitySelStats"></div>
+            </div>
+        </div>
+    </div>
+    <div id="equityTooltip" class="equity-tooltip"></div>
+
     <!-- Rolling Window Explanation Modal -->
     <div class="rw-modal-overlay" id="rwModal">
         <div class="rw-modal-box">
@@ -1198,6 +1346,7 @@ For further information, questions, or suggestions, please contact the developer
                 finalValue: 'Final Balance',
                 startBalanceSub: (v) => `Start Balance: $${v}`,
                 avgSub: (v) => `Average: ${v}%`,
+                avgMinSub: (avg, min, dd) => `Avg: ${avg}% | Min: ${min}% | Max Drawdown: ${dd}%`,
                 posLong: (n) => `Long ${n}x`,
                 posShort: (n) => `Short ${n}x`,
                 colPosition: 'Position', colEntryDate: 'Entry Date', colEntryPrice: 'Entry Price',
@@ -1211,12 +1360,17 @@ For further information, questions, or suggestions, please contact the developer
                 help_performanceAnalysis: 'Performance analysis for the trading bot for the selected backtest parameters.',
                 help_tradingHistory: 'Detailed list of all trades within the selected date range.',
                 help_metricSuccessful: 'Total count of profitable positions during selected date range. The average value below is the mean gain per successful position.',
-                help_metricLosing: 'Total count of losing positions during selected date range. The average value below is the mean loss per losing position.',
+                help_metricLosing: 'Total count of losing positions during selected date range. Avg: mean loss per losing position. Min: worst single trade loss. Max Drawdown: maximum peak-to-trough equity decline.',
                 help_metricBuyHold: (v) => `Performance of buying once at start date and holding until end date, starting from $${v}.`,
                 help_metricFinalValue: (v) => `Final portfolio value after applying all trade results in sequence, starting from $${v}.`,
                 help_metricRollingAvg: '⬅ Click to see a visual explanation of rolling windows.',
                 help_metricRollingMin: '⬅ Click to see a visual explanation of rolling windows.',
                 help_metricRollingMax: '⬅ Click to see a visual explanation of rolling windows.',
+                equityCurveTitle: 'Portfolio Equity Curve',
+                equityYLeft: 'Portfolio',
+                equitySubStart: 'Start',
+                equitySubLeverage: 'Leverage',
+                help_equityCurve: 'This chart shows how your portfolio value would have grown (or shrunk) over time based on the selected leverage and starting capital, assuming trades are executed in sequence.\n\nThe orange line is the BTC price. Tip: Hold Shift and drag on the chart to select a date range and compare portfolio vs BTC performance for that period.',
                 botSpecsContent: `This bot is a BTC-only trend-following system designed to capture large market moves while keeping losses small. Built on a multi-layer long-term strategy, it follows a simple rule: small losses, large wins, allowing profitability even if most trades are negative.
 
 This system was developed based on 5+ years of crypto trading and programming experience. The strategy is currently in its 5th version (March 2026) and has been live traded for 1+ year in a private copy trading group. After extensive testing and live usage, it is planned to be released publicly on Binance in March 2026. Historical analysis shows over 100% average annual ROI in past performance. Shorter time periods may experience temporary drawdowns, but over longer horizons (around one year) the strategy has historically remained profitable.
@@ -1251,6 +1405,7 @@ For further information, questions, or suggestions, please contact the developer
                 finalValue: 'Son Bakiye',
                 startBalanceSub: (v) => `Başlangıç: $${v}`,
                 avgSub: (v) => `Ortalama: %${v}`,
+                avgMinSub: (avg, min, dd) => `Ort: %${avg} | Min: %${min} | Max Düşüş: %${dd}`,
                 posLong: (n) => `Long ${n}x`,
                 posShort: (n) => `Short ${n}x`,
                 colPosition: 'Pozisyon', colEntryDate: 'Giriş Tarihi', colEntryPrice: 'Giriş Fiyatı',
@@ -1264,12 +1419,17 @@ For further information, questions, or suggestions, please contact the developer
                 help_performanceAnalysis: 'Seçili parametreler için ticaret botunun performans analizi.',
                 help_tradingHistory: 'Seçili tarih aralığındaki tüm işlemlerin detaylı listesi.',
                 help_metricSuccessful: 'Seçili tarih aralığında kârlı pozisyonların toplam sayısı ve ortalama kazanç değeri.',
-                help_metricLosing: 'Seçili tarih aralığında zararlı pozisyonların toplam sayısı ve ortalama kayıp değeri.',
+                help_metricLosing: 'Seçili tarih aralığındaki zararlı pozisyon sayısı. Ort: pozisyon başına ortalama kayıp. Min: en kötü tek işlem kaybı. Max Düşüş: zirve-dip arası maksimum sermaye düşüşü.',
                 help_metricBuyHold: (v) => `$${v} ile başlayarak başlangıç tarihinde bir kez alıp bitiş tarihine kadar tutma stratejisinin performansı.`,
                 help_metricFinalValue: (v) => `$${v} ile başlayarak tüm işlem sonuçlarını sırayla uyguladıktan sonraki son portföy değeri.`,
                 help_metricRollingAvg: '⬅ Hareketli aralıkların görsel açıklamasını görmek için tıklayın.',
                 help_metricRollingMin: '⬅ Hareketli aralıkların görsel açıklamasını görmek için tıklayın.',
                 help_metricRollingMax: '⬅ Hareketli aralıkların görsel açıklamasını görmek için tıklayın.',
+                equityCurveTitle: 'Portföy Değer Eğrisi',
+                equityYLeft: 'Portföy',
+                equitySubStart: 'Başlangıç',
+                equitySubLeverage: 'Kaldıraç',
+                help_equityCurve: 'Bu grafik, seçili kaldıraç ve başlangıç sermayesiyle işlemler sırasıyla uygulandığında portföy değerinizin zaman içinde nasıl değişeceğini gösterir.\n\nTuruncu çizgi BTC fiyatıdır. İpucu: Grafik üzerinde Shift tuşunu basılı tutarak sürükleyin; seçili dönem için portföy ile BTC performansını karşılaştırın.',
                 botSpecsContent: `Bu bot, BTC üzerinde çalışan bir trend-following sistemidir. Amacı, büyük piyasa hareketlerini yakalarken kayıpları küçük tutmaktır. Temel mantığı basittir: küçük kayıplar, büyük kazançlar. Bu nedenle işlemlerin önemli bir kısmı zararla sonuçlansa bile sistem genel olarak kârlı kalabilir.
 
 Sistem, 5 yılı aşkın kripto trading ve yazılım geliştirme deneyimi üzerine kurulmuştur. Strateji şu anda 5. versiyonundadır (Mart 2026) ve 1 yıldan uzun süredir özel bir copy trading grubunda canlı olarak kullanılmaktadır. Yapılan testler ve canlı kullanım sonuçlarının ardından, Mart 2026’da Binance üzerinde herkese açık olarak yayınlanması planlanmaktadır. Geçmiş veriler incelendiğinde, tarihsel performansın yıllık ortalama %100’ün üzerinde ROI ürettiği görülmektedir. Kısa vadede düşüş dönemleri yaşanabilir, ancak yaklaşık bir yıl ve üzeri zaman dilimlerinde strateji bugüne kadar kârlı kalmıştır.
@@ -1317,6 +1477,7 @@ Daha fazla bilgi, soru veya öneri için geliştiriciye şu adresten ulaşabilir
         function toggleLanguage() {
             currentLang = currentLang === 'en' ? 'tr' : 'en';
             applyTranslations();
+            buildEquityChart();
             latestIterPeriod = -1;
             periodicResults = {};
             analyzeData();
@@ -1342,6 +1503,7 @@ Daha fazla bilgi, soru veya öneri için geliştiriciye şu adresten ulaşabilir
                 metricRollingAvg:     t('help_metricRollingAvg'),
                 metricRollingMin:     t('help_metricRollingMin'),
                 metricRollingMax:     t('help_metricRollingMax'),
+                equityCurve:          t('help_equityCurve'),
             };
         }
 
@@ -1503,6 +1665,7 @@ Daha fazla bilgi, soru veya öneri için geliştiriciye şu adresten ulaşabilir
             latestIterPeriod = -1;
             periodicResults = {};
             analyzeData();
+            buildEquityChart();
             setTimeout(matchHistoryHeight, 100);
         }
 
@@ -1519,6 +1682,7 @@ Daha fazla bilgi, soru veya öneri için geliştiriciye şu adresten ulaşabilir
             // Recalculate all results with new leverage - same as date updates
             analyzeData();
             displayRawData();
+            buildEquityChart();
 
             // Match heights after content update
             setTimeout(matchHistoryHeight, 100);
@@ -1544,6 +1708,7 @@ Daha fazla bilgi, soru veya öneri için geliştiriciye şu adresten ulaşabilir
         // Window resize handler to recalculate heights
         window.addEventListener('resize', function() {
             setTimeout(matchHistoryHeight, 100);
+            buildEquityChart();
         });
 
         async function loadRepositoryData() {
@@ -1579,6 +1744,7 @@ Daha fazla bilgi, soru veya öneri için geliştiriciye şu adresten ulaşabilir
                 // Load saved data and match heights after initial load
                 loadBotSpecs();
                 setTimeout(matchHistoryHeight, 200);
+                setTimeout(buildEquityChart, 300);
                 
             } catch (error) {
                 console.error('Load error:', error);
@@ -1891,6 +2057,28 @@ Daha fazla bilgi, soru veya öneri için geliştiriciye şu adresten ulaşabilir
                         Math.round((buyWins * parseFloat(buyWinAvg) + sellWins * parseFloat(sellWinAvg)) / totalSuccessful) : 0;
                     const combinedLosingAvg = totalLosing > 0 ? 
                         Math.round((buyLosses * parseFloat(buyLossAvg) + sellLosses * parseFloat(sellLossAvg)) / totalLosing) : 0;
+
+                    // Minimum (worst) single losing trade
+                    const allLosingRows = [
+                        ...buyData.filter(row => row.PROFIT_PERCENT < 0),
+                        ...sellData.filter(row => row.PROFIT_PERCENT < 0)
+                    ];
+                    const minLoss = allLosingRows.length > 0
+                        ? Math.round(Math.min(...allLosingRows.map(row => row.PROFIT_PERCENT * leverage)))
+                        : 0;
+
+                    // Max drawdown from sequential equity curve
+                    const sortedFiltered = [...filtered].sort((a, b) => new Date(a.TRADE_START) - new Date(b.TRADE_START));
+                    let ddMoney = initialMoney;
+                    let ddPeak = initialMoney;
+                    let maxDrawdownPct = 0;
+                    for (const row of sortedFiltered) {
+                        ddMoney *= (1 + (row.PROFIT_PERCENT * leverage) / 100);
+                        if (ddMoney > ddPeak) ddPeak = ddMoney;
+                        const drawdown = (ddMoney - ddPeak) / ddPeak * 100;
+                        if (drawdown < maxDrawdownPct) maxDrawdownPct = drawdown;
+                    }
+                    const maxDrawdown = Math.round(maxDrawdownPct);
                     
                     // Rolling metrics
                     let rollingMetrics;
@@ -1911,7 +2099,7 @@ Daha fazla bilgi, soru veya öneri için geliştiriciye şu adresten ulaşabilir
                     // Main metrics
                     const mainMetrics = [
                         { label: t('successfulPos'), subLabel: t('avgSub', combinedSuccessfulAvg), value: formatWholeNumber(totalSuccessful), helpKey: 'metricSuccessful', sectionBreak: true },
-                        { label: t('losingPos'), subLabel: t('avgSub', combinedLosingAvg), value: formatWholeNumber(totalLosing), helpKey: 'metricLosing' },
+                        { label: t('losingPos'), subLabel: t('avgMinSub', combinedLosingAvg, minLoss, maxDrawdown), value: formatWholeNumber(totalLosing), helpKey: 'metricLosing' },
                         { label: t('buyHold'), subLabel: t('startBalanceSub', initialMoney), value: formatWholeNumber(buyAndHold), helpKey: 'metricBuyHold' },
                         { label: t('finalValue'), subLabel: t('startBalanceSub', initialMoney), value: formatWholeNumber(money), helpKey: 'metricFinalValue' }
                     ];
@@ -2072,7 +2260,7 @@ Daha fazla bilgi, soru veya öneri için geliştiriciye şu adresten ulaşabilir
                 const sortedData = [...tradeData].sort((a, b) => {
                     const dateA = new Date(a.TRADE_START);
                     const dateB = new Date(b.TRADE_START);
-                    return dateA - dateB;
+                    return dateB - dateA;
                 });
                 
                 sortedData.forEach(row => {
@@ -2141,6 +2329,468 @@ Daha fazla bilgi, soru veya öneri için geliştiriciye şu adresten ulaşabilir
                 csvTableBody.innerHTML = '';
             }
         }
+        // ── Equity Curve Chart ──────────────────────────────────────
+        let equityPeriodMonths = 0;
+
+        function buildEquityChart() {
+            if (!tradeTables || tradeTables.length === 0) return;
+            const canvas = document.getElementById('equityChart');
+            if (!canvas) return;
+
+            const sortedRows = tradeTables[0].data
+                .filter(row => row.TRADE_END instanceof Date && !isNaN(row.TRADE_END.getTime()) && typeof row.PROFIT_PERCENT === 'number')
+                .sort((a, b) => a.TRADE_END - b.TRADE_END);
+
+            let runningMoney = initialMoney;
+            const allPoints = [];
+            for (const row of sortedRows) {
+                runningMoney *= (1 + (row.PROFIT_PERCENT * leverage) / 100);
+                allPoints.push({ date: row.TRADE_END, value: Math.round(runningMoney * 100) / 100 });
+            }
+
+            if (allPoints.length === 0) return;
+
+            let points = allPoints;
+            if (equityPeriodMonths > 0) {
+                const cutoff = new Date(allPoints[allPoints.length - 1].date);
+                cutoff.setMonth(cutoff.getMonth() - equityPeriodMonths);
+                points = allPoints.filter(p => p.date >= cutoff);
+                if (points.length === 0) points = allPoints;
+            }
+
+            const wrap = canvas.parentElement;
+            const W = wrap.clientWidth;
+            const H = wrap.clientHeight || 340;
+            canvas.width = W;
+            canvas.height = H;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, W, H);
+
+            const PAD_L = 56, PAD_R = 58, PAD_T = 20, PAD_B = 48;
+            const cW = W - PAD_L - PAD_R;
+            const cH = H - PAD_T - PAD_B;
+
+            const tMin = points[0].date.getTime();
+            const tMax = points[points.length - 1].date.getTime();
+            const tRange = tMax - tMin || 1;
+            const pxFn = t => PAD_L + (t - tMin) / tRange * cW;
+
+            // ── Build BTC points early so we can include them in shared scale ──
+            const btcPointsRaw = priceData
+                .filter(r => r.CANDLE_START && typeof r.CLOSE_PRICE === 'number')
+                .map(r => ({ ts: new Date(r.CANDLE_START), price: r.CLOSE_PRICE }))
+                .filter(r => !isNaN(r.ts.getTime()) && r.ts.getTime() >= tMin && r.ts.getTime() <= tMax)
+                .sort((a, b) => a.ts - b.ts);
+
+            // ── Shared ratio scale: both series expressed as value/firstValue ──
+            const eqBase = points[0].value;
+            const btcBase = btcPointsRaw.length > 0 ? btcPointsRaw[0].price : null;
+
+            const eqRatios  = points.map(p => p.value / eqBase);
+            const btcRatios = btcBase ? btcPointsRaw.map(p => p.price / btcBase) : [];
+
+            const allRatios = [...eqRatios, ...btcRatios];
+            const loR = Math.max(0, Math.min(...allRatios) * 0.9);
+            const hiR = Math.max(...allRatios) * 1.1;
+            const rRange = hiR - loR || 1;
+            const pyFn = r => PAD_T + (1 - (r - loR) / rRange) * cH;
+
+            // helper: nice ticks for ratio axis (expressed as portfolio $ for left, BTC $ for right)
+            function niceRatioTicks(base) {
+                const loV = loR * base, hiV = hiR * base;
+                const span = hiV - loV || 1;
+                const rawStep = span / 6;
+                const mag = Math.pow(10, Math.floor(Math.log10(rawStep)));
+                const step = [1, 2, 2.5, 5, 10].map(f => f * mag).find(s => span / s <= 8) || mag * 10;
+                const ticks = [];
+                for (let v = Math.ceil(loV / step) * step; v <= hiV; v += step) ticks.push(v);
+                return ticks;
+            }
+
+            // ── Left grid lines + portfolio labels ──
+            const eqTicks = niceRatioTicks(eqBase);
+            ctx.lineWidth = 1;
+            eqTicks.forEach(v => {
+                const r = v / eqBase;
+                const gy = pyFn(r);
+                if (gy < PAD_T || gy > H - PAD_B) return;
+                ctx.strokeStyle = '#2a2f3a';
+                ctx.beginPath(); ctx.moveTo(PAD_L, gy); ctx.lineTo(W - PAD_R, gy); ctx.stroke();
+                ctx.fillStyle = '#9da5b4';
+                ctx.font = '11px sans-serif';
+                ctx.textAlign = 'right';
+                const lbl = v >= 1e6 ? '$' + (v / 1e6).toFixed(2).replace(/\.?0+$/, '') + 'M' :
+                             v >= 1e3 ? '$' + (v / 1e3).toFixed(1).replace(/\.?0+$/, '') + 'K' :
+                             '$' + v.toFixed(0);
+                ctx.fillText(lbl, PAD_L - 6, gy + 4);
+            });
+
+            // Left Y axis label (rotated)
+            ctx.save();
+            ctx.fillStyle = '#9da5b4';
+            ctx.font = 'bold 11px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.translate(12, PAD_T + cH / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText(t('equityYLeft'), 0, 0);
+            ctx.restore();
+
+            // X-axis date labels + vertical grid
+            ctx.fillStyle = '#9da5b4';
+            ctx.font = '11px sans-serif';
+            ctx.textAlign = 'center';
+            const tickCount = Math.max(2, Math.min(8, Math.floor(cW / 85)));
+            const tickTimes = Array.from({ length: tickCount + 1 }, (_, i) => tMin + (i / tickCount) * tRange);
+            const tickDates = tickTimes.map(ti => new Date(ti));
+            // find which YYYY-MM keys appear more than once so we can add days to disambiguate
+            const mKeys = tickDates.map(d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'));
+            const mCount = {};
+            mKeys.forEach(k => { mCount[k] = (mCount[k] || 0) + 1; });
+            tickTimes.forEach((ti, i) => {
+                const xp = pxFn(ti);
+                const d = tickDates[i];
+                const mk = mKeys[i];
+                // if this month appears multiple times, append the day to distinguish
+                const lbl = mCount[mk] > 1
+                    ? mk + '-' + String(d.getDate()).padStart(2, '0')
+                    : mk;
+                ctx.fillStyle = '#9da5b4';
+                ctx.fillText(lbl, xp, H - PAD_B + 18);
+                ctx.strokeStyle = '#2a2f3a';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(xp, PAD_T);
+                ctx.lineTo(xp, H - PAD_B);
+                ctx.stroke();
+            });
+
+            // Fill under line
+            ctx.beginPath();
+            ctx.moveTo(pxFn(points[0].date.getTime()), pyFn(points[0].value / eqBase));
+            points.forEach(p => ctx.lineTo(pxFn(p.date.getTime()), pyFn(p.value / eqBase)));
+            ctx.lineTo(pxFn(points[points.length - 1].date.getTime()), H - PAD_B);
+            ctx.lineTo(pxFn(points[0].date.getTime()), H - PAD_B);
+            ctx.closePath();
+            const grad = ctx.createLinearGradient(0, PAD_T, 0, H - PAD_B);
+            grad.addColorStop(0, '#3d7eff33');
+            grad.addColorStop(1, '#3d7eff00');
+            ctx.fillStyle = grad;
+            ctx.fill();
+
+            // Line
+            ctx.beginPath();
+            ctx.strokeStyle = '#3d7eff';
+            ctx.lineWidth = 2;
+            points.forEach((p, i) => {
+                const xp = pxFn(p.date.getTime()), yp = pyFn(p.value / eqBase);
+                i === 0 ? ctx.moveTo(xp, yp) : ctx.lineTo(xp, yp);
+            });
+            ctx.stroke();
+
+            // Dots
+            ctx.fillStyle = '#5b9dff';
+            points.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(pxFn(p.date.getTime()), pyFn(p.value / eqBase), 3.5, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            canvas._eqPoints = points;
+            canvas._eqPx = pxFn;
+            canvas._eqPy = pyFn;
+            canvas._eqBase = eqBase;
+
+            // BTC: draw using shared ratio scale
+            const btcPoints = btcPointsRaw;
+            if (btcBase && btcPoints.length > 1) {
+                // BTC line using shared pyFn with ratio
+                ctx.beginPath();
+                ctx.strokeStyle = '#f7931a';
+                ctx.lineWidth = 1.5;
+                ctx.globalAlpha = 0.7;
+                btcPoints.forEach((p, i) => {
+                    const xp = pxFn(p.ts.getTime()), yp = pyFn(p.price / btcBase);
+                    i === 0 ? ctx.moveTo(xp, yp) : ctx.lineTo(xp, yp);
+                });
+                ctx.stroke();
+                ctx.globalAlpha = 1.0;
+
+                // Right Y axis: BTC $ labels at the same ratio ticks as portfolio
+                const btcTicks = niceRatioTicks(btcBase);
+                ctx.font = '11px sans-serif';
+                ctx.textAlign = 'left';
+                btcTicks.forEach(v => {
+                    const r = v / btcBase;
+                    const gy = pyFn(r);
+                    if (gy < PAD_T || gy > H - PAD_B) return;
+                    // dashed orange grid line
+                    ctx.save();
+                    ctx.setLineDash([3, 4]);
+                    ctx.strokeStyle = '#f7931a22';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath(); ctx.moveTo(PAD_L, gy); ctx.lineTo(W - PAD_R, gy); ctx.stroke();
+                    ctx.restore();
+                    // tick mark
+                    ctx.strokeStyle = '#f7931a88';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath(); ctx.moveTo(W - PAD_R, gy); ctx.lineTo(W - PAD_R + 5, gy); ctx.stroke();
+                    const lbl = v >= 1e6 ? '$' + (v / 1e6).toFixed(2).replace(/\.?0+$/, '') + 'M' :
+                                v >= 1e3 ? '$' + (v / 1e3).toFixed(1).replace(/\.?0+$/, '') + 'K' :
+                                '$' + v.toFixed(0);
+                    ctx.fillStyle = '#f7931a';
+                    ctx.fillText(lbl, W - PAD_R + 8, gy + 4);
+                });
+
+                // right axis border line
+                ctx.strokeStyle = '#f7931a33';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(W - PAD_R, PAD_T);
+                ctx.lineTo(W - PAD_R, H - PAD_B);
+                ctx.stroke();
+
+                // Right Y axis label (rotated)
+                ctx.save();
+                ctx.fillStyle = '#f7931a';
+                ctx.font = 'bold 11px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.translate(W - 10, PAD_T + cH / 2);
+                ctx.rotate(Math.PI / 2);
+                ctx.fillText('BTC', 0, 0);
+                ctx.restore();
+
+                canvas._btcPoints = btcPoints;
+                canvas._btcPx = pxFn;
+                canvas._btcBase = btcBase;
+                canvas._tMin = tMin;
+                canvas._tRange = tRange;
+                canvas._padL = PAD_L;
+                canvas._cW = cW;
+            }
+
+            // store pad constants for overlay
+            canvas._padT = PAD_T;
+            canvas._padB = PAD_B;
+
+            // Update subtitle
+            const sub = document.getElementById('equitySubtitle');
+            if (sub) sub.textContent = `(${t('equitySubStart')}: $${initialMoney.toLocaleString('en-US')} · ${t('equitySubLeverage')}: ${leverage}x)`;
+
+            // notify overlay
+            if (typeof window._postBuildEquityChart === 'function') window._postBuildEquityChart();
+        }
+
+        // Period buttons
+        document.querySelectorAll('.equity-period-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.equity-period-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                equityPeriodMonths = parseInt(btn.dataset.months) || 0;
+                buildEquityChart();
+            });
+        });
+
+        // Hover tooltip + Shift-drag selection
+        (function () {
+            const canvas = document.getElementById('equityChart');
+            const overlay = document.getElementById('equityOverlay');
+            const tooltip = document.getElementById('equityTooltip');
+            const selStats = document.getElementById('equitySelStats');
+            if (!canvas || !overlay || !tooltip || !selStats) return;
+
+            let sel = null; // { x0, x1 } in canvas px, or null
+            let dragging = false;
+            let dragStart = null;
+
+            function syncOverlaySize() {
+                overlay.width = canvas.width;
+                overlay.height = canvas.height;
+            }
+
+            function canvasX(e) {
+                const r = canvas.getBoundingClientRect();
+                return (e.clientX - r.left) * (canvas.width / r.width);
+            }
+
+            function tsAtX(cx) {
+                return canvas._tMin + ((cx - canvas._padL) / canvas._cW) * canvas._tRange;
+            }
+
+            function closestEq(ts) {
+                const pts = canvas._eqPoints;
+                if (!pts) return null;
+                let best = pts[0], bd = Infinity;
+                pts.forEach(p => { const d = Math.abs(p.date.getTime() - ts); if (d < bd) { bd = d; best = p; } });
+                return best;
+            }
+
+            function closestBtc(ts) {
+                const pts = canvas._btcPoints;
+                if (!pts || !pts.length) return null;
+                let best = pts[0], bd = Infinity;
+                pts.forEach(p => { const d = Math.abs(p.ts.getTime() - ts); if (d < bd) { bd = d; best = p; } });
+                return best;
+            }
+
+            function pct(a, b) {
+                if (!a || !b || a === 0) return null;
+                return ((b - a) / Math.abs(a) * 100);
+            }
+
+            function fmtPct(v) {
+                if (v === null) return '-';
+                const sign = v >= 0 ? '+' : '';
+                return `<b style="color:${v >= 0 ? '#00e676' : '#ff4757'}">${sign}${v.toFixed(2)}%</b>`;
+            }
+
+            function fmtVal(v) {
+                return v >= 1e6 ? '$' + (v / 1e6).toFixed(2) + 'M' :
+                       v >= 1e3 ? '$' + (v / 1e3).toFixed(1) + 'K' : '$' + v.toFixed(2);
+            }
+
+            function drawSelection() {
+                syncOverlaySize();
+                const ctx = overlay.getContext('2d');
+                ctx.clearRect(0, 0, overlay.width, overlay.height);
+                if (!sel) return;
+
+                const PAD_T = canvas._padT || 20;
+                const PAD_B = canvas._padB || 48;
+                const H = overlay.height;
+                const x0 = Math.min(sel.x0, sel.x1);
+                const x1 = Math.max(sel.x0, sel.x1);
+                const w = x1 - x0;
+
+                // shaded area
+                ctx.fillStyle = 'rgba(61,126,255,0.12)';
+                ctx.fillRect(x0, PAD_T, w, H - PAD_T - PAD_B);
+
+                // border lines
+                ctx.strokeStyle = '#3d7effaa';
+                ctx.lineWidth = 1;
+                ctx.setLineDash([4, 3]);
+                ctx.beginPath(); ctx.moveTo(x0, PAD_T); ctx.lineTo(x0, H - PAD_B); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(x1, PAD_T); ctx.lineTo(x1, H - PAD_B); ctx.stroke();
+                ctx.setLineDash([]);
+
+                // stats
+                const ts0 = tsAtX(x0), ts1 = tsAtX(x1);
+                const eq0 = closestEq(ts0), eq1 = closestEq(ts1);
+                const btc0 = closestBtc(ts0), btc1 = closestBtc(ts1);
+                const eqPct = eq0 && eq1 ? pct(eq0.value, eq1.value) : null;
+                const btcPct = btc0 && btc1 ? pct(btc0.price, btc1.price) : null;
+
+                const d0 = eq0 ? eq0.date.toISOString().split('T')[0] : '';
+                const d1 = eq1 ? eq1.date.toISOString().split('T')[0] : '';
+
+                let html = `<span style="color:#9da5b4;font-size:0.75rem">${d0} → ${d1}</span><br>`;
+                if (eqPct !== null) html += `<span style="color:#5b9dff">Portfolio</span>: ${fmtPct(eqPct)}`;
+                if (eq0 && eq1) html += ` <span style="color:#555">(${fmtVal(eq0.value)} → ${fmtVal(eq1.value)})</span>`;
+                if (btcPct !== null) html += `<br><span style="color:#f7931a">BTC</span>: ${fmtPct(btcPct)}`;
+                if (btc0 && btc1) {
+                    const bfmt = v => v >= 1e3 ? '$' + (v/1e3).toFixed(1) + 'K' : '$' + v.toFixed(0);
+                    html += ` <span style="color:#555">(${bfmt(btc0.price)} → ${bfmt(btc1.price)})</span>`;
+                }
+
+                selStats.innerHTML = html;
+                selStats.style.display = 'block';
+
+                // position stats box: right of selection if room, else left
+                const wrap = canvas.parentElement;
+                const wrapW = wrap.clientWidth;
+                const cssX1 = x1 * (wrapW / canvas.width);
+                const cssX0 = x0 * (wrapW / canvas.width);
+                const boxW = 320;
+                let statLeft = cssX1 + 8;
+                if (statLeft + boxW > wrapW - 4) statLeft = cssX0 - boxW - 8;
+                statLeft = Math.max(4, statLeft);
+                selStats.style.left = statLeft + 'px';
+                selStats.style.top = '24px';
+            }
+
+            function clearSelection() {
+                sel = null;
+                const ctx = overlay.getContext('2d');
+                syncOverlaySize();
+                ctx.clearRect(0, 0, overlay.width, overlay.height);
+                selStats.style.display = 'none';
+            }
+
+            // sync overlay size when chart rebuilds
+            const _origBuild = buildEquityChart;
+            window._postBuildEquityChart = function() {
+                syncOverlaySize();
+                if (sel) drawSelection();
+            };
+
+            canvas.addEventListener('mousedown', e => {
+                if (!e.shiftKey) return;
+                e.preventDefault();
+                dragging = true;
+                dragStart = canvasX(e);
+                sel = { x0: dragStart, x1: dragStart };
+                tooltip.style.opacity = '0';
+            });
+
+            window.addEventListener('mousemove', e => {
+                if (!dragging) return;
+                sel.x1 = canvasX(e);
+                drawSelection();
+            });
+
+            window.addEventListener('mouseup', e => {
+                if (!dragging) return;
+                dragging = false;
+                sel.x1 = canvasX(e);
+                if (Math.abs(sel.x1 - sel.x0) < 4) { clearSelection(); return; }
+                drawSelection();
+            });
+
+            canvas.addEventListener('mousemove', e => {
+                if (dragging || sel) return;
+                if (!canvas._eqPoints) return;
+                const mxc = canvasX(e);
+                const pts = canvas._eqPoints;
+                const pxFn = canvas._eqPx;
+                let closest = pts[0], minDx = Infinity;
+                pts.forEach(p => {
+                    const dx = Math.abs(pxFn(p.date.getTime()) - mxc);
+                    if (dx < minDx) { minDx = dx; closest = p; }
+                });
+                const dateLbl = closest.date.toISOString().split('T')[0];
+                const valLbl = fmtVal(closest.value);
+                let btcLbl = '';
+                if (canvas._btcPoints && canvas._btcPoints.length) {
+                    const mxcT = tsAtX(mxc);
+                    let closestB = canvas._btcPoints[0], minBtcDx = Infinity;
+                    canvas._btcPoints.forEach(p => {
+                        const dx = Math.abs(p.ts.getTime() - mxcT);
+                        if (dx < minBtcDx) { minBtcDx = dx; closestB = p; }
+                    });
+                    const bv = closestB.price;
+                    btcLbl = `<br><span style="color:#f7931a">BTC: $${bv >= 1e3 ? (bv / 1e3).toFixed(1) + 'K' : bv.toFixed(0)}</span>`;
+                }
+                tooltip.innerHTML = `<b>${dateLbl}</b><br><span style="color:#5b9dff">Portfolio: ${valLbl}</span>${btcLbl}`;
+                tooltip.style.opacity = '1';
+                tooltip.style.left = (e.clientX + 16) + 'px';
+                tooltip.style.top = (e.clientY - 36) + 'px';
+            });
+
+            canvas.addEventListener('mouseleave', () => { if (!dragging) tooltip.style.opacity = '0'; });
+
+            canvas.addEventListener('click', e => {
+                if (!e.shiftKey && sel) clearSelection();
+            });
+
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape' && sel) clearSelection();
+            });
+
+            // hint cursor
+            canvas.addEventListener('mousemove', e => {
+                canvas.style.cursor = e.shiftKey ? 'crosshair' : 'default';
+            });
+        })();
     </script>
 </body>
 </html>
