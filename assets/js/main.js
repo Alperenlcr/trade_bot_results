@@ -1321,6 +1321,10 @@
                 tooltip.style.top = (clientY - 36) + 'px';
             }
 
+            function hideTooltip() {
+                tooltip.style.opacity = '0';
+            }
+
             function drawSelection() {
                 syncOverlaySize();
                 const ctx = overlay.getContext('2d');
@@ -1402,7 +1406,7 @@
                 dragging = true;
                 dragStart = canvasX(e);
                 sel = { x0: dragStart, x1: dragStart };
-                tooltip.style.opacity = '0';
+                hideTooltip();
             });
 
             window.addEventListener('mousemove', e => {
@@ -1424,7 +1428,12 @@
                 showTooltipAt(canvasX(e), e.clientX, e.clientY);
             });
 
-            canvas.addEventListener('mouseleave', () => { if (!dragging) tooltip.style.opacity = '0'; });
+            canvas.addEventListener('mouseleave', () => { if (!dragging) hideTooltip(); });
+
+            // If the page/layout moves, hide stale fixed-position tooltip.
+            window.addEventListener('scroll', hideTooltip, true);
+            window.addEventListener('wheel', hideTooltip, { passive: true });
+            window.addEventListener('resize', hideTooltip);
 
             canvas.addEventListener('mousemove', e => {
                 canvas.style.cursor = dragging ? 'crosshair' : 'crosshair';
@@ -1436,7 +1445,7 @@
                 const touch = e.changedTouches[0];
                 touchOrigin = { cx: touchCanvasX(touch), clientX: touch.clientX, clientY: touch.clientY };
                 touchSelDragging = false;
-                tooltip.style.opacity = '0';
+                hideTooltip();
                 touchTimer = setTimeout(() => {
                     // Enter selection drag mode after long press
                     touchSelDragging = true;

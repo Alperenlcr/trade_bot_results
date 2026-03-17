@@ -4,10 +4,6 @@
             box-sizing: border-box;
         }
 
-        html {
-            background: #1e2329;
-        }
-
         body {
             background:
                 radial-gradient(circle at 15% 15%, rgba(45, 212, 191, 0.18), transparent 55%),
@@ -915,6 +911,7 @@
 
         /* Global scrollbar styling for consistency */
         ::-webkit-scrollbar {
+            background-color: #1e2329;
             width: 12px;
             height: 12px;
         }
