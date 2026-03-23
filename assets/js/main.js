@@ -176,12 +176,6 @@
             window.addEventListener('resize', refreshVisibleTooltips);
         }
 
-        // Local Storage Functions for Bot Specs and Messages
-        function saveBotSpecs() {
-            const specs = document.getElementById('botSpecs').value;
-            localStorage.setItem('tradingBotSpecs', specs);
-        }
-
         function loadBotSpecs() {
             const saved = localStorage.getItem('tradingBotSpecs');
             if (saved) {

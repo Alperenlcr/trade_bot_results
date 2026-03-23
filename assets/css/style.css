@@ -4,11 +4,23 @@
             box-sizing: border-box;
         }
 
-        body {
+        html, body {
+            min-height: 100%;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: -1;
             background:
                 radial-gradient(circle at 15% 15%, rgba(45, 212, 191, 0.18), transparent 55%),
                 radial-gradient(circle at 85% 85%, rgba(251, 191, 36, 0.16), transparent 55%),
                 linear-gradient(135deg, #65b6f8 0%, #1648bb 50%, #65b6f8 100%);
+        }
+
+        body {
+            background: transparent;
             color: #e8eaed;
             font-family: 'Inter', 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
             font-size: 16px;
@@ -16,7 +28,6 @@
             min-height: 100vh;
             font-weight: 400;
             line-height: 1.6;
-            background-attachment: fixed;
         }
 
         .container {
@@ -314,6 +325,33 @@
             box-shadow: 0 4px 16px rgba(79, 172, 254, 0.6);
         }
 
+        /* Firefox range input styles */
+        .range-slider::-moz-range-track {
+            background: transparent;
+            height: 8px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        .range-slider::-moz-range-thumb {
+            -moz-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            cursor: pointer;
+            border: 3px solid #ffffff;
+            box-shadow: 0 2px 12px rgba(79, 172, 254, 0.4);
+            transition: all 0.2s ease;
+            pointer-events: all;
+        }
+
+        .range-slider::-moz-range-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 16px rgba(79, 172, 254, 0.6);
+        }
+
         .range-slider:focus {
             outline: none;
         }
@@ -411,17 +449,19 @@
             font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
             font-size: 14px;
             line-height: 1.6;
-            resize: vertical;
+            resize: none;
             outline: none;
             transition: all 0.3s ease;
             background: linear-gradient(135deg, #252a34 0%, #1e2329 100%);
             color: #e8eaed;
             box-sizing: border-box;
+            cursor: default;
+            user-select: text;
         }
 
         .specs-textarea:focus {
-            border-color: #4facfe;
-            background: linear-gradient(135deg, #2a2f3a 0%, #252a34 100%);
+            border-color: rgba(79, 172, 254, 0.3);
+            background: linear-gradient(135deg, #252a34 0%, #1e2329 100%);
         }
 
         .specs-textarea::placeholder {
@@ -564,7 +604,8 @@
 
         .results-table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             background: linear-gradient(135deg, #252a34 0%, #1e2329 100%);
             border-radius: 12px;
             overflow: hidden;
