@@ -187,7 +187,7 @@
             margin-bottom: 20px;
             border: 1px solid rgba(255, 255, 255, 0.08);
             transition: all 0.3s ease;
-            min-height: 888px;
+            min-height: 777px;
             min-width: 441px;
         }
 
@@ -210,7 +210,7 @@
         .slider-group {
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 24px;
         }
 
         .date-labels {
@@ -419,8 +419,8 @@
             padding: 24px;
             border: 1px solid rgba(255, 255, 255, 0.08);
             transition: all 0.3s ease;
-            min-height: 888px;
-            max-height: 888px;
+            min-height: 777px;
+            max-height: 777px;
             min-width: 441px;
         }
 
@@ -442,7 +442,7 @@
 
         .specs-textarea {
             width: 100%;
-            min-height: 780px;
+            min-height: 666px;
             border: 1px solid rgba(79, 172, 254, 0.3);
             border-radius: 12px;
             padding: 16px;
@@ -683,8 +683,11 @@
         }
 
         .metric-value {
-            color: #778DA9;
+            color: #e0e6f0;
             text-align: right;
+            font-size: 14px;
+            font-weight: 700;
+            background-clip: text;
         }
 
         /* Rolling Window Image Modal */
@@ -745,7 +748,7 @@
 
         /* Rolling Period Controls */
         .rolling-controls {
-            margin-bottom: 12px;
+            margin-bottom: 20px;
             display: grid;
             grid-template-columns: 145px 1fr;
             align-items: center;
@@ -819,8 +822,8 @@
             transition: all 0.3s ease;
             width: 100%;
             max-width: 100%;
-            min-height: 888px;
-            max-height: 888px;
+            min-height: 777px;
+            max-height: 777px;
             min-width: 441px;
         }
 
@@ -849,7 +852,7 @@
             flex: 1;
             overflow-y: auto;
             min-height: 400px;
-            max-height: 888px;
+            max-height: 777px;
             width: 100%;
             max-width: 100%;
             align-self: flex-start;
@@ -1092,6 +1095,136 @@
             .equity-header {
                 padding: 0 2px 0 4px;
             }
+        }
+
+        /* ── Copy Trading Section ─────────────────────────────── */
+        .copy-trade-section {
+            margin: 28px auto 0;
+            max-width: 1400px;
+            min-width: 441px;
+        }
+        .copy-trade-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 18px;
+        }
+        .copy-trade-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #e8eaed;
+            letter-spacing: 0.02em;
+        }
+        .copy-trade-subtitle {
+            font-size: 0.85rem;
+            color: #9da5b4;
+        }
+        .copy-trade-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        @media (max-width: 640px) {
+            .copy-trade-section { min-width: unset; }
+            .copy-trade-cards { grid-template-columns: 1fr; }
+        }
+        .copy-trade-card {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 22px 24px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #252a34 0%, #1e2329 100%);
+            border: 1px solid rgba(255,255,255,0.08);
+            text-decoration: none;
+            color: #e8eaed;
+            overflow: hidden;
+            min-width: 441px;
+            transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+        }
+        @media (max-width: 882px) {
+            .copy-trade-card { min-width: 0; }
+        }
+        .copy-trade-card:hover {
+            transform: translateY(-3px);
+        }
+        .copy-trade-card--binance:hover {
+            border-color: rgba(240,185,11,0.55);
+            box-shadow: 0 8px 32px rgba(240,185,11,0.18);
+        }
+        .copy-trade-card--bybit:hover {
+            border-color: rgba(234,179,8,0.55);
+            box-shadow: 0 8px 32px rgba(234,179,8,0.18);
+        }
+        .ctc-glow {
+            position: absolute;
+            inset: 0;
+            border-radius: 14px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .copy-trade-card:hover .ctc-glow { opacity: 1; }
+        .ctc-glow--binance {
+            background: radial-gradient(circle at 20% 50%, rgba(240,185,11,0.10), transparent 65%);
+        }
+        .ctc-glow--bybit {
+            background: radial-gradient(circle at 20% 50%, rgba(234,179,8,0.10), transparent 65%);
+        }
+        .ctc-logo-wrap {
+            flex-shrink: 0;
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .ctc-logo {
+            width: 52px;
+            height: 52px;
+            object-fit: contain;
+        }
+        .ctc-body {
+            flex: 1;
+            min-width: 0;
+        }
+        .ctc-platform {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+        .ctc-type {
+            font-size: 0.8rem;
+            color: #9da5b4;
+            margin-bottom: 8px;
+        }
+        .ctc-cta {
+            display: inline-block;
+            font-size: 0.82rem;
+            font-weight: 600;
+            padding: 5px 14px;
+            border-radius: 20px;
+            color: #000;
+            background: linear-gradient(90deg, #f0b90b, #f8d748);
+            letter-spacing: 0.03em;
+            transition: filter 0.2s;
+        }
+        .copy-trade-card:hover .ctc-cta { filter: brightness(1.12); }
+        .ctc-arrow {
+            font-size: 1.4rem;
+            color: rgba(255,255,255,0.22);
+            transition: color 0.2s, transform 0.2s;
+            flex-shrink: 0;
+        }
+        .copy-trade-card:hover .ctc-arrow {
+            color: rgba(255,255,255,0.7);
+            transform: translateX(4px);
         }
 
         /* ── Equity Chart ──────────────────────────────────────── */

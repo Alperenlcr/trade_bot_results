@@ -37,7 +37,10 @@
             if (rwImg) { rwImg.src = t('rwImg'); rwImg.alt = t('altRwImage'); }
             // update notes textarea
             const botSpecs = document.getElementById('botSpecs');
-            if (botSpecs) botSpecs.value = t('botSpecsContent');
+            if (botSpecs) {
+                const content = t('botSpecsContent');
+                botSpecs.value = Array.isArray(content) ? content.join('\n\n') : content;
+            }
             // refresh any currently-visible tooltip texts
             document.querySelectorAll('.help-icon').forEach(icon => {
                 const key = icon.dataset.helpKey;
@@ -70,6 +73,7 @@
                 tradingHistory:       t('help_tradingHistory'),
                 metricSuccessful:     t('help_metricSuccessful'),
                 metricLosing:         t('help_metricLosing'),
+                metricMaxDrawdown:    t('help_metricMaxDrawdown'),
                 metricBuyHold:        t('help_metricBuyHold', initialMoney),
                 metricFinalValue:     t('help_metricFinalValue', initialMoney),
                 metricRollingAvg:     t('help_metricRollingAvg'),
@@ -215,52 +219,8 @@
         document.getElementById('startSlider').addEventListener('input', updateStartDate);
         document.getElementById('endSlider').addEventListener('input', updateEndDate);
         document.getElementById('periodSelect').addEventListener('change', updateRollingPeriod);
-        document.getElementById('leverageSelect').addEventListener('change', updateLeverage);
-        document.getElementById('initialMoneyInput').addEventListener('change', updateInitialMoney);
-        document.getElementById('initialMoneyInput').addEventListener('keydown', function(e) {
-            // Allow: backspace, delete, tab, escape, enter, arrow keys
-            if ([8,9,13,27,46,37,38,39,40].indexOf(e.keyCode) !== -1) return;
-            // Block anything that isn't a digit
-            if (e.key < '0' || e.key > '9') e.preventDefault();
-        });
-        document.getElementById('initialMoneyInput').addEventListener('input', function() {
-            // Strip any non-digit characters as they type
-            this.value = this.value.replace(/[^0-9]/g, '');
-        });
 
-        function updateInitialMoney() {
-            const input = document.getElementById('initialMoneyInput');
-            let val = parseInt(input.value.replace(/[^0-9]/g, ''), 10);
-            if (isNaN(val) || val < 100) {
-                val = 100;
-                input.value = 100;
-            }
-            initialMoney = val;
-            latestIterPeriod = -1;
-            periodicResults = {};
-            analyzeData();
-            buildEquityChart();
-            setTimeout(matchHistoryHeight, 100);
-        }
 
-        function updateLeverage() {
-            leverage = parseInt(document.getElementById('leverageSelect').value);
-
-            // When leverage changes, force rolling-window recalculation on next analysis
-            if (iterPeriod > 0) {
-                iterPeriod = lastSelectedPeriod;
-                latestIterPeriod = -1;
-                periodicResults = {};
-            }
-
-            // Recalculate all results with new leverage - same as date updates
-            analyzeData();
-            displayRawData();
-            buildEquityChart();
-
-            // Match heights after content update
-            setTimeout(matchHistoryHeight, 100);
-        }
 
         // Range slider collision prevention
         document.getElementById('startSlider').addEventListener('input', function() {
@@ -436,7 +396,13 @@
             
             document.getElementById('startSlider').max = daysRange;
             document.getElementById('endSlider').max = daysRange;
-            document.getElementById('startSlider').value = 0;
+
+            const fiveYearsAgo = new Date(maxDate.getFullYear() - 5, maxDate.getMonth(), maxDate.getDate());
+            const defaultStart = fiveYearsAgo > minDate ? fiveYearsAgo : minDate;
+            const defaultStartDay = Math.ceil((defaultStart - minDate) / (1000 * 60 * 60 * 24));
+            startDate = new Date(minDate.getTime() + defaultStartDay * 24 * 60 * 60 * 1000);
+
+            document.getElementById('startSlider').value = defaultStartDay;
             document.getElementById('endSlider').value = daysRange;
             
             updateDateLabels();
@@ -552,6 +518,18 @@
             }
         }
 
+        function formatRoi(value) {
+            if (value === 'N/A' || value === '-' || value === undefined || value === null) return value;
+            const n = typeof value === 'number' ? value : parseFloat(value);
+            if (!Number.isFinite(n)) return value;
+            const rounded = Math.round(n);
+            const abs = Math.abs(rounded);
+            const numStr = String(abs);
+            const str = n < 0 ? '-' + numStr + '%' : numStr + '%';
+            const color = n >= 0 ? '#00e676' : '#ff4757';
+            return `<span style="color:${color}">${str}</span>`;
+        }
+
         function formatWholeNumber(value) {
             if (value === 'N/A' || value === '-' || value === undefined || value === null) {
                 return value;
@@ -597,21 +575,21 @@
                     const sellWinAvg = sellWins > 0 ? (sellData.filter(row => row.PROFIT_PERCENT > 0).reduce((sum, row) => sum + (row.PROFIT_PERCENT * leverage), 0) / sellWins).toFixed(2) : '0.00';
                     const sellLossAvg = sellLosses > 0 ? (sellData.filter(row => row.PROFIT_PERCENT < 0).reduce((sum, row) => sum + (row.PROFIT_PERCENT * leverage), 0) / sellLosses).toFixed(2) : '0.00';
 
-                    // Calculate final money with leverage applied
-                    let money = initialMoney;
+                    // Calculate final ROI with leverage applied
+                    let roiMoney = 1;
                     for (const row of filtered) {
-                        money *= (1 + (row.PROFIT_PERCENT * leverage) / 100);
+                        roiMoney *= (1 + (row.PROFIT_PERCENT * leverage) / 100);
                     }
-                    money = Math.round(money * 100) / 100;
+                    const finalRoi = Math.round((roiMoney - 1) * 10000) / 100;
 
-                    // Buy & Hold calculation
+                    // Buy & Hold calculation (% ROI, no leverage)
                     let buyAndHold = 'N/A';
                     if (priceData.length > 0 && startDate && endDate) {
                         const startPrice = findClosestPrice(startDate);
                         const endPrice = findClosestPrice(endDate);
                         
                         if (startPrice && endPrice && startPrice > 0) {
-                            buyAndHold = Math.round(initialMoney * endPrice / startPrice * 100) / 100;
+                            buyAndHold = Math.round((endPrice / startPrice - 1) * 10000) / 100;
                         }
                     }
 
@@ -643,8 +621,8 @@
 
                     // Max drawdown from sequential equity curve
                     const sortedFiltered = [...filtered].sort((a, b) => new Date(a.TRADE_START) - new Date(b.TRADE_START));
-                    let ddMoney = initialMoney;
-                    let ddPeak = initialMoney;
+                    let ddMoney = 1;
+                    let ddPeak = 1;
                     let maxDrawdownPct = 0;
                     for (const row of sortedFiltered) {
                         ddMoney *= (1 + (row.PROFIT_PERCENT * leverage) / 100);
@@ -658,24 +636,25 @@
                     let rollingMetrics;
                     if (iterPeriod > 0 && periodicResults[index] && periodicResults[index].avg !== undefined) {
                         rollingMetrics = [
-                            { label: t('avgRolling'), subLabel: t('startBalanceSub', initialMoney), value: formatWholeNumber(periodicResults[index].avg), helpKey: 'metricRollingAvg' },
-                            { label: t('minRolling'), subLabel: t('startBalanceSub', initialMoney), value: formatWholeNumber(periodicResults[index].min), helpKey: 'metricRollingMin' },
-                            { label: t('maxRolling'), subLabel: t('startBalanceSub', initialMoney), value: formatWholeNumber(periodicResults[index].max), helpKey: 'metricRollingMax' }
+                            { label: t('avgRolling'), value: formatRoi(periodicResults[index].avg), helpKey: 'metricRollingAvg' },
+                            { label: t('minRolling'), value: formatRoi(periodicResults[index].min), helpKey: 'metricRollingMin' },
+                            { label: t('maxRolling'), value: formatRoi(periodicResults[index].max), helpKey: 'metricRollingMax' }
                         ];
                     } else {
                         rollingMetrics = [
-                            { label: t('avgRolling'), subLabel: t('startBalanceSub', initialMoney), value: 'N/A', helpKey: 'metricRollingAvg' },
-                            { label: t('minRolling'), subLabel: t('startBalanceSub', initialMoney), value: 'N/A', helpKey: 'metricRollingMin' },
-                            { label: t('maxRolling'), subLabel: t('startBalanceSub', initialMoney), value: 'N/A', helpKey: 'metricRollingMax' }
+                            { label: t('avgRolling'), value: 'N/A', helpKey: 'metricRollingAvg' },
+                            { label: t('minRolling'), value: 'N/A', helpKey: 'metricRollingMin' },
+                            { label: t('maxRolling'), value: 'N/A', helpKey: 'metricRollingMax' }
                         ];
                     }
 
                     // Main metrics
                     const mainMetrics = [
                         { label: t('successfulPos'), subLabel: t('avgSub', combinedSuccessfulAvg), value: formatWholeNumber(totalSuccessful), helpKey: 'metricSuccessful', sectionBreak: true },
-                        { label: t('losingPos'), subLabel: t('avgMinSub', combinedLosingAvg, minLoss, maxDrawdown), value: formatWholeNumber(totalLosing), helpKey: 'metricLosing' },
-                        { label: t('buyHold'), subLabel: t('startBalanceSub', initialMoney), value: formatWholeNumber(buyAndHold), helpKey: 'metricBuyHold' },
-                        { label: t('finalValue'), subLabel: t('startBalanceSub', initialMoney), value: formatWholeNumber(money), helpKey: 'metricFinalValue' }
+                        { label: t('losingPos'), subLabel: t('avgMinSub', combinedLosingAvg, minLoss), value: formatWholeNumber(totalLosing), helpKey: 'metricLosing' },
+                        { label: t('maxDrawdown'), value: `<span style="color:#ff4757">-${Math.abs(maxDrawdown)}%</span>`, helpKey: 'metricMaxDrawdown' },
+                        { label: t('buyHold'), value: formatRoi(buyAndHold), helpKey: 'metricBuyHold' },
+                        { label: t('finalValue'), value: formatRoi(finalRoi), helpKey: 'metricFinalValue' }
                     ];
 
                     const combinedMetrics = [...rollingMetrics, ...mainMetrics];
@@ -724,7 +703,7 @@
             const current = new Date(start);
             
             while (current <= end) {
-                let moneyIter = initialMoney;
+                let moneyIter = 1;
                 const endWindow = new Date(current);
                 endWindow.setDate(endWindow.getDate() + iterPeriod);
                 
@@ -737,7 +716,7 @@
                     }
                 }
 
-                results.push(Math.round(moneyIter * 100) / 100);
+                results.push(Math.round((moneyIter - 1) * 10000) / 100);
                 current.setDate(current.getDate() + 1);
             }
             
@@ -915,11 +894,13 @@
                 .filter(row => row.TRADE_END instanceof Date && !isNaN(row.TRADE_END.getTime()) && typeof row.PROFIT_PERCENT === 'number')
                 .sort((a, b) => a.TRADE_END - b.TRADE_END);
 
-            let runningMoney = initialMoney;
-            const allPoints = [];
+            let runningMoney = 1;
+            // Prepend the true start point (value=1) at the earliest trade START date
+            // so the chart x-axis and "All" ROI cover the full history.
+            const allPoints = minDate ? [{ date: new Date(minDate), value: 1 }] : [];
             for (const row of sortedRows) {
-                runningMoney *= (1 + (row.PROFIT_PERCENT * leverage) / 100);
-                allPoints.push({ date: row.TRADE_END, value: Math.round(runningMoney * 100) / 100 });
+                runningMoney *= (1 + (row.PROFIT_PERCENT * 2) / 100);
+                allPoints.push({ date: row.TRADE_END, value: runningMoney });
             }
 
             if (allPoints.length === 0) return;
@@ -981,11 +962,19 @@
                 return ticks;
             }
 
-            // ── Left grid lines + portfolio labels ──
-            const eqTicks = niceRatioTicks(eqBase);
+            // ── Left grid lines + portfolio % labels ──
+            const loPct = (loR - 1) * 100;
+            const hiPct = (hiR - 1) * 100;
+            const pctSpan = hiPct - loPct || 1;
+            const rawPctStep = pctSpan / 6;
+            const pctMag = Math.pow(10, Math.floor(Math.log10(Math.abs(rawPctStep) || 1)));
+            const pctStep = [1, 2, 2.5, 5, 10].map(f => f * pctMag).find(s => pctSpan / s <= 8) || pctMag * 10;
+            const eqPctTicks = [];
+            for (let v = Math.ceil(loPct / pctStep) * pctStep; v <= hiPct + 1e-9; v += pctStep)
+                eqPctTicks.push(Math.round(v * 1e9) / 1e9);
             ctx.lineWidth = 1;
-            eqTicks.forEach(v => {
-                const r = v / eqBase;
+            eqPctTicks.forEach(pct => {
+                const r = 1 + pct / 100;
                 const gy = pyFn(r);
                 if (gy < PAD_T || gy > H - PAD_B) return;
                 ctx.strokeStyle = '#2a2f3a';
@@ -993,9 +982,7 @@
                 ctx.fillStyle = '#9da5b4';
                 ctx.font = '11px sans-serif';
                 ctx.textAlign = 'right';
-                const lbl = v >= 1e6 ? '$' + (v / 1e6).toFixed(2).replace(/\.?0+$/, '') + 'M' :
-                             v >= 1e3 ? '$' + (v / 1e3).toFixed(1).replace(/\.?0+$/, '') + 'K' :
-                             '$' + v.toFixed(0);
+                const lbl = (pct >= 0 ? '+' : '') + pct.toFixed(0) + '%';
                 ctx.fillText(lbl, PAD_L - 6, gy + 4);
             });
 
@@ -1148,7 +1135,7 @@
 
             // Update subtitle
             const sub = document.getElementById('equitySubtitle');
-            if (sub) sub.textContent = `(${t('equitySubStart')}: $${initialMoney.toLocaleString('en-US')} · ${t('equitySubLeverage')}: ${leverage}x)`;
+            if (sub) sub.textContent = '';
 
             // notify overlay
             if (typeof window._postBuildEquityChart === 'function') window._postBuildEquityChart();
@@ -1179,7 +1166,7 @@
                     if (months === 0) {
                         pts = allPoints;
                     } else {
-                        cutoff = new Date(lastPt.date);
+                        cutoff = new Date(maxDate);
                         cutoff.setMonth(cutoff.getMonth() - months);
                         pts = allPoints.filter(p => p.date >= cutoff);
                     }
@@ -1193,8 +1180,8 @@
                     }
 
                     const btcSlice = months === 0
-                        ? allBtcSorted.filter(r => r.ts >= allPoints[0].date)
-                        : allBtcSorted.filter(r => r.ts >= cutoff);
+                        ? allBtcSorted.filter(r => r.ts >= allPoints[0].date && r.ts <= maxDate)
+                        : allBtcSorted.filter(r => r.ts >= cutoff && r.ts <= maxDate);
 
                     if (btcSlice.length >= 2) {
                         const roi = (btcSlice[btcSlice.length - 1].price / btcSlice[0].price - 1) * 100;
@@ -1297,7 +1284,9 @@
                     if (dx < minDx) { minDx = dx; closest = p; }
                 });
                 const dateLbl = closest.date.toISOString().split('T')[0];
-                const valLbl = fmtVal(closest.value);
+                const eqPctVal = (closest.value / canvas._eqBase - 1) * 100;
+                const eqPctColor = eqPctVal >= 0 ? '#00e676' : '#ff4757';
+                const eqPctLbl = (eqPctVal >= 0 ? '+' : '') + eqPctVal.toFixed(2) + '%';
                 let btcLbl = '';
                 if (canvas._btcPoints && canvas._btcPoints.length) {
                     const mxcT = tsAtX(cx);
@@ -1309,7 +1298,7 @@
                     const bv = closestB.price;
                     btcLbl = `<br><span style="color:#f7931a">BTC: $${bv >= 1e3 ? (bv / 1e3).toFixed(1) + 'K' : bv.toFixed(0)}</span>`;
                 }
-                tooltip.innerHTML = `<b>${dateLbl}</b><br><span style="color:#5b9dff">${t('chartPortfolio')}: ${valLbl}</span>${btcLbl}`;
+                tooltip.innerHTML = `<b>${dateLbl}</b><br><span style="color:#5b9dff">${t('chartPortfolio')}: <b style="color:${eqPctColor}">${eqPctLbl}</b></span>${btcLbl}`;
                 tooltip.style.opacity = '1';
                 tooltip.style.left = (clientX + 16) + 'px';
                 tooltip.style.top = (clientY - 36) + 'px';
@@ -1356,12 +1345,7 @@
 
                 let html = `<span style="color:#9da5b4;font-size:0.75rem">${d0} → ${d1}</span><br>`;
                 if (eqPct !== null) html += `<span style="color:#5b9dff">${t('chartPortfolio')}</span>: ${fmtPct(eqPct)}`;
-                if (eq0 && eq1) html += ` <span style="color:#555">(${fmtVal(eq0.value)} → ${fmtVal(eq1.value)})</span>`;
                 if (btcPct !== null) html += `<br><span style="color:#f7931a">${t('chartBtc')}</span>: ${fmtPct(btcPct)}`;
-                if (btc0 && btc1) {
-                    const bfmt = v => v >= 1e3 ? '$' + (v/1e3).toFixed(1) + 'K' : '$' + v.toFixed(0);
-                    html += ` <span style="color:#555">(${bfmt(btc0.price)} → ${bfmt(btc1.price)})</span>`;
-                }
 
                 selStats.innerHTML = html;
                 selStats.style.display = 'block';

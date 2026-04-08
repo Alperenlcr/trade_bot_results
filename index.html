@@ -42,26 +42,6 @@
                             <input type="range" class="range-slider range-slider-max" id="endSlider" min="0" max="100" value="100">
                         </div>
 
-                        <div class="leverage-group">
-                            <label class="leverage-label bp-row-label" for="leverageSelect"><span class="help-icon" data-help-key="leverage">?
-                                    <span class="help-tooltip"></span>
-                                </span><span data-i18n="leverage"></span>
-                            </label>
-                            <select class="leverage-select" id="leverageSelect">
-                                <option value="1">1x</option>
-                                <option value="2" selected>2x</option>
-                                <option value="3">3x</option>
-                            </select>
-                        </div>
-
-                        <div class="initial-money-group">
-                            <label class="bp-row-label" for="initialMoneyInput"><span class="help-icon" data-help-key="initialMoney">?<span class="help-tooltip"></span></span><span data-i18n="startBalance"></span></label>
-                            <div class="initial-money-wrapper">
-                                <span class="initial-money-prefix">$</span>
-                                <input type="text" inputmode="numeric" class="initial-money-input" id="initialMoneyInput" value="100" placeholder="100">
-                            </div>
-                        </div>
-
                         <div class="rolling-controls">
                             <label class="bp-row-label" for="periodSelect"><span class="help-icon" data-help-key="rollingPeriod">?
                                     <span class="help-tooltip"></span>
@@ -138,6 +118,40 @@
     </div>
     <div id="equityTooltip" class="equity-tooltip"></div>
 
+    <!-- Copy Trading Section -->
+    <div class="copy-trade-section">
+        <div class="copy-trade-cards">
+            <!-- Binance -->
+            <a class="copy-trade-card copy-trade-card--binance"
+               href="https://www.binance.com/copy-trading/lead-details/4965482140792366337?ref=1116146315"
+               target="_blank" rel="noopener noreferrer">
+                <div class="ctc-glow ctc-glow--binance"></div>
+                <div class="ctc-logo-wrap">
+                    <img src="./assets/images/binance_logo.png" alt="Binance" class="ctc-logo">
+                </div>
+                <div class="ctc-body">
+                    <div class="ctc-platform">Binance · Copy Trade</div>
+                    <div class="ctc-cta" data-i18n="copyTradeCta"></div>
+                </div>
+                <div class="ctc-arrow">&#10132;</div>
+            </a>
+            <!-- Bybit -->
+            <a class="copy-trade-card copy-trade-card--bybit"
+               href="https://bybit.onelink.me/EhY6/kdwr63v9"
+               target="_blank" rel="noopener noreferrer">
+                <div class="ctc-glow ctc-glow--bybit"></div>
+                <div class="ctc-logo-wrap">
+                    <img src="./assets/images/bybit_logo.png" alt="Bybit" class="ctc-logo">
+                </div>
+                <div class="ctc-body">
+                    <div class="ctc-platform">Bybit · Copy Trade</div>
+                    <div class="ctc-cta" data-i18n="copyTradeCta"></div>
+                </div>
+                <div class="ctc-arrow">&#10132;</div>
+            </a>
+        </div>
+    </div>
+
     <!-- Rolling Window Explanation Modal -->
     <div class="rw-modal-overlay" id="rwModal">
         <div class="rw-modal-box">
@@ -146,6 +160,6 @@
         </div>
     </div>
 
-    <script src="./assets/js/main.js"></script>
+    <script src="./assets/js/main.js?v=2"></script>
 </body>
 </html>
