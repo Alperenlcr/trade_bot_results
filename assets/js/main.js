@@ -220,6 +220,135 @@
         document.getElementById('endSlider').addEventListener('input', updateEndDate);
         document.getElementById('periodSelect').addEventListener('change', updateRollingPeriod);
 
+        // ── Date picker popup ────────────────────────────────────────
+        (function () {
+            // Create popup element once
+            const popup = document.createElement('div');
+            popup.className = 'date-picker-popup hidden';
+            popup.id = 'datePicker';
+            document.body.appendChild(popup);
+
+            let currentTarget = null; // 'start' | 'end'
+            let viewYear, viewMonth;
+
+            const DAY_NAMES = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+            const MONTH_NAMES = ['January','February','March','April','May','June',
+                                 'July','August','September','October','November','December'];
+
+            function clampDate(d) {
+                const t = d.getTime();
+                if (t < minDate.getTime()) return new Date(minDate);
+                if (t > maxDate.getTime()) return new Date(maxDate);
+                return d;
+            }
+
+            function buildCalendar() {
+                const selected = currentTarget === 'start' ? startDate : endDate;
+                const otherDate = currentTarget === 'start' ? endDate : startDate;
+                const low  = currentTarget === 'start' ? minDate : new Date(startDate.getTime() + 86400000);
+                const high = currentTarget === 'start' ? new Date(endDate.getTime() - 86400000) : maxDate;
+
+                const firstDay = new Date(viewYear, viewMonth, 1).getDay();
+                const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+                const today = new Date();
+
+                let html = `<div class="dp-header">
+                    <button class="dp-nav" id="dpPrev">&#8249;</button>
+                    <span class="dp-month-year">${MONTH_NAMES[viewMonth]} ${viewYear}</span>
+                    <button class="dp-nav" id="dpNext">&#8250;</button>
+                </div><div class="dp-grid">`;
+
+                DAY_NAMES.forEach(d => { html += `<div class="dp-day-name">${d}</div>`; });
+                for (let i = 0; i < firstDay; i++) html += `<div class="dp-day empty"></div>`;
+
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const d = new Date(viewYear, viewMonth, day);
+                    const isSelected = d.toDateString() === selected.toDateString();
+                    const isToday    = d.toDateString() === today.toDateString();
+                    const outOfRange = d < low || d > high;
+                    let cls = 'dp-day';
+                    if (isSelected)  cls += ' selected';
+                    else if (isToday) cls += ' today';
+                    if (outOfRange)  cls += ' out-of-range';
+                    html += `<div class="${cls}" data-day="${day}">${day}</div>`;
+                }
+                html += `</div>`;
+                popup.innerHTML = html;
+
+                document.getElementById('dpPrev').addEventListener('click', e => {
+                    e.stopPropagation();
+                    viewMonth--; if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+                    buildCalendar();
+                });
+                document.getElementById('dpNext').addEventListener('click', e => {
+                    e.stopPropagation();
+                    viewMonth++; if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+                    buildCalendar();
+                });
+
+                popup.querySelectorAll('.dp-day[data-day]').forEach(el => {
+                    el.addEventListener('click', e => {
+                        e.stopPropagation();
+                        const chosen = new Date(viewYear, viewMonth, parseInt(el.dataset.day));
+                        const dayOffset = Math.round((chosen - minDate) / 86400000);
+                        if (currentTarget === 'start') {
+                            document.getElementById('startSlider').value = dayOffset;
+                            updateStartDate({ target: document.getElementById('startSlider') });
+                        } else {
+                            document.getElementById('endSlider').value = dayOffset;
+                            updateEndDate({ target: document.getElementById('endSlider') });
+                        }
+                        closePopup();
+                    });
+                });
+            }
+
+            function openPopup(target, anchorEl) {
+                currentTarget = target;
+                const ref = currentTarget === 'start' ? startDate : endDate;
+                viewYear  = ref.getFullYear();
+                viewMonth = ref.getMonth();
+                buildCalendar();
+                popup.classList.remove('hidden');
+                // Position below the anchor
+                const rect = anchorEl.getBoundingClientRect();
+                let top  = rect.bottom + 6;
+                let left = rect.left;
+                // keep inside viewport
+                if (left + 290 > window.innerWidth) left = window.innerWidth - 294;
+                if (top + 320 > window.innerHeight) top = rect.top - 326;
+                popup.style.top  = top  + 'px';
+                popup.style.left = left + 'px';
+            }
+
+            function closePopup() {
+                popup.classList.add('hidden');
+                currentTarget = null;
+            }
+
+            // Attach click to date labels once they exist (they're rendered dynamically)
+            function attachLabelListeners() {
+                const sl = document.getElementById('startDateLabel');
+                const el = document.getElementById('endDateLabel');
+                if (!sl || !el) return;
+                sl.classList.add('date-clickable');
+                el.classList.add('date-clickable');
+                sl.addEventListener('click', e => { e.stopPropagation(); if (minDate) openPopup('start', sl); });
+                el.addEventListener('click', e => { e.stopPropagation(); if (minDate) openPopup('end', el); });
+            }
+            // Labels are present in HTML, so attach immediately
+            attachLabelListeners();
+
+            // Close on outside click
+            document.addEventListener('click', e => {
+                if (!popup.classList.contains('hidden') && !popup.contains(e.target)) closePopup();
+            });
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape') closePopup();
+            });
+        })();
+        // ── End date picker ──────────────────────────────────────────
+
 
 
         // Range slider collision prevention
@@ -807,7 +936,11 @@
 
             if (tradeData.length > 0) {
                 const headers = Object.keys(tradeData[0]).filter(header => header !== 'MONEY');
-                csvTableHead.innerHTML = '<tr>' + headers.map(header => `<th>${headerLabels[header] || header}</th>`).join('') + '</tr>';
+                csvTableHead.innerHTML = '<tr>' + headers.map(header => {
+                    const label = headerLabels[header] || header;
+                    const extra = header === 'TRADE_TYPE' ? ` data-mobile-label="${t('colPositionMobile')}"` : '';
+                    return `<th${extra}>${label}</th>`;
+                }).join('') + '</tr>';
 
                 csvTableBody.innerHTML = '';
                 const sortedData = [...tradeData].sort((a, b) => {
@@ -818,6 +951,14 @@
                 
                 sortedData.forEach(row => {
                     const tr = document.createElement('tr');
+                    // Pre-compute ROI label for mobile stacked layout
+                    const rawProfit = row['PROFIT_PERCENT'];
+                    let roiStr = '-';
+                    let roiClass = '';
+                    if (typeof rawProfit === 'number' && !isNaN(rawProfit) && isFinite(rawProfit)) {
+                        roiStr = (rawProfit * leverage).toFixed(2) + '%';
+                        roiClass = roiStr.includes('-') ? 'roi-negative' : (parseFloat(roiStr) > 0 ? 'roi-positive' : '');
+                    }
                     headers.forEach(header => {
                         const td = document.createElement('td');
                         let value = row[header];
@@ -867,6 +1008,8 @@
                             } else if (normalized === 'sell') {
                                 value = t('posShort', leverage);
                             }
+                            td.setAttribute('data-roi', roiStr);
+                            if (roiClass) td.classList.add(roiClass);
                         }
                         else if (typeof value === 'string' && value.trim() === '') {
                             value = '-';
@@ -890,18 +1033,67 @@
             const canvas = document.getElementById('equityChart');
             if (!canvas) return;
 
-            const sortedRows = tradeTables[0].data
-                .filter(row => row.TRADE_END instanceof Date && !isNaN(row.TRADE_END.getTime()) && typeof row.PROFIT_PERCENT === 'number')
-                .sort((a, b) => a.TRADE_END - b.TRADE_END);
+            // Sort trades by open date
+            const sortedTrades = tradeTables[0].data
+                .filter(row =>
+                    row.TRADE_START instanceof Date && !isNaN(row.TRADE_START.getTime()) &&
+                    row.TRADE_END   instanceof Date && !isNaN(row.TRADE_END.getTime()) &&
+                    typeof row.START_PRICE === 'number' &&
+                    typeof row.PROFIT_PERCENT === 'number')
+                .sort((a, b) => a.TRADE_START - b.TRADE_START);
 
-            let runningMoney = 1;
-            // Prepend the true start point (value=1) at the earliest trade START date
-            // so the chart x-axis and "All" ROI cover the full history.
-            const allPoints = minDate ? [{ date: new Date(minDate), value: 1 }] : [];
-            for (const row of sortedRows) {
-                runningMoney *= (1 + (row.PROFIT_PERCENT * 2) / 100);
-                allPoints.push({ date: row.TRADE_END, value: runningMoney });
+            // Stride for intra-trade BTC interpolation based on selected period
+            const H1MS = 3600000;
+            const btcStrideMs =
+                (equityPeriodMonths === 0 || equityPeriodMonths >= 36) ? 24 * H1MS :  // daily for 3Y/5Y/All
+                equityPeriodMonths === 12                              ?  4 * H1MS :  // 4-hour for 1Y
+                equityPeriodMonths === 6                               ?  2 * H1MS :  // 2-hour for 6M
+                1 * H1MS;                                                             // 1-hour for 3M/6M
+
+            // BTC candles sorted for live P&L interpolation, downsampled by period
+            const btcForEquityRaw = priceData
+                .filter(r => r.CANDLE_START && typeof r.CLOSE_PRICE === 'number')
+                .map(r => ({ ts: new Date(r.CANDLE_START), price: r.CLOSE_PRICE }))
+                .filter(r => !isNaN(r.ts.getTime()))
+                .sort((a, b) => a.ts - b.ts);
+            const btcForEquity = [];
+            let _lastBtcTs = -Infinity;
+            for (const c of btcForEquityRaw) {
+                if (c.ts.getTime() - _lastBtcTs >= btcStrideMs) {
+                    btcForEquity.push(c);
+                    _lastBtcTs = c.ts.getTime();
+                }
             }
+
+            // Build dense equity series: flat between trades, live P&L during trades
+            let runningEquity = 1;
+            const allPointsRaw = minDate ? [{ date: new Date(minDate), value: 1 }] : [];
+            const allTradeMarkers = []; // entry + exit dots
+
+            for (const trade of sortedTrades) {
+                const equityAtEntry = runningEquity;
+                allTradeMarkers.push({ date: new Date(trade.TRADE_START), value: equityAtEntry });
+
+                const isLong = trade.TRADE_TYPE === 'buy';
+                for (const c of btcForEquity) {
+                    if (c.ts <= trade.TRADE_START) continue;
+                    if (c.ts >= trade.TRADE_END) break;
+                    const pnlFactor = isLong
+                        ? (c.price - trade.START_PRICE) / trade.START_PRICE * leverage
+                        : (trade.START_PRICE - c.price) / trade.START_PRICE * leverage;
+                    allPointsRaw.push({ date: c.ts, value: equityAtEntry * (1 + pnlFactor) });
+                }
+
+                // Close trade using exact reported PROFIT_PERCENT × leverage
+                runningEquity = equityAtEntry * (1 + (trade.PROFIT_PERCENT * leverage) / 100);
+                allPointsRaw.push({ date: new Date(trade.TRADE_END), value: runningEquity });
+                allTradeMarkers.push({ date: new Date(trade.TRADE_END), value: runningEquity });
+            }
+
+            // Sort and de-duplicate (keep last value when timestamps collide)
+            allPointsRaw.sort((a, b) => a.date - b.date);
+            const allPoints = allPointsRaw.filter((p, i, arr) =>
+                i === arr.length - 1 || p.date.getTime() !== arr[i + 1].date.getTime());
 
             if (allPoints.length === 0) return;
 
@@ -912,6 +1104,10 @@
                 points = allPoints.filter(p => p.date >= cutoff);
                 if (points.length === 0) points = allPoints;
             }
+
+            // Trade markers visible in this period
+            const periodCutoff = points[0].date;
+            const periodTradeMarkers = allTradeMarkers.filter(m => m.date >= periodCutoff);
 
             const wrap = canvas.parentElement;
             const W = wrap.clientWidth;
@@ -930,12 +1126,20 @@
             const tRange = tMax - tMin || 1;
             const pxFn = t => PAD_L + (t - tMin) / tRange * cW;
 
-            // ── Build BTC points early so we can include them in shared scale ──
-            const btcPointsRaw = priceData
+            // ── Build BTC points (downsampled to match period) for shared scale + drawing ──
+            const _btcAllRaw = priceData
                 .filter(r => r.CANDLE_START && typeof r.CLOSE_PRICE === 'number')
                 .map(r => ({ ts: new Date(r.CANDLE_START), price: r.CLOSE_PRICE }))
                 .filter(r => !isNaN(r.ts.getTime()) && r.ts.getTime() >= tMin && r.ts.getTime() <= tMax)
                 .sort((a, b) => a.ts - b.ts);
+            const btcPointsRaw = [];
+            let _lastBtcRawTs = -Infinity;
+            for (const c of _btcAllRaw) {
+                if (c.ts.getTime() - _lastBtcRawTs >= btcStrideMs) {
+                    btcPointsRaw.push(c);
+                    _lastBtcRawTs = c.ts.getTime();
+                }
+            }
 
             // ── Shared ratio scale: both series expressed as value/firstValue ──
             const eqBase = points[0].value;
@@ -1025,12 +1229,28 @@
                 ctx.stroke();
             });
 
+            // Smooth equity values for visual rendering only (trade markers stay exact)
+            function movingAvg(pts, win) {
+                if (win <= 1 || pts.length < win) return pts;
+                const half = Math.floor(win / 2);
+                return pts.map((p, i) => {
+                    const s = Math.max(0, i - half), e = Math.min(pts.length - 1, i + half);
+                    let sum = 0, cnt = 0;
+                    for (let j = s; j <= e; j++) { sum += pts[j].value; cnt++; }
+                    return { date: p.date, value: sum / cnt };
+                });
+            }
+            const smoothWin =
+                (equityPeriodMonths === 0 || equityPeriodMonths >= 36) ? 3 :
+                equityPeriodMonths === 12 ? 5 : 9;
+            const drawPoints = movingAvg(points, smoothWin);
+
             // Fill under line
             ctx.beginPath();
-            ctx.moveTo(pxFn(points[0].date.getTime()), pyFn(points[0].value / eqBase));
-            points.forEach(p => ctx.lineTo(pxFn(p.date.getTime()), pyFn(p.value / eqBase)));
-            ctx.lineTo(pxFn(points[points.length - 1].date.getTime()), H - PAD_B);
-            ctx.lineTo(pxFn(points[0].date.getTime()), H - PAD_B);
+            ctx.moveTo(pxFn(drawPoints[0].date.getTime()), pyFn(drawPoints[0].value / eqBase));
+            drawPoints.forEach(p => ctx.lineTo(pxFn(p.date.getTime()), pyFn(p.value / eqBase)));
+            ctx.lineTo(pxFn(drawPoints[drawPoints.length - 1].date.getTime()), H - PAD_B);
+            ctx.lineTo(pxFn(drawPoints[0].date.getTime()), H - PAD_B);
             ctx.closePath();
             const grad = ctx.createLinearGradient(0, PAD_T, 0, H - PAD_B);
             grad.addColorStop(0, '#3d7eff33');
@@ -1042,24 +1262,32 @@
             ctx.beginPath();
             ctx.strokeStyle = '#3d7eff';
             ctx.lineWidth = 2;
-            points.forEach((p, i) => {
+            drawPoints.forEach((p, i) => {
                 const xp = pxFn(p.date.getTime()), yp = pyFn(p.value / eqBase);
                 i === 0 ? ctx.moveTo(xp, yp) : ctx.lineTo(xp, yp);
             });
             ctx.stroke();
 
-            // Dots
-            ctx.fillStyle = '#5b9dff';
-            points.forEach(p => {
+            // Trade entry/exit dots only
+            periodTradeMarkers.forEach(m => {
+                const xm = pxFn(m.date.getTime());
+                const ym = pyFn(m.value / eqBase);
                 ctx.beginPath();
-                ctx.arc(pxFn(p.date.getTime()), pyFn(p.value / eqBase), 3.5, 0, Math.PI * 2);
+                ctx.arc(xm, ym, 4, 0, Math.PI * 2);
+                ctx.fillStyle = '#5b9dff';
                 ctx.fill();
+                ctx.beginPath();
+                ctx.arc(xm, ym, 4, 0, Math.PI * 2);
+                ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
             });
 
             canvas._eqPoints = points;
             canvas._eqPx = pxFn;
             canvas._eqPy = pyFn;
             canvas._eqBase = eqBase;
+            canvas._eqTradeMarkers = periodTradeMarkers;
 
             // BTC: draw using shared ratio scale
             const btcPoints = btcPointsRaw;

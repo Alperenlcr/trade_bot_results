@@ -1084,6 +1084,40 @@
                 white-space: normal;
             }
 
+            /* ROI stacked under Position: hide last column */
+            .csv-table th:last-child,
+            .csv-table td:last-child {
+                display: none;
+            }
+
+            /* Swap header text of first column to mobile label */
+            .csv-table th:first-child {
+                font-size: 0;
+            }
+
+            .csv-table th:first-child::after {
+                content: attr(data-mobile-label);
+                font-size: 11px;
+            }
+
+            /* Show ROI below Position text */
+            .csv-table td:first-child::after {
+                content: attr(data-roi);
+                display: block;
+                font-size: 10px;
+                font-weight: 600;
+                margin-top: 2px;
+                color: #9da5b4;
+            }
+
+            .csv-table td:first-child.roi-positive::after {
+                color: #00ff88;
+            }
+
+            .csv-table td:first-child.roi-negative::after {
+                color: #ff4757;
+            }
+
             .equity-section {
                 padding: 0 0 24px;
                 margin-top: 20px;
@@ -1144,9 +1178,7 @@
             min-width: 441px;
             transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
         }
-        @media (max-width: 882px) {
-            .copy-trade-card { min-width: 0; }
-        }
+
         .copy-trade-card:hover {
             transform: translateY(-3px);
         }
@@ -1353,4 +1385,121 @@
             transition: opacity 0.1s;
             z-index: 1000;
             white-space: nowrap;
+        }
+
+        /* ── Date Picker Popup ─────────────────────────────────── */
+        .date-picker-popup {
+            position: fixed;
+            z-index: 500000;
+            background: linear-gradient(135deg, #252a34 0%, #1e2329 100%);
+            border: 1px solid rgba(79, 172, 254, 0.35);
+            border-radius: 14px;
+            padding: 16px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+            min-width: 280px;
+            user-select: none;
+        }
+        .date-picker-popup.hidden { display: none; }
+        .dp-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .dp-nav {
+            background: none;
+            border: 1px solid rgba(79,172,254,0.3);
+            color: #e8eaed;
+            border-radius: 6px;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .dp-nav:hover { background: rgba(79,172,254,0.15); }
+        .dp-month-year {
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+        .dp-month-year:hover { background: rgba(79,172,254,0.15); }
+        .dp-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+        }
+        .dp-day-name {
+            text-align: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: #5b9dff;
+            padding: 4px 0;
+        }
+        .dp-day {
+            text-align: center;
+            font-size: 12px;
+            padding: 5px 2px;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #e8eaed;
+            transition: background 0.15s;
+            line-height: 1.4;
+        }
+        .dp-day:hover { background: rgba(79,172,254,0.2); }
+        .dp-day.today { color: #4facfe; font-weight: 700; }
+        .dp-day.selected {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: #000;
+            font-weight: 700;
+        }
+        .dp-day.out-of-range {
+            color: #3a3f4a;
+            cursor: default;
+            pointer-events: none;
+        }
+        .dp-day.empty { cursor: default; pointer-events: none; }
+        .slider-value.date-clickable {
+            cursor: pointer;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .slider-value.date-clickable:hover {
+            border-color: #4facfe;
+            box-shadow: 0 0 0 2px rgba(79,172,254,0.25);
+        }
+
+        @media (max-width: 882px) {
+            .main-layout,
+            .tables-column,
+            .history-column,
+            .additional-boxes {
+                overflow-x: hidden;
+            }
+
+            .page-header,
+            .date-section,
+            .table-section,
+            .history-section,
+            .bot-specs,
+            .copy-trade-section,
+            .equity-section,
+            .copy-trade-card {
+                width: 100%;
+                max-width: 100%;
+                margin-left: 0%;
+                margin-right: 0%;
+                min-width: unset;
+                box-sizing: border-box;
+            }
+
+            .bot-specs {
+                flex: none;
+            }
         }
