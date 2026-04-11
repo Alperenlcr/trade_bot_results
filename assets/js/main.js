@@ -1540,13 +1540,54 @@
                 return (e.clientX - r.left) * (canvas.width / r.width);
             }
 
+            function canvasY(e) {
+                const r = canvas.getBoundingClientRect();
+                return (e.clientY - r.top) * (canvas.height / r.height);
+            }
+
             function touchCanvasX(touch) {
                 const r = canvas.getBoundingClientRect();
                 return (touch.clientX - r.left) * (canvas.width / r.width);
             }
 
+            function touchCanvasY(touch) {
+                const r = canvas.getBoundingClientRect();
+                return (touch.clientY - r.top) * (canvas.height / r.height);
+            }
+
             function tsAtX(cx) {
                 return canvas._tMin + ((cx - canvas._padL) / canvas._cW) * canvas._tRange;
+            }
+
+            // ── Graph area bounds helpers ──────────────────────────────
+            function graphBounds() {
+                const padL = canvas._padL || 56;
+                const cW   = canvas._cW   || (canvas.width - 114);
+                const padT = canvas._padT || 20;
+                const padB = canvas._padB || 48;
+                return { left: padL, right: padL + cW, top: padT, bottom: canvas.height - padB };
+            }
+
+            function clampToGraph(cx) {
+                const b = graphBounds();
+                return Math.max(b.left, Math.min(b.right, cx));
+            }
+
+            function inGraphArea(cx, cy) {
+                const b = graphBounds();
+                return cx >= b.left && cx <= b.right && cy >= b.top && cy <= b.bottom;
+            }
+
+            // ── Edge-drag state ────────────────────────────────────────
+            let edgeDrag = null; // null | 'left' | 'right'
+            let _suppressNextClick = false;
+            const EDGE_HIT = 10; // px — hit radius around each selection edge
+
+            function nearEdge(cx) {
+                if (!sel || selMode) return null;
+                if (Math.abs(cx - sel.x0) <= EDGE_HIT) return 'left';
+                if (Math.abs(cx - sel.x1) <= EDGE_HIT) return 'right';
+                return null;
             }
 
             function closestEq(ts) {
@@ -1602,8 +1643,41 @@
                 }
                 tooltip.innerHTML = `<b>${dateLbl}</b><br><span style="color:#5b9dff">${t('chartPortfolio')}: <b style="color:${eqPctColor}">${eqPctLbl}</b></span>${btcLbl}`;
                 tooltip.style.opacity = '1';
-                tooltip.style.left = (clientX + 16) + 'px';
-                tooltip.style.top = (clientY - 36) + 'px';
+
+                // Anchor tooltip centered on the end of the vertical crosshair line.
+                // Cursor in bottom half → box centered on the TOP end of the line.
+                // Cursor in top half   → box centered on the BOTTOM end of the line.
+                const r   = canvas.getBoundingClientRect();
+                const cssScale = r.width / canvas.width;
+                const padT = canvas._padT || 20;
+                const padB = canvas._padB || 48;
+                const chartTopY    = r.top  + padT * cssScale;
+                const chartBottomY = r.bottom - padB * cssScale;
+                const chartMidY    = (chartTopY + chartBottomY) / 2;
+
+                const crosshairClientX = r.left + cx * cssScale;
+
+                const ttW = tooltip.offsetWidth  || 160;
+                const ttH = tooltip.offsetHeight || 60;
+                const margin = 4;
+
+                // Horizontal: centered on the crosshair line, clamped to viewport
+                let left = crosshairClientX - ttW / 2;
+                left = Math.max(margin, Math.min(left, window.innerWidth - ttW - margin));
+
+                // Vertical: centered on whichever end of the line is farther from cursor
+                let top;
+                if (clientY >= chartMidY) {
+                    // Cursor in bottom half → center box on TOP end of line
+                    top = chartTopY - ttH / 2;
+                } else {
+                    // Cursor in top half → center box on BOTTOM end of line
+                    top = chartBottomY - ttH / 2;
+                }
+                top = Math.max(margin, Math.min(top, window.innerHeight - ttH - margin));
+
+                tooltip.style.left = left + 'px';
+                tooltip.style.top  = top  + 'px';
                 hovCx = cx;
                 redrawOverlay();
             }
@@ -1699,73 +1773,151 @@
             };
 
             // ── Desktop mouse events ──────────────────────────────────────
-            // Double-click to pin the selection start; hover to preview end; click to confirm.
+            // Double-click  → start new selection (or clear existing)
+            // Mousemove     → preview x1 during selMode; edge-drag if active; tooltip otherwise
+            // Mousedown     → begin edge drag if near a confirmed selection edge
+            // Mouseup       → finish edge drag
+            // Click         → confirm end of selection (selMode); or clear confirmed selection
             canvas.addEventListener('dblclick', e => {
                 e.preventDefault();
+                const cx = canvasX(e);
+                const cy = canvasY(e);
+                if (!inGraphArea(cx, cy)) return; // ignore axis/padding area
                 if (pendingClickTimer) { clearTimeout(pendingClickTimer); pendingClickTimer = null; }
                 if (selMode || sel) { selMode = false; clearSelection(); return; }
-                const cx = canvasX(e);
-                dragStart = cx;
-                sel = { x0: cx, x1: cx };
+                const gcx = clampToGraph(cx);
+                sel = { x0: gcx, x1: gcx };
                 selMode = true;
                 hideTooltip();
                 drawSelection();
             });
 
-            canvas.addEventListener('click', e => {
-                if (!selMode) return;
-                if (pendingClickTimer) { clearTimeout(pendingClickTimer); pendingClickTimer = null; }
+            canvas.addEventListener('mousedown', e => {
+                if (e.button !== 0) return;
                 const cx = canvasX(e);
-                pendingClickTimer = setTimeout(() => {
-                    pendingClickTimer = null;
-                    if (!selMode) return;
-                    sel.x1 = cx;
-                    selMode = false;
-                    if (Math.abs(sel.x1 - sel.x0) < 4) clearSelection();
-                    else drawSelection();
-                }, 250);
+                if (!sel || selMode) return;
+                const edge = nearEdge(cx);
+                if (edge) {
+                    edgeDrag = edge;
+                    _suppressNextClick = true;
+                    e.preventDefault();
+                }
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (edgeDrag) {
+                    edgeDrag = null;
+                    if (sel && Math.abs(sel.x1 - sel.x0) < 4) clearSelection();
+                    else if (sel) drawSelection();
+                }
             });
 
             canvas.addEventListener('mousemove', e => {
                 const cx = canvasX(e);
-                if (selMode && sel) {
-                    sel.x1 = cx;
+                const cy = canvasY(e);
+                const gcx = clampToGraph(cx);
+
+                if (edgeDrag) {
+                    if (edgeDrag === 'left')  sel.x0 = Math.min(gcx, sel.x1 - 4);
+                    else                       sel.x1 = Math.max(gcx, sel.x0 + 4);
                     drawSelection();
-                } else if (!sel) {
-                    showTooltipAt(cx, e.clientX, e.clientY);
+                    canvas.style.cursor = 'ew-resize';
+                    return;
+                }
+
+                if (selMode && sel) {
+                    sel.x1 = gcx;
+                    drawSelection();
+                    canvas.style.cursor = 'crosshair';
+                    return;
+                }
+
+                if (sel && !selMode) {
+                    canvas.style.cursor = nearEdge(cx) ? 'ew-resize' : 'default';
+                    return;
+                }
+
+                // No selection — show tooltip crosshair only within graph area
+                if (inGraphArea(cx, cy)) {
+                    showTooltipAt(gcx, e.clientX, e.clientY);
+                    canvas.style.cursor = 'default';
+                } else {
+                    hideTooltip();
+                    canvas.style.cursor = 'default';
                 }
             });
 
-            canvas.addEventListener('mouseleave', () => { if (!selMode) hideTooltip(); });
+            canvas.addEventListener('click', e => {
+                if (_suppressNextClick) { _suppressNextClick = false; return; }
+                if (pendingClickTimer) { clearTimeout(pendingClickTimer); pendingClickTimer = null; }
+                const cx = canvasX(e);
+                const cy = canvasY(e);
+                if (!inGraphArea(cx, cy)) return;
+                const gcx = clampToGraph(cx);
+                if (selMode) {
+                    pendingClickTimer = setTimeout(() => {
+                        pendingClickTimer = null;
+                        if (!selMode) return;
+                        sel.x1 = gcx;
+                        selMode = false;
+                        // Normalize so x0 is always the left edge
+                        if (sel.x0 > sel.x1) { const tmp = sel.x0; sel.x0 = sel.x1; sel.x1 = tmp; }
+                        if (Math.abs(sel.x1 - sel.x0) < 4) clearSelection();
+                        else drawSelection();
+                    }, 250);
+                } else if (sel) {
+                    clearSelection();
+                }
+            });
+
+            canvas.addEventListener('mouseleave', () => {
+                if (!selMode && !edgeDrag) hideTooltip();
+                if (!edgeDrag) canvas.style.cursor = 'default';
+            });
 
             // If the page/layout moves, hide stale fixed-position tooltip.
             window.addEventListener('scroll', hideTooltip, true);
             window.addEventListener('wheel', hideTooltip, { passive: true });
             window.addEventListener('resize', hideTooltip);
 
-            canvas.addEventListener('mousemove', e => {
-                canvas.style.cursor = selMode ? 'crosshair' : 'default';
-            });
-
             // ── Touch events (mobile) ─────────────────────────────────────
-            // Single tap: show tooltip. Double-tap: enter selection drag mode.
+            // Single tap in graph area: show tooltip (or clear confirmed selection).
+            // Double-tap in graph area: start selection drag.
+            // Touch near confirmed selection edge: drag that edge.
             const DOUBLE_TAP_MS = 300;
+            let touchEdgeDrag = null; // null | 'left' | 'right'
+
             canvas.addEventListener('touchstart', e => {
                 e.preventDefault();
                 const touch = e.changedTouches[0];
-                const cx = touchCanvasX(touch);
+                const cx  = touchCanvasX(touch);
+                const cy  = touchCanvasY(touch);
+                const gcx = clampToGraph(cx);
                 const now = Date.now();
-                touchOrigin = { cx, clientX: touch.clientX, clientY: touch.clientY };
+                touchOrigin = { cx: gcx, clientX: touch.clientX, clientY: touch.clientY };
                 lastTouchPos = null;
 
+                // If there's a confirmed selection, check for edge drag first
+                if (sel && !selMode) {
+                    const edge = nearEdge(cx);
+                    if (edge) {
+                        touchEdgeDrag = edge;
+                        if (navigator.vibrate) navigator.vibrate(20);
+                        return;
+                    }
+                }
+
+                // Ignore taps outside graph area
+                if (!inGraphArea(cx, cy)) return;
+
                 const timeSinceLast = now - lastTapTime;
-                const distFromLast = lastTapCx !== null ? Math.abs(cx - lastTapCx) : Infinity;
+                const distFromLast  = lastTapCx !== null ? Math.abs(gcx - lastTapCx) : Infinity;
 
                 if (timeSinceLast < DOUBLE_TAP_MS && distFromLast < 40) {
-                    // Double-tap: enter selection drag mode
+                    // Double-tap: start selection drag (clears any existing selection)
+                    clearSelection();
                     touchSelDragging = true;
-                    dragStart = cx;
-                    sel = { x0: cx, x1: cx };
+                    sel = { x0: gcx, x1: gcx };
                     if (navigator.vibrate) navigator.vibrate(30);
                     hideTooltip();
                     drawSelection();
@@ -1773,33 +1925,60 @@
                     lastTapCx = null;
                 } else {
                     touchSelDragging = false;
+                    touchEdgeDrag = null;
                     lastTapTime = now;
-                    lastTapCx = cx;
+                    lastTapCx = gcx;
                 }
             }, { passive: false });
 
             canvas.addEventListener('touchmove', e => {
                 e.preventDefault();
                 const touch = e.changedTouches[0];
-                const cx = touchCanvasX(touch);
+                const cx  = touchCanvasX(touch);
+                const cy  = touchCanvasY(touch);
+                const gcx = clampToGraph(cx);
+
+                if (touchEdgeDrag) {
+                    // Resize the dragged selection edge
+                    if (touchEdgeDrag === 'left')  sel.x0 = Math.min(gcx, sel.x1 - 4);
+                    else                            sel.x1 = Math.max(gcx, sel.x0 + 4);
+                    drawSelection();
+                    return;
+                }
+
                 if (touchSelDragging) {
-                    sel.x1 = cx;
+                    sel.x1 = gcx;
                     drawSelection();
                 } else {
-                    lastTouchPos = { cx, clientX: touch.clientX, clientY: touch.clientY };
-                    showTooltipAt(cx, touch.clientX, touch.clientY);
+                    if (inGraphArea(cx, cy)) {
+                        lastTouchPos = { cx: gcx, clientX: touch.clientX, clientY: touch.clientY };
+                        showTooltipAt(gcx, touch.clientX, touch.clientY);
+                    }
                 }
             }, { passive: false });
 
             canvas.addEventListener('touchend', e => {
                 e.preventDefault();
+
+                if (touchEdgeDrag) {
+                    touchEdgeDrag = null;
+                    if (sel && Math.abs(sel.x1 - sel.x0) < 4) clearSelection();
+                    else if (sel) drawSelection();
+                    return;
+                }
+
                 if (!touchSelDragging) {
-                    // Use last dragged position if finger moved, else the tap origin
                     const pos = lastTouchPos || touchOrigin;
-                    if (sel) { clearSelection(); }
-                    else if (pos) { showTooltipAt(pos.cx, pos.clientX, pos.clientY); }
+                    if (sel && !selMode) {
+                        // Tap on confirmed selection → clear it
+                        clearSelection();
+                    } else if (pos) {
+                        showTooltipAt(pos.cx, pos.clientX, pos.clientY);
+                    }
                 } else {
                     touchSelDragging = false;
+                    // Normalize so x0 is always the left edge
+                    if (sel && sel.x0 > sel.x1) { const tmp = sel.x0; sel.x0 = sel.x1; sel.x1 = tmp; }
                     if (sel && Math.abs(sel.x1 - sel.x0) < 4) clearSelection();
                     else if (sel) drawSelection();
                 }
