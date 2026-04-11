@@ -201,6 +201,21 @@
         let leverage = 2; // Default leverage set to 2x
         let initialMoney = 100; // Default initial money
 
+        // ── Performance caches ───────────────────────────────────────────────
+        let _cachedAllPoints = null;
+        let _cachedAllTradeMarkers = null;
+        let _cachedEquityDataKey = null;
+        let _allBtcSorted = [];   // all BTC candles {ts:Date,price:number}, sorted, built once at load
+        let _btcForEquity = [];   // 1h-stride subset of _allBtcSorted, built once at load
+        let _rollingCache  = {};  // memoize calculatePeriodicAnalysis
+
+        // Binary-search: first index in arr where arr[i].ts.getTime() >= targetMs
+        function _bisectTs(arr, targetMs) {
+            let lo = 0, hi = arr.length;
+            while (lo < hi) { const mid = (lo + hi) >> 1; if (arr[mid].ts.getTime() < targetMs) lo = mid + 1; else hi = mid; }
+            return lo;
+        }
+
         // Initialize
         window.addEventListener('load', async function() {
             try {
@@ -387,10 +402,12 @@
             }
         });
         
-        // Window resize handler to recalculate heights
+        // Window resize handler to recalculate heights (debounced)
+        let _resizeTimer = null;
         window.addEventListener('resize', function() {
             setTimeout(matchHistoryHeight, 100);
-            buildEquityChart();
+            clearTimeout(_resizeTimer);
+            _resizeTimer = setTimeout(buildEquityChart, 150);
         });
 
         async function loadRepositoryData() {
@@ -414,7 +431,22 @@
                 if (priceData.length === 0) throw new Error(t('errNoPrices'));
                 
                 priceData.sort((a, b) => new Date(a.CANDLE_START) - new Date(b.CANDLE_START));
-                
+
+                // Build global BTC lookup arrays once (reused by chart, tooltips, button ROI)
+                _allBtcSorted = priceData
+                    .filter(r => r.CANDLE_START && typeof r.CLOSE_PRICE === 'number')
+                    .map(r => ({ ts: new Date(r.CANDLE_START), price: r.CLOSE_PRICE }))
+                    .filter(r => !isNaN(r.ts.getTime())); // priceData already sorted
+                const _H1MS_INIT = 3600000;
+                _btcForEquity = [];
+                let _lastBtcTs0 = -Infinity;
+                for (const c of _allBtcSorted) {
+                    if (c.ts.getTime() - _lastBtcTs0 >= _H1MS_INIT) {
+                        _btcForEquity.push(c);
+                        _lastBtcTs0 = c.ts.getTime();
+                    }
+                }
+
                 // Calculate date range and setup
                 calculateDateRange();
                 setupSliders();
@@ -816,25 +848,25 @@
         }
 
         function findClosestPrice(targetDate) {
-            if (priceData.length === 0) return null;
-            
-            let closest = priceData[0];
-            let minDiff = Math.abs(new Date(closest.CANDLE_START) - targetDate);
-            
-            for (const row of priceData) {
-                const diff = Math.abs(new Date(row.CANDLE_START) - targetDate);
-                if (diff < minDiff) {
-                    minDiff = diff;
-                    closest = row;
-                }
-            }
-            
-            return closest.CLOSE_PRICE;
+            if (_allBtcSorted.length === 0) return null;
+            const target = targetDate.getTime();
+            let lo = _bisectTs(_allBtcSorted, target);
+            if (lo >= _allBtcSorted.length) lo = _allBtcSorted.length - 1;
+            if (lo > 0 && Math.abs(_allBtcSorted[lo - 1].ts.getTime() - target) < Math.abs(_allBtcSorted[lo].ts.getTime() - target))
+                return _allBtcSorted[lo - 1].price;
+            return _allBtcSorted[lo].price;
         }
 
         function calculatePeriodicAnalysis(table, tableIndex) {
             if (priceData.length === 0 || !startDate || !endDate) return;
-            
+
+            // Memoize: skip recomputation if inputs unchanged
+            const cacheKey = `${tableIndex}|${startDate.getTime()}|${endDate.getTime()}|${iterPeriod}|${leverage}`;
+            if (_rollingCache[cacheKey]) {
+                periodicResults[tableIndex] = _rollingCache[cacheKey];
+                return;
+            }
+
             const start = new Date(startDate);
             start.setHours(0, 0, 0, 0);
             
@@ -856,8 +888,8 @@
                 endWindow.setDate(endWindow.getDate() + iterPeriod);
                 
                 for (const row of table.data) {
-                    const tradeDate = new Date(row.TRADE_START);
-                    if (tradeDate >= current && tradeDate < endWindow) {
+                    // TRADE_START is already a Date object (parsed in parseCSV)
+                    if (row.TRADE_START >= current && row.TRADE_START < endWindow) {
                         if (!isNaN(row.PROFIT_PERCENT)) {
                             moneyIter *= (1 + (row.PROFIT_PERCENT * leverage) / 100);
                         }
@@ -876,6 +908,7 @@
                 Math.round(results.reduce((a, b) => a + b, 0) / results.length * 100) / 100 : undefined;
             periodicResults[tableIndex].min = results.length > 0 ? Math.min(...results) : undefined;
             periodicResults[tableIndex].max = results.length > 0 ? Math.max(...results) : undefined;
+            _rollingCache[cacheKey] = periodicResults[tableIndex];
         }
 
         function createTable(container, title, metrics, keepControls = false) {
@@ -1066,7 +1099,6 @@
             // equityStrideMs: FIXED at 1h so allPoints is identical regardless of
             // which period button is active. This makes button ROI and the
             // selection-overlay ROI always consistent with each other.
-            const equityStrideMs = H1MS;
             // displayStrideMs: only used for the BTC orange line drawing (performance).
             const displayStrideMs =
                 equityPeriodMonths === 0                               ? 96 * H1MS : // All
@@ -1077,50 +1109,48 @@
                 equityPeriodMonths === 3                               ?  1 * H1MS : // 1M
                 H1MS; // Default 1h
 
-            // BTC candles sorted for live P&L interpolation, always 1h stride
-            const btcForEquityRaw = priceData
-                .filter(r => r.CANDLE_START && typeof r.CLOSE_PRICE === 'number')
-                .map(r => ({ ts: new Date(r.CANDLE_START), price: r.CLOSE_PRICE }))
-                .filter(r => !isNaN(r.ts.getTime()))
-                .sort((a, b) => a.ts - b.ts);
-            const btcForEquity = [];
-            let _lastBtcTs = -Infinity;
-            for (const c of btcForEquityRaw) {
-                if (c.ts.getTime() - _lastBtcTs >= equityStrideMs) {
-                    btcForEquity.push(c);
-                    _lastBtcTs = c.ts.getTime();
-                }
-            }
+            // ── Build / restore cached equity data ──────────────────────────────
+            // allPoints is identical for the same trades+prices+leverage regardless
+            // of which period button is active, so cache and skip on period switches.
+            const _eqDataKey = `${leverage}|${tradeTables[0].data.length}|${priceData.length}`;
+            let allPoints, allTradeMarkers;
 
-            // Build dense equity series: flat between trades, live P&L during trades
-            let runningEquity = 1;
-            const allPointsRaw = minDate ? [{ date: new Date(minDate), value: 1 }] : [];
-            const allTradeMarkers = []; // entry + exit dots
+            if (_cachedEquityDataKey !== _eqDataKey) {
+                // Use global _btcForEquity (1h-stride, built at load time) — no re-scanning
+                let runningEquity = 1;
+                const allPointsRaw = minDate ? [{ date: new Date(minDate), value: 1 }] : [];
+                allTradeMarkers = [];
 
-            for (const trade of sortedTrades) {
-                const equityAtEntry = runningEquity;
-                allTradeMarkers.push({ date: new Date(trade.TRADE_START), value: equityAtEntry });
+                for (const trade of sortedTrades) {
+                    const equityAtEntry = runningEquity;
+                    allTradeMarkers.push({ date: new Date(trade.TRADE_START), value: equityAtEntry });
 
-                const isLong = trade.TRADE_TYPE === 'buy';
-                for (const c of btcForEquity) {
-                    if (c.ts <= trade.TRADE_START) continue;
-                    if (c.ts >= trade.TRADE_END) break;
-                    const pnlFactor = isLong
-                        ? (c.price - trade.START_PRICE) / trade.START_PRICE * leverage
-                        : (trade.START_PRICE - c.price) / trade.START_PRICE * leverage;
-                    allPointsRaw.push({ date: c.ts, value: equityAtEntry * (1 + pnlFactor) });
+                    const isLong = trade.TRADE_TYPE === 'buy';
+                    for (const c of _btcForEquity) {
+                        if (c.ts <= trade.TRADE_START) continue;
+                        if (c.ts >= trade.TRADE_END) break;
+                        const pnlFactor = isLong
+                            ? (c.price - trade.START_PRICE) / trade.START_PRICE * leverage
+                            : (trade.START_PRICE - c.price) / trade.START_PRICE * leverage;
+                        allPointsRaw.push({ date: c.ts, value: equityAtEntry * (1 + pnlFactor) });
+                    }
+
+                    runningEquity = equityAtEntry * (1 + (trade.PROFIT_PERCENT * leverage) / 100);
+                    allPointsRaw.push({ date: new Date(trade.TRADE_END), value: runningEquity });
+                    allTradeMarkers.push({ date: new Date(trade.TRADE_END), value: runningEquity });
                 }
 
-                // Close trade using exact reported PROFIT_PERCENT × leverage
-                runningEquity = equityAtEntry * (1 + (trade.PROFIT_PERCENT * leverage) / 100);
-                allPointsRaw.push({ date: new Date(trade.TRADE_END), value: runningEquity });
-                allTradeMarkers.push({ date: new Date(trade.TRADE_END), value: runningEquity });
-            }
+                allPointsRaw.sort((a, b) => a.date - b.date);
+                allPoints = allPointsRaw.filter((p, i, arr) =>
+                    i === arr.length - 1 || p.date.getTime() !== arr[i + 1].date.getTime());
 
-            // Sort and de-duplicate (keep last value when timestamps collide)
-            allPointsRaw.sort((a, b) => a.date - b.date);
-            const allPoints = allPointsRaw.filter((p, i, arr) =>
-                i === arr.length - 1 || p.date.getTime() !== arr[i + 1].date.getTime());
+                _cachedAllPoints = allPoints;
+                _cachedAllTradeMarkers = allTradeMarkers;
+                _cachedEquityDataKey = _eqDataKey;
+            } else {
+                allPoints = _cachedAllPoints;
+                allTradeMarkers = _cachedAllTradeMarkers;
+            }
 
             if (allPoints.length === 0) return;
 
@@ -1154,11 +1184,11 @@
             const pxFn = t => PAD_L + (t - tMin) / tRange * cW;
 
             // ── Build BTC points (downsampled for display only) for BTC line drawing ──
-            const _btcAllRaw = priceData
-                .filter(r => r.CANDLE_START && typeof r.CLOSE_PRICE === 'number')
-                .map(r => ({ ts: new Date(r.CANDLE_START), price: r.CLOSE_PRICE }))
-                .filter(r => !isNaN(r.ts.getTime()) && r.ts.getTime() >= tMin && r.ts.getTime() <= tMax)
-                .sort((a, b) => a.ts - b.ts);
+            // Binary-search _allBtcSorted for the visible window instead of re-scanning all rows
+            const _iStart = _bisectTs(_allBtcSorted, tMin);
+            let   _iEnd   = _bisectTs(_allBtcSorted, tMax);
+            if (_iEnd < _allBtcSorted.length && _allBtcSorted[_iEnd].ts.getTime() <= tMax) _iEnd++;
+            const _btcAllRaw = _allBtcSorted.slice(_iStart, _iEnd);
             const btcPointsRaw = [];
             let _lastBtcRawTs = -Infinity;
             for (const c of _btcAllRaw) {
@@ -1414,12 +1444,6 @@
 
             // ── Per-period ROI labels on buttons ──
             (function() {
-                const allBtcSorted = priceData
-                    .filter(r => r.CANDLE_START && typeof r.CLOSE_PRICE === 'number')
-                    .map(r => ({ ts: new Date(r.CANDLE_START), price: r.CLOSE_PRICE }))
-                    .filter(r => !isNaN(r.ts.getTime()))
-                    .sort((a, b) => a.ts - b.ts);
-
                 function fmtRoi(v) {
                     const abs = Math.abs(v);
                     const n = abs >= 1000 ? (abs / 1000).toFixed(2) + 'K%' : abs.toFixed(2) + '%';
@@ -1453,12 +1477,15 @@
                         portEl.innerHTML = `<span style="color:#555">${t('chartBotNoData')}</span>`;
                     }
 
-                    const btcSlice = months === 0
-                        ? allBtcSorted.filter(r => r.ts >= allPoints[0].date && r.ts <= lastPt.date)
-                        : allBtcSorted.filter(r => r.ts >= cutoff && r.ts <= lastPt.date);
+                    // Binary-search _allBtcSorted for [startTs, endTs] window
+                    const startTs = months === 0 ? allPoints[0].date.getTime() : cutoff.getTime();
+                    const endTs   = lastPt.date.getTime();
+                    const bStart  = _bisectTs(_allBtcSorted, startTs);
+                    let   bEnd    = _bisectTs(_allBtcSorted, endTs);
+                    if (bEnd < _allBtcSorted.length && _allBtcSorted[bEnd].ts.getTime() <= endTs) bEnd++;
 
-                    if (btcSlice.length >= 2) {
-                        const roi = (btcSlice[btcSlice.length - 1].price / btcSlice[0].price - 1) * 100;
+                    if (bEnd - bStart >= 2) {
+                        const roi = (_allBtcSorted[bEnd - 1].price / _allBtcSorted[bStart].price - 1) * 100;
                         const col = roi >= 0 ? '#00e676' : '#ff4757';
                         btcEl.innerHTML = `<span style="color:#f7931a;font-size:0.62rem">${t('chartBtc')}</span> <b style="color:${col}">${fmtRoi(roi)}</b>`;
                     } else {
@@ -1524,18 +1551,20 @@
 
             function closestEq(ts) {
                 const pts = canvas._eqPoints;
-                if (!pts) return null;
-                let best = pts[0], bd = Infinity;
-                pts.forEach(p => { const d = Math.abs(p.date.getTime() - ts); if (d < bd) { bd = d; best = p; } });
-                return best;
+                if (!pts || pts.length === 0) return null;
+                let lo = 0, hi = pts.length - 1;
+                while (lo < hi) { const mid = (lo + hi) >> 1; if (pts[mid].date.getTime() < ts) lo = mid + 1; else hi = mid; }
+                if (lo > 0 && Math.abs(pts[lo - 1].date.getTime() - ts) < Math.abs(pts[lo].date.getTime() - ts)) return pts[lo - 1];
+                return pts[lo];
             }
 
             function closestBtc(ts) {
                 const pts = canvas._btcPoints;
-                if (!pts || !pts.length) return null;
-                let best = pts[0], bd = Infinity;
-                pts.forEach(p => { const d = Math.abs(p.ts.getTime() - ts); if (d < bd) { bd = d; best = p; } });
-                return best;
+                if (!pts || pts.length === 0) return null;
+                let lo = 0, hi = pts.length - 1;
+                while (lo < hi) { const mid = (lo + hi) >> 1; if (pts[mid].ts.getTime() < ts) lo = mid + 1; else hi = mid; }
+                if (lo > 0 && Math.abs(pts[lo - 1].ts.getTime() - ts) < Math.abs(pts[lo].ts.getTime() - ts)) return pts[lo - 1];
+                return pts[lo];
             }
 
             function pct(a, b) {
@@ -1556,27 +1585,20 @@
 
             function showTooltipAt(cx, clientX, clientY) {
                 if (!canvas._eqPoints) return;
-                const pts = canvas._eqPoints;
-                const pxFn = canvas._eqPx;
-                let closest = pts[0], minDx = Infinity;
-                pts.forEach(p => {
-                    const dx = Math.abs(pxFn(p.date.getTime()) - cx);
-                    if (dx < minDx) { minDx = dx; closest = p; }
-                });
+                const ts = tsAtX(cx);
+                const closest = closestEq(ts); // binary search by timestamp
+                if (!closest) return;
                 const dateLbl = closest.date.toISOString().split('T')[0];
                 const eqPctVal = (closest.value / canvas._eqBase - 1) * 100;
                 const eqPctColor = eqPctVal >= 0 ? '#00e676' : '#ff4757';
                 const eqPctLbl = (eqPctVal >= 0 ? '+' : '') + eqPctVal.toFixed(2) + '%';
                 let btcLbl = '';
                 if (canvas._btcPoints && canvas._btcPoints.length) {
-                    const mxcT = tsAtX(cx);
-                    let closestB = canvas._btcPoints[0], minBtcDx = Infinity;
-                    canvas._btcPoints.forEach(p => {
-                        const dx = Math.abs(p.ts.getTime() - mxcT);
-                        if (dx < minBtcDx) { minBtcDx = dx; closestB = p; }
-                    });
-                    const bv = closestB.price;
-                    btcLbl = `<br><span style="color:#f7931a">BTC: $${bv >= 1e3 ? (bv / 1e3).toFixed(1) + 'K' : bv.toFixed(0)}</span>`;
+                    const closestB = closestBtc(ts); // binary search
+                    if (closestB) {
+                        const bv = closestB.price;
+                        btcLbl = `<br><span style="color:#f7931a">BTC: $${bv >= 1e3 ? (bv / 1e3).toFixed(1) + 'K' : bv.toFixed(0)}</span>`;
+                    }
                 }
                 tooltip.innerHTML = `<b>${dateLbl}</b><br><span style="color:#5b9dff">${t('chartPortfolio')}: <b style="color:${eqPctColor}">${eqPctLbl}</b></span>${btcLbl}`;
                 tooltip.style.opacity = '1';
