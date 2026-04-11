@@ -290,7 +290,8 @@
                     el.addEventListener('click', e => {
                         e.stopPropagation();
                         const chosen = new Date(viewYear, viewMonth, parseInt(el.dataset.day));
-                        const dayOffset = Math.round((chosen - minDate) / 86400000);
+                        const minMidnight = new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate());
+                        const dayOffset = Math.round((chosen - minMidnight) / 86400000);
                         if (currentTarget === 'start') {
                             document.getElementById('startSlider').value = dayOffset;
                             updateStartDate({ target: document.getElementById('startSlider') });
@@ -303,27 +304,45 @@
                 });
             }
 
+            let _anchor = null;
+
+            function repositionPopup() {
+                if (!_anchor || popup.classList.contains('hidden')) return;
+                const rect = _anchor.getBoundingClientRect();
+                let top  = rect.bottom + 6;
+                let left = rect.left;
+                const popW = popup.offsetWidth  || 290;
+                const popH = popup.offsetHeight || 320;
+                // keep inside viewport horizontally
+                if (left + popW > window.innerWidth)  left = window.innerWidth  - popW - 4;
+                if (left < 4) left = 4;
+                // prefer below; flip above only if no room below AND room above
+                if (top + popH > window.innerHeight && rect.top - popH - 6 > 0) {
+                    top = rect.top - popH - 6;
+                }
+                popup.style.top  = top  + 'px';
+                popup.style.left = left + 'px';
+            }
+
             function openPopup(target, anchorEl) {
                 currentTarget = target;
+                _anchor = anchorEl;
                 const ref = currentTarget === 'start' ? startDate : endDate;
                 viewYear  = ref.getFullYear();
                 viewMonth = ref.getMonth();
                 buildCalendar();
                 popup.classList.remove('hidden');
-                // Position below the anchor
-                const rect = anchorEl.getBoundingClientRect();
-                let top  = rect.bottom + 6;
-                let left = rect.left;
-                // keep inside viewport
-                if (left + 290 > window.innerWidth) left = window.innerWidth - 294;
-                if (top + 320 > window.innerHeight) top = rect.top - 326;
-                popup.style.top  = top  + 'px';
-                popup.style.left = left + 'px';
+                repositionPopup();
+                window.addEventListener('scroll', repositionPopup, { passive: true, capture: true });
+                window.addEventListener('resize', repositionPopup, { passive: true });
             }
 
             function closePopup() {
                 popup.classList.add('hidden');
                 currentTarget = null;
+                _anchor = null;
+                window.removeEventListener('scroll', repositionPopup, { capture: true });
+                window.removeEventListener('resize', repositionPopup);
             }
 
             // Attach click to date labels once they exist (they're rendered dynamically)
@@ -1044,13 +1063,21 @@
 
             // Stride for intra-trade BTC interpolation based on selected period
             const H1MS = 3600000;
-            const btcStrideMs =
-                (equityPeriodMonths === 0 || equityPeriodMonths >= 36) ? 24 * H1MS :  // daily for 3Y/5Y/All
-                equityPeriodMonths === 12                              ?  4 * H1MS :  // 4-hour for 1Y
-                equityPeriodMonths === 6                               ?  2 * H1MS :  // 2-hour for 6M
-                1 * H1MS;                                                             // 1-hour for 3M/6M
+            // equityStrideMs: FIXED at 1h so allPoints is identical regardless of
+            // which period button is active. This makes button ROI and the
+            // selection-overlay ROI always consistent with each other.
+            const equityStrideMs = H1MS;
+            // displayStrideMs: only used for the BTC orange line drawing (performance).
+            const displayStrideMs =
+                equityPeriodMonths === 0                               ? 96 * H1MS : // All
+                equityPeriodMonths === 60                              ? 72 * H1MS : // 5Y
+                equityPeriodMonths === 36                              ? 48 * H1MS : // 3Y
+                equityPeriodMonths === 12                              ?  4 * H1MS : // 1Y
+                equityPeriodMonths === 6                               ?  2 * H1MS : // 3M
+                equityPeriodMonths === 3                               ?  1 * H1MS : // 1M
+                H1MS; // Default 1h
 
-            // BTC candles sorted for live P&L interpolation, downsampled by period
+            // BTC candles sorted for live P&L interpolation, always 1h stride
             const btcForEquityRaw = priceData
                 .filter(r => r.CANDLE_START && typeof r.CLOSE_PRICE === 'number')
                 .map(r => ({ ts: new Date(r.CANDLE_START), price: r.CLOSE_PRICE }))
@@ -1059,7 +1086,7 @@
             const btcForEquity = [];
             let _lastBtcTs = -Infinity;
             for (const c of btcForEquityRaw) {
-                if (c.ts.getTime() - _lastBtcTs >= btcStrideMs) {
+                if (c.ts.getTime() - _lastBtcTs >= equityStrideMs) {
                     btcForEquity.push(c);
                     _lastBtcTs = c.ts.getTime();
                 }
@@ -1126,7 +1153,7 @@
             const tRange = tMax - tMin || 1;
             const pxFn = t => PAD_L + (t - tMin) / tRange * cW;
 
-            // ── Build BTC points (downsampled to match period) for shared scale + drawing ──
+            // ── Build BTC points (downsampled for display only) for BTC line drawing ──
             const _btcAllRaw = priceData
                 .filter(r => r.CANDLE_START && typeof r.CLOSE_PRICE === 'number')
                 .map(r => ({ ts: new Date(r.CANDLE_START), price: r.CLOSE_PRICE }))
@@ -1135,7 +1162,7 @@
             const btcPointsRaw = [];
             let _lastBtcRawTs = -Infinity;
             for (const c of _btcAllRaw) {
-                if (c.ts.getTime() - _lastBtcRawTs >= btcStrideMs) {
+                if (c.ts.getTime() - _lastBtcRawTs >= displayStrideMs) {
                     btcPointsRaw.push(c);
                     _lastBtcRawTs = c.ts.getTime();
                 }
@@ -1229,6 +1256,23 @@
                 ctx.stroke();
             });
 
+            // Downsample equity points for display (same stride as BTC orange line)
+            // Full 'points' array is kept for hover/tooltip interaction.
+            function downsampleForDisplay(pts, strideMs) {
+                if (pts.length === 0) return pts;
+                const result = [pts[0]];
+                let lastTs = pts[0].date.getTime();
+                for (let i = 1; i < pts.length - 1; i++) {
+                    if (pts[i].date.getTime() - lastTs >= strideMs) {
+                        result.push(pts[i]);
+                        lastTs = pts[i].date.getTime();
+                    }
+                }
+                result.push(pts[pts.length - 1]); // always include last point
+                return result;
+            }
+            const displayPoints = downsampleForDisplay(points, displayStrideMs);
+
             // Smooth equity values for visual rendering only (trade markers stay exact)
             function movingAvg(pts, win) {
                 if (win <= 1 || pts.length < win) return pts;
@@ -1243,7 +1287,7 @@
             const smoothWin =
                 (equityPeriodMonths === 0 || equityPeriodMonths >= 36) ? 3 :
                 equityPeriodMonths === 12 ? 5 : 9;
-            const drawPoints = movingAvg(points, smoothWin);
+            const drawPoints = movingAvg(displayPoints, smoothWin);
 
             // Fill under line
             ctx.beginPath();
@@ -1394,7 +1438,9 @@
                     if (months === 0) {
                         pts = allPoints;
                     } else {
-                        cutoff = new Date(maxDate);
+                        // Use lastPt.date (same reference as the chart) not maxDate,
+                        // so the cutoff is identical to what the chart draws from.
+                        cutoff = new Date(lastPt.date);
                         cutoff.setMonth(cutoff.getMonth() - months);
                         pts = allPoints.filter(p => p.date >= cutoff);
                     }
@@ -1408,8 +1454,8 @@
                     }
 
                     const btcSlice = months === 0
-                        ? allBtcSorted.filter(r => r.ts >= allPoints[0].date && r.ts <= maxDate)
-                        : allBtcSorted.filter(r => r.ts >= cutoff && r.ts <= maxDate);
+                        ? allBtcSorted.filter(r => r.ts >= allPoints[0].date && r.ts <= lastPt.date)
+                        : allBtcSorted.filter(r => r.ts >= cutoff && r.ts <= lastPt.date);
 
                     if (btcSlice.length >= 2) {
                         const roi = (btcSlice[btcSlice.length - 1].price / btcSlice[0].price - 1) * 100;
@@ -1428,13 +1474,15 @@
                 document.querySelectorAll('.equity-period-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 equityPeriodMonths = parseInt(btn.dataset.months) || 0;
+                if (window._clearEquitySelection) window._clearEquitySelection();
+                if (window._hideEquityTooltip) window._hideEquityTooltip();
                 buildEquityChart();
             });
         });
 
-        // Hover tooltip + drag selection
-        // Desktop: left-click drag to select period; hover for price tooltip
-        // Mobile: tap for price tooltip; long-press (500ms) + drag to select period
+        // Hover tooltip + selection
+        // Desktop: double-click to pin start, hover to preview end, click to confirm; hover for price tooltip
+        // Mobile: tap for price tooltip; double-tap + drag to select period
         (function () {
             const canvas = document.getElementById('equityChart');
             const overlay = document.getElementById('equityOverlay');
@@ -1443,13 +1491,17 @@
             if (!canvas || !overlay || !tooltip || !selStats) return;
 
             let sel = null; // { x0, x1 } in canvas px, or null
-            let dragging = false;
+            let selMode = false; // true when x0 is pinned, x1 tracks cursor/finger
             let dragStart = null;
+            let hovCx = null; // crosshair x in canvas px, or null
+            let pendingClickTimer = null;
 
             // touch state
-            let touchTimer = null;
             let touchSelDragging = false;
             let touchOrigin = null;
+            let lastTouchPos = null; // last position seen in touchmove
+            let lastTapTime = 0;
+            let lastTapCx = null;
 
             function syncOverlaySize() {
                 overlay.width = canvas.width;
@@ -1530,21 +1582,40 @@
                 tooltip.style.opacity = '1';
                 tooltip.style.left = (clientX + 16) + 'px';
                 tooltip.style.top = (clientY - 36) + 'px';
+                hovCx = cx;
+                redrawOverlay();
             }
 
             function hideTooltip() {
                 tooltip.style.opacity = '0';
+                hovCx = null;
+                redrawOverlay();
             }
 
-            function drawSelection() {
+            function redrawOverlay() {
                 syncOverlaySize();
                 const ctx = overlay.getContext('2d');
                 ctx.clearRect(0, 0, overlay.width, overlay.height);
-                if (!sel) return;
-
                 const PAD_T = canvas._padT || 20;
                 const PAD_B = canvas._padB || 48;
                 const H = overlay.height;
+
+                // Vertical crosshair line (only when no selection active)
+                if (hovCx !== null && !sel) {
+                    ctx.save();
+                    ctx.strokeStyle = 'rgba(180,200,255,0.5)';
+                    ctx.lineWidth = 1;
+                    ctx.setLineDash([4, 3]);
+                    ctx.beginPath();
+                    ctx.moveTo(hovCx, PAD_T);
+                    ctx.lineTo(hovCx, H - PAD_B);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                    ctx.restore();
+                }
+
+                if (!sel) return;
+
                 const x0 = Math.min(sel.x0, sel.x1);
                 const x1 = Math.max(sel.x0, sel.x1);
                 const w = x1 - x0;
@@ -1591,12 +1662,12 @@
                 selStats.style.top = '24px';
             }
 
+            function drawSelection() { redrawOverlay(); }
+
             function clearSelection() {
                 sel = null;
-                const ctx = overlay.getContext('2d');
-                syncOverlaySize();
-                ctx.clearRect(0, 0, overlay.width, overlay.height);
                 selStats.style.display = 'none';
+                redrawOverlay();
             }
 
             // sync overlay size when chart rebuilds
@@ -1606,35 +1677,44 @@
             };
 
             // ── Desktop mouse events ──────────────────────────────────────
-            canvas.addEventListener('mousedown', e => {
-                if (e.button !== 0) return;
+            // Double-click to pin the selection start; hover to preview end; click to confirm.
+            canvas.addEventListener('dblclick', e => {
                 e.preventDefault();
-                dragging = true;
-                dragStart = canvasX(e);
-                sel = { x0: dragStart, x1: dragStart };
+                if (pendingClickTimer) { clearTimeout(pendingClickTimer); pendingClickTimer = null; }
+                if (selMode || sel) { selMode = false; clearSelection(); return; }
+                const cx = canvasX(e);
+                dragStart = cx;
+                sel = { x0: cx, x1: cx };
+                selMode = true;
                 hideTooltip();
-            });
-
-            window.addEventListener('mousemove', e => {
-                if (!dragging) return;
-                sel.x1 = canvasX(e);
                 drawSelection();
             });
 
-            window.addEventListener('mouseup', e => {
-                if (!dragging) return;
-                dragging = false;
-                sel.x1 = canvasX(e);
-                if (Math.abs(sel.x1 - sel.x0) < 4) { clearSelection(); return; }
-                drawSelection();
+            canvas.addEventListener('click', e => {
+                if (!selMode) return;
+                if (pendingClickTimer) { clearTimeout(pendingClickTimer); pendingClickTimer = null; }
+                const cx = canvasX(e);
+                pendingClickTimer = setTimeout(() => {
+                    pendingClickTimer = null;
+                    if (!selMode) return;
+                    sel.x1 = cx;
+                    selMode = false;
+                    if (Math.abs(sel.x1 - sel.x0) < 4) clearSelection();
+                    else drawSelection();
+                }, 250);
             });
 
             canvas.addEventListener('mousemove', e => {
-                if (dragging || sel) return;
-                showTooltipAt(canvasX(e), e.clientX, e.clientY);
+                const cx = canvasX(e);
+                if (selMode && sel) {
+                    sel.x1 = cx;
+                    drawSelection();
+                } else if (!sel) {
+                    showTooltipAt(cx, e.clientX, e.clientY);
+                }
             });
 
-            canvas.addEventListener('mouseleave', () => { if (!dragging) hideTooltip(); });
+            canvas.addEventListener('mouseleave', () => { if (!selMode) hideTooltip(); });
 
             // If the page/layout moves, hide stale fixed-position tooltip.
             window.addEventListener('scroll', hideTooltip, true);
@@ -1642,51 +1722,60 @@
             window.addEventListener('resize', hideTooltip);
 
             canvas.addEventListener('mousemove', e => {
-                canvas.style.cursor = dragging ? 'crosshair' : 'crosshair';
+                canvas.style.cursor = selMode ? 'crosshair' : 'default';
             });
 
             // ── Touch events (mobile) ─────────────────────────────────────
+            // Single tap: show tooltip. Double-tap: enter selection drag mode.
+            const DOUBLE_TAP_MS = 300;
             canvas.addEventListener('touchstart', e => {
                 e.preventDefault();
                 const touch = e.changedTouches[0];
-                touchOrigin = { cx: touchCanvasX(touch), clientX: touch.clientX, clientY: touch.clientY };
-                touchSelDragging = false;
-                hideTooltip();
-                touchTimer = setTimeout(() => {
-                    // Enter selection drag mode after long press
+                const cx = touchCanvasX(touch);
+                const now = Date.now();
+                touchOrigin = { cx, clientX: touch.clientX, clientY: touch.clientY };
+                lastTouchPos = null;
+
+                const timeSinceLast = now - lastTapTime;
+                const distFromLast = lastTapCx !== null ? Math.abs(cx - lastTapCx) : Infinity;
+
+                if (timeSinceLast < DOUBLE_TAP_MS && distFromLast < 40) {
+                    // Double-tap: enter selection drag mode
                     touchSelDragging = true;
-                    dragStart = touchOrigin.cx;
-                    sel = { x0: dragStart, x1: dragStart };
+                    dragStart = cx;
+                    sel = { x0: cx, x1: cx };
                     if (navigator.vibrate) navigator.vibrate(30);
+                    hideTooltip();
                     drawSelection();
-                }, 500);
+                    lastTapTime = 0;
+                    lastTapCx = null;
+                } else {
+                    touchSelDragging = false;
+                    lastTapTime = now;
+                    lastTapCx = cx;
+                }
             }, { passive: false });
 
             canvas.addEventListener('touchmove', e => {
                 e.preventDefault();
                 const touch = e.changedTouches[0];
                 const cx = touchCanvasX(touch);
-                // If finger moves significantly before long-press fires, cancel it
-                if (!touchSelDragging && touchOrigin && Math.abs(cx - touchOrigin.cx) > 10) {
-                    clearTimeout(touchTimer);
-                    touchTimer = null;
-                }
                 if (touchSelDragging) {
                     sel.x1 = cx;
                     drawSelection();
                 } else {
+                    lastTouchPos = { cx, clientX: touch.clientX, clientY: touch.clientY };
                     showTooltipAt(cx, touch.clientX, touch.clientY);
                 }
             }, { passive: false });
 
             canvas.addEventListener('touchend', e => {
                 e.preventDefault();
-                clearTimeout(touchTimer);
-                touchTimer = null;
                 if (!touchSelDragging) {
-                    // Simple tap: show tooltip at the tapped position
+                    // Use last dragged position if finger moved, else the tap origin
+                    const pos = lastTouchPos || touchOrigin;
                     if (sel) { clearSelection(); }
-                    else if (touchOrigin) { showTooltipAt(touchOrigin.cx, touchOrigin.clientX, touchOrigin.clientY); }
+                    else if (pos) { showTooltipAt(pos.cx, pos.clientX, pos.clientY); }
                 } else {
                     touchSelDragging = false;
                     if (sel && Math.abs(sel.x1 - sel.x0) < 4) clearSelection();
@@ -1696,6 +1785,22 @@
             }, { passive: false });
 
             document.addEventListener('keydown', e => {
-                if (e.key === 'Escape' && sel) clearSelection();
+                if (e.key === 'Escape') { selMode = false; clearSelection(); }
             });
+
+            // Dismiss tooltip + crosshair when tapping/clicking outside the chart area
+            const chartWrap = canvas.parentElement;
+            document.addEventListener('click', e => {
+                if (!chartWrap.contains(e.target)) {
+                    if (selMode) { selMode = false; clearSelection(); }
+                    hideTooltip();
+                }
+            });
+            document.addEventListener('touchstart', e => {
+                if (!chartWrap.contains(e.target)) hideTooltip();
+            }, { passive: true });
+
+            // Expose so period buttons can dismiss any open overlay
+            window._clearEquitySelection = clearSelection;
+            window._hideEquityTooltip = hideTooltip;
         })();

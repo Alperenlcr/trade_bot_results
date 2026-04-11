@@ -56,7 +56,7 @@
     "equityYLeft": "Portfolio",
     "equitySubStart": "Start",
     "equitySubLeverage": "Leverage",
-    "help_equityCurve": "Cumulative percentage return of the trading bot over time. Drag to select a period and compare performance. On mobile, tap to view values or long-press and drag to select a range.",
+    "help_equityCurve": "Cumulative percentage return of the trading bot over time. Drag to select a period and compare performance. On mobile, tap to view values or double tap and drag to select a range.",
     "botSpecsContent": [
       "The bot is a BTC-only trend-following system designed to capture large market moves while keeping losses small. Historical analysis shows over 100% average annual ROI. Short-term drawdowns may occur, but over longer periods (around one year), the strategy has historically remained profitable.",
       "The system typically uses 2x leverage to improve capital efficiency while maintaining conservative exposure. Backtests assume 100% capital usage, while live trading usually uses around 85% to provide an additional buffer.",
@@ -152,7 +152,7 @@
     "equityYLeft": "Portföy",
     "equitySubStart": "Başlangıç",
     "equitySubLeverage": "Kaldıraç",
-    "help_equityCurve": "Ticaret botunun zaman içindeki birikimli yüzde getirisi. Bir dönemi seçmek ve performansı karşılaştırmak için sürükleyin. Mobilde, değerleri görmek için dokunun veya uzun basın ve sürükleyin.",
+    "help_equityCurve": "Ticaret botunun zaman içindeki birikimli yüzde getirisi. Bir dönemi seçmek ve performansı karşılaştırmak için sürükleyin. Mobilde, değerleri görmek için dokunun veya çift dokunun ve sürükleyin.",
     "botSpecsContent": [
       "Bot, BTC üzerinde çalışan bir trend-following sistemidir. Büyük piyasa hareketlerini yakalamayı hedeflerken kayıpları küçük tutmayı amaçlar. Tarihsel analizler yıllık ortalama %100'ün üzerinde ROI göstermektedir. Kısa vadede düşüşler yaşanabilir, ancak daha uzun vadede (yaklaşık bir yıl) strateji tarihsel olarak kârlı kalmıştır.",
       "Sistem genellikle 2x kaldıraç kullanır. Backtestler %100 sermaye kullanımını varsayar, canlı kullanımda ise genellikle yaklaşık %85 sermaye kullanılarak ek güvenlik payı bırakılır.",
