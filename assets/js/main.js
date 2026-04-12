@@ -1096,18 +1096,6 @@
 
             // Stride for intra-trade BTC interpolation based on selected period
             const H1MS = 3600000;
-            // equityStrideMs: FIXED at 1h so allPoints is identical regardless of
-            // which period button is active. This makes button ROI and the
-            // selection-overlay ROI always consistent with each other.
-            // displayStrideMs: only used for the BTC orange line drawing (performance).
-            const displayStrideMs =
-                equityPeriodMonths === 0                               ? 96 * H1MS : // All
-                equityPeriodMonths === 60                              ? 72 * H1MS : // 5Y
-                equityPeriodMonths === 36                              ? 48 * H1MS : // 3Y
-                equityPeriodMonths === 12                              ?  4 * H1MS : // 1Y
-                equityPeriodMonths === 6                               ?  2 * H1MS : // 3M
-                equityPeriodMonths === 3                               ?  1 * H1MS : // 1M
-                H1MS; // Default 1h
 
             // ── Build / restore cached equity data ──────────────────────────────
             // allPoints is identical for the same trades+prices+leverage regardless
@@ -1169,6 +1157,18 @@
             const wrap = canvas.parentElement;
             const W = wrap.clientWidth;
             const H = wrap.clientHeight || 340;
+
+            // displayStrideMs: only used for drawing (performance). Scale up on narrow
+            // (mobile) screens since fewer pixels need fewer data points.
+            const _mobileScale = Math.max(1, Math.round(1000 / Math.max(W, 200)));
+            const displayStrideMs = _mobileScale * (
+                equityPeriodMonths === 0  ? 96 * H1MS : // All
+                equityPeriodMonths === 60 ? 72 * H1MS : // 5Y
+                equityPeriodMonths === 36 ? 48 * H1MS : // 3Y
+                equityPeriodMonths === 12 ?  4 * H1MS : // 1Y
+                equityPeriodMonths === 6  ?  2 * H1MS : // 6M
+                equityPeriodMonths === 3  ?  1 * H1MS : // 3M
+                H1MS); // Default 1h
             canvas.width = W;
             canvas.height = H;
             const ctx = canvas.getContext('2d');
@@ -1341,21 +1341,6 @@
                 i === 0 ? ctx.moveTo(xp, yp) : ctx.lineTo(xp, yp);
             });
             ctx.stroke();
-
-            // Trade entry/exit dots only
-            periodTradeMarkers.forEach(m => {
-                const xm = pxFn(m.date.getTime());
-                const ym = pyFn(m.value / eqBase);
-                ctx.beginPath();
-                ctx.arc(xm, ym, 4, 0, Math.PI * 2);
-                ctx.fillStyle = '#5b9dff';
-                ctx.fill();
-                ctx.beginPath();
-                ctx.arc(xm, ym, 4, 0, Math.PI * 2);
-                ctx.strokeStyle = 'rgba(255,255,255,0.7)';
-                ctx.lineWidth = 1.5;
-                ctx.stroke();
-            });
 
             canvas._eqPoints = points;
             canvas._eqPx = pxFn;
@@ -1665,14 +1650,17 @@
                 let left = crosshairClientX - ttW / 2;
                 left = Math.max(margin, Math.min(left, window.innerWidth - ttW - margin));
 
-                // Vertical: centered on whichever end of the line is farther from cursor
+                // Vertical: centered on whichever end of the line is farther from cursor,
+                // nudged inward (toward center) so it doesn't hug the chart edge.
+                const chartH = chartBottomY - chartTopY;
+                const nudge  = chartH * 0.18; // push ~18% of chart height toward center
                 let top;
                 if (clientY >= chartMidY) {
-                    // Cursor in bottom half → center box on TOP end of line
-                    top = chartTopY - ttH / 2;
+                    // Cursor in bottom half → box near TOP end, nudged down toward center
+                    top = chartTopY - ttH / 2 + nudge;
                 } else {
-                    // Cursor in top half → center box on BOTTOM end of line
-                    top = chartBottomY - ttH / 2;
+                    // Cursor in top half → box near BOTTOM end, nudged up toward center
+                    top = chartBottomY - ttH / 2 - nudge;
                 }
                 top = Math.max(margin, Math.min(top, window.innerHeight - ttH - margin));
 
