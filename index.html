@@ -31,6 +31,30 @@
                 <span class="lang-inactive" id="langInactive"></span>
             </button>
         </div>
+        <!-- Equity Chart Section -->
+        <div class="equity-section">
+            <div class="equity-card">
+                <div class="equity-header">
+                    <div class="equity-title"><span class="help-icon" data-help-key="equityCurve" style="margin-right:4px;vertical-align:middle;font-size:0.82rem">?<span class="help-tooltip"></span></span><span data-i18n="equityCurveTitle"></span></div>
+                    <div class="equity-subtitle" id="equitySubtitle" style="padding-left:32px"></div>
+                </div>
+                <div class="equity-canvas-wrap">
+                    <canvas id="equityChart"></canvas>
+                    <canvas id="equityOverlay"></canvas>
+                    <div class="equity-sel-stats" id="equitySelStats"></div>
+                </div>
+                <div class="equity-period-btns">
+                    <button class="equity-period-btn" data-months="3"><span class="epb-label" data-i18n="btn3M"></span><span class="epb-roi-port"></span><span class="epb-roi-btc"></span></button>
+                    <button class="equity-period-btn" data-months="6"><span class="epb-label" data-i18n="btn6M"></span><span class="epb-roi-port"></span><span class="epb-roi-btc"></span></button>
+                    <button class="equity-period-btn active" data-months="12"><span class="epb-label" data-i18n="btn1Y"></span><span class="epb-roi-port"></span><span class="epb-roi-btc"></span></button>
+                    <button class="equity-period-btn" data-months="36"><span class="epb-label" data-i18n="btn3Y"></span><span class="epb-roi-port"></span><span class="epb-roi-btc"></span></button>
+                    <button class="equity-period-btn" data-months="60"><span class="epb-label" data-i18n="btn5Y"></span><span class="epb-roi-port"></span><span class="epb-roi-btc"></span></button>
+                    <button class="equity-period-btn" data-months="0"><span class="epb-label" data-i18n="btnAll"></span><span class="epb-roi-port"></span><span class="epb-roi-btc"></span></button>
+                </div>
+            </div>
+        </div>
+        <div id="equityTooltip" class="equity-tooltip"></div>
+
         <!-- Main Content Layout -->
         <div class="main-layout">
             <!-- Tables Column (BP + PA) -->
@@ -102,30 +126,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Equity Chart Section -->
-    <div class="equity-section">
-        <div class="equity-card">
-            <div class="equity-header">
-                <div class="equity-title"><span class="help-icon" data-help-key="equityCurve" style="margin-right:4px;vertical-align:middle;font-size:0.82rem">?<span class="help-tooltip"></span></span><span data-i18n="equityCurveTitle"></span></div>
-                <div class="equity-subtitle" id="equitySubtitle" style="padding-left:32px"></div>
-            </div>
-            <div class="equity-canvas-wrap">
-                <canvas id="equityChart"></canvas>
-                <canvas id="equityOverlay"></canvas>
-                <div class="equity-sel-stats" id="equitySelStats"></div>
-            </div>
-            <div class="equity-period-btns">
-                <button class="equity-period-btn" data-months="3"><span class="epb-label" data-i18n="btn3M"></span><span class="epb-roi-port"></span><span class="epb-roi-btc"></span></button>
-                <button class="equity-period-btn" data-months="6"><span class="epb-label" data-i18n="btn6M"></span><span class="epb-roi-port"></span><span class="epb-roi-btc"></span></button>
-                <button class="equity-period-btn active" data-months="12"><span class="epb-label" data-i18n="btn1Y"></span><span class="epb-roi-port"></span><span class="epb-roi-btc"></span></button>
-                <button class="equity-period-btn" data-months="36"><span class="epb-label" data-i18n="btn3Y"></span><span class="epb-roi-port"></span><span class="epb-roi-btc"></span></button>
-                <button class="equity-period-btn" data-months="60"><span class="epb-label" data-i18n="btn5Y"></span><span class="epb-roi-port"></span><span class="epb-roi-btc"></span></button>
-                <button class="equity-period-btn" data-months="0"><span class="epb-label" data-i18n="btnAll"></span><span class="epb-roi-port"></span><span class="epb-roi-btc"></span></button>
-            </div>
-        </div>
-    </div>
-    <div id="equityTooltip" class="equity-tooltip"></div>
 
     <!-- Copy Trading Section -->
     <div class="copy-trade-section">

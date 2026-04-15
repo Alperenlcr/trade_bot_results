@@ -375,9 +375,7 @@
         @media (min-width: 1200px) {
             .main-layout {
                 grid-template-columns: 450px minmax(650px, 1fr) 500px;
-                grid-template-areas: 
-                    "tables history bot"
-                    "tables history bot";
+                grid-template-areas: "tables history bot";
                 align-items: start;
                 justify-content: center;
             }
@@ -1133,7 +1131,7 @@
 
         /* ── Copy Trading Section ─────────────────────────────── */
         .copy-trade-section {
-            margin: 28px auto 0;
+            margin: 0 auto 20px;
             max-width: 1400px;
             min-width: 441px;
         }
@@ -1261,7 +1259,7 @@
 
         /* ── Equity Chart ──────────────────────────────────────── */
         .equity-section {
-            margin: 40px auto 0;
+            margin: 0 auto 20px;
             max-width: 1400px;
             min-width: 441px;
         }
