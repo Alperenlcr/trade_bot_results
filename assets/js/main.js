@@ -402,9 +402,25 @@
             }
         });
         
+        // Auto-zoom: scale the page down on non-phone viewports that are too
+        // narrow to fit the 3-column layout (min ~1640px) without overflowing.
+        // Below 768px the mobile stacked layout takes over – no zoom needed there.
+        const DESKTOP_MIN_WIDTH = 1800;
+        const MOBILE_BREAKPOINT  = 768;
+        function applyAutoZoom() {
+            const vw = window.innerWidth;
+            if (vw >= MOBILE_BREAKPOINT && vw < DESKTOP_MIN_WIDTH) {
+                document.body.style.zoom = (vw / DESKTOP_MIN_WIDTH).toFixed(4);
+            } else {
+                document.body.style.zoom = '';
+            }
+        }
+        applyAutoZoom();
+
         // Window resize handler to recalculate heights (debounced)
         let _resizeTimer = null;
         window.addEventListener('resize', function() {
+            applyAutoZoom();
             setTimeout(matchHistoryHeight, 100);
             clearTimeout(_resizeTimer);
             _resizeTimer = setTimeout(buildEquityChart, 150);
