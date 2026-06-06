@@ -93,7 +93,10 @@
     "ariaClose": "Close",
     "copyTradeTitle": "Copy My Trades",
     "copyTradeSubtitle": "Follow the bot automatically on your preferred platform",
-    "copyTradeCta": "Follow Now →"
+    "copyTradeCta": "Follow Now →",
+    "referralTitle": "Refer a Friend & Earn",
+    "referralDesc": "Refer a new user to Executor Bot and earn 50% of the profit-sharing revenue generated from that user for 12 months.",
+    "referralCta": "Refer Now"
   },
   "tr": {
     "pageTitle": "Executor Trading Bot",
@@ -189,6 +192,9 @@
     "ariaClose": "Kapat",
     "copyTradeTitle": "İşlemlerimi Kopyala",
     "copyTradeSubtitle": "Botu tercih ettiğin platformda otomatik olarak takip et",
-    "copyTradeCta": "Hemen Takip Et →"
+    "copyTradeCta": "Hemen Takip Et →",
+    "referralTitle": "Arkadaşını Davet Et & Kazan",
+    "referralDesc": "Executor Bot'a yeni bir kullanıcı yönlendirerek, o kullanıcının oluşturduğu kâr paylaşımı gelirinin 12 ay boyunca %50'sini kazanabilirsiniz.",
+    "referralCta": "Şimdi Davet Et"
   }
 }
