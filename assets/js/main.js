@@ -2009,3 +2009,48 @@
             window._clearEquitySelection = clearSelection;
             window._hideEquityTooltip = hideTooltip;
         })();
+
+// ── Photo Slider ────────────────────────────────────────────────────────────
+(function () {
+    const track = document.getElementById('photoSliderTrack');
+    const prevBtn = document.getElementById('photoSliderPrev');
+    const nextBtn = document.getElementById('photoSliderNext');
+    const dots = document.querySelectorAll('.photo-slider-dot');
+    const total = dots.length;
+    let current = 0;
+    let startX = 0;
+    let isDragging = false;
+
+    function goTo(idx) {
+        current = (idx + total) % total;
+        track.style.transform = `translateX(-${current * 100}%)`;
+        dots.forEach((d, i) => d.classList.toggle('active', i === current));
+    }
+
+    prevBtn.addEventListener('click', () => goTo(current - 1));
+    nextBtn.addEventListener('click', () => goTo(current + 1));
+    dots.forEach(d => d.addEventListener('click', () => goTo(+d.dataset.idx)));
+
+    // Touch / drag support
+    track.addEventListener('touchstart', e => { startX = e.touches[0].clientX; isDragging = true; }, { passive: true });
+    track.addEventListener('touchend', e => {
+        if (!isDragging) return;
+        const diff = startX - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 40) goTo(diff > 0 ? current + 1 : current - 1);
+        isDragging = false;
+    }, { passive: true });
+    track.addEventListener('mousedown', e => { startX = e.clientX; isDragging = true; e.preventDefault(); });
+    track.addEventListener('mouseup', e => {
+        if (!isDragging) return;
+        const diff = startX - e.clientX;
+        if (Math.abs(diff) > 40) goTo(diff > 0 ? current + 1 : current - 1);
+        isDragging = false;
+    });
+    track.addEventListener('mouseleave', () => { isDragging = false; });
+
+    // Keyboard support when slider is focused
+    document.addEventListener('keydown', e => {
+        if (e.key === 'ArrowLeft') goTo(current - 1);
+        else if (e.key === 'ArrowRight') goTo(current + 1);
+    });
+})();

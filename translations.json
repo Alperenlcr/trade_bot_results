@@ -96,7 +96,10 @@
     "copyTradeCta": "Follow Now →",
     "referralTitle": "Refer a Friend & Earn",
     "referralDesc": "Refer a new user to Executor Bot and earn 50% of the profit-sharing revenue generated from that user for 12 months.",
-    "referralCta": "Refer Now"
+    "referralCta": "Refer Now",
+    "sliderTitle": "Start Copy Trading",
+    "sliderGuideText": "New to Binance? Before following the steps below, watch this guide to learn how to deposit funds.",
+    "sliderGuideBtn": "Watch Guide"
   },
   "tr": {
     "pageTitle": "Executor Trading Bot",
@@ -195,6 +198,9 @@
     "copyTradeCta": "Hemen Takip Et →",
     "referralTitle": "Arkadaşını Davet Et & Kazan",
     "referralDesc": "Executor Bot'a yeni bir kullanıcı yönlendirerek, o kullanıcının oluşturduğu kâr paylaşımı gelirinin 12 ay boyunca %50'sini kazanabilirsiniz.",
-    "referralCta": "Şimdi Davet Et"
+    "referralCta": "Şimdi Davet Et",
+    "sliderTitle": "Botu Kullanmaya Başlayın",
+    "sliderGuideText": "Binance'te yeni misiniz? Aşağıdaki adımları takip etmeden önce para yatırmayı öğrenmek için bu rehberi izleyin.",
+    "sliderGuideBtn": "Rehberi İzle"
   }
 }

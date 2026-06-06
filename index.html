@@ -182,6 +182,44 @@
         </div>
     </div>
 
+    <!-- Photo Slider Section -->
+    <div class="photo-slider-section">
+        <div class="photo-slider-card">
+            <div class="box-title" data-i18n="sliderTitle"></div>
+            <div class="slider-guide-tip">
+                <span class="slider-guide-icon">&#127916;</span>
+                <span class="slider-guide-text" data-i18n="sliderGuideText"></span>
+                <a class="slider-guide-btn" href="https://www.youtube.com/watch?v=5JZoTzN0IsE" target="_blank" rel="noopener noreferrer"
+                   onclick="gtag('event', 'beginner_guide_click', {'event_category': 'outbound', 'event_label': 'binance_deposit_guide'});">
+                    <span data-i18n="sliderGuideBtn"></span>
+                    <span class="slider-guide-arrow">&#10132;</span>
+                </a>
+            </div>
+            <div class="photo-slider-wrapper">
+                <div class="photo-slider-track" id="photoSliderTrack">
+                    <div class="photo-slide"><img src="./assets/images/1.jpeg" alt="Step 1" draggable="false"></div>
+                    <div class="photo-slide"><img src="./assets/images/2.jpeg" alt="Step 2" draggable="false"></div>
+                    <div class="photo-slide"><img src="./assets/images/3.jpeg" alt="Step 3" draggable="false"></div>
+                    <div class="photo-slide"><img src="./assets/images/4.jpeg" alt="Step 4" draggable="false"></div>
+                    <div class="photo-slide"><img src="./assets/images/5.jpeg" alt="Step 5" draggable="false"></div>
+                    <div class="photo-slide"><img src="./assets/images/6.jpeg" alt="Step 6" draggable="false"></div>
+                    <div class="photo-slide"><img src="./assets/images/7.jpeg" alt="Step 7" draggable="false"></div>
+                </div>
+                <button class="photo-slider-btn photo-slider-prev" id="photoSliderPrev" aria-label="Previous">&#10094;</button>
+                <button class="photo-slider-btn photo-slider-next" id="photoSliderNext" aria-label="Next">&#10095;</button>
+            </div>
+            <div class="photo-slider-dots" id="photoSliderDots">
+                <span class="photo-slider-dot active" data-idx="0"></span>
+                <span class="photo-slider-dot" data-idx="1"></span>
+                <span class="photo-slider-dot" data-idx="2"></span>
+                <span class="photo-slider-dot" data-idx="3"></span>
+                <span class="photo-slider-dot" data-idx="4"></span>
+                <span class="photo-slider-dot" data-idx="5"></span>
+                <span class="photo-slider-dot" data-idx="6"></span>
+            </div>
+        </div>
+    </div>
+
     <!-- Rolling Window Explanation Modal -->
     <div class="rw-modal-overlay" id="rwModal">
         <div class="rw-modal-box">
