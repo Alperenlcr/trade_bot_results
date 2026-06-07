@@ -208,6 +208,7 @@
         let _allBtcSorted = [];   // all BTC candles {ts:Date,price:number}, sorted, built once at load
         let _btcForEquity = [];   // 1h-stride subset of _allBtcSorted, built once at load
         let _rollingCache  = {};  // memoize calculatePeriodicAnalysis
+        let _tradeStartDates = []; // sorted midnight Date objects for each TRADE_START (for slider snapping)
 
         // Binary-search: first index in arr where arr[i].ts.getTime() >= targetMs
         function _bisectTs(arr, targetMs) {
@@ -278,13 +279,20 @@
 
                 for (let day = 1; day <= daysInMonth; day++) {
                     const d = new Date(viewYear, viewMonth, day);
-                    const isSelected = d.toDateString() === selected.toDateString();
-                    const isToday    = d.toDateString() === today.toDateString();
-                    const outOfRange = d < low || d > high;
+                    const isSelected   = d.toDateString() === selected.toDateString();
+                    const isToday      = d.toDateString() === today.toDateString();
+                    const outOfRange   = d < low || d > high;
+                    const isTradeStart = _tradeStartDates.some(td =>
+                        td.getFullYear() === viewYear && td.getMonth() === viewMonth && td.getDate() === day);
+                    const isEndMaxDay = currentTarget === 'end' &&
+                        d.getFullYear() === maxDate.getFullYear() &&
+                        d.getMonth() === maxDate.getMonth() &&
+                        d.getDate() === maxDate.getDate();
                     let cls = 'dp-day';
-                    if (isSelected)  cls += ' selected';
-                    else if (isToday) cls += ' today';
-                    if (outOfRange)  cls += ' out-of-range';
+                    if (isSelected)                   cls += ' selected';
+                    else if (isToday && (isTradeStart || isEndMaxDay)) cls += ' today';
+                    if (outOfRange)                   cls += ' out-of-range';
+                    else if (!isTradeStart && !isEndMaxDay) cls += ' dp-non-trade';
                     html += `<div class="${cls}" data-day="${day}">${day}</div>`;
                 }
                 html += `</div>`;
@@ -429,7 +437,7 @@
         async function loadRepositoryData() {
             try {
                 // Load trade data from repository
-                const tradeResponse = await fetch('./executor_bot_decisions.csv');
+                const tradeResponse = await fetch('./executor_bot_decisions.csv', { cache: 'no-store' });
                 if (!tradeResponse.ok) throw new Error(t('errLoadTrades', tradeResponse.status));
                 const tradeText = await tradeResponse.text();
                 const tradeData = parseCSV(tradeText);
@@ -437,9 +445,21 @@
                 if (tradeData.length === 0) throw new Error(t('errNoTrades'));
                 
                 tradeTables = [{ name: 'Executor Bot Results', data: tradeData }];
-                
+
+                // Build sorted list of unique trade-start midnight dates for slider/calendar snapping
+                {
+                    const _ms = new Set();
+                    for (const row of tradeData) {
+                        if (row.TRADE_START instanceof Date && !isNaN(row.TRADE_START.getTime())) {
+                            const d = new Date(row.TRADE_START.getFullYear(), row.TRADE_START.getMonth(), row.TRADE_START.getDate());
+                            _ms.add(d.getTime());
+                        }
+                    }
+                    _tradeStartDates = [..._ms].map(ms => new Date(ms)).sort((a, b) => a - b);
+                }
+
                 // Load price data from repository
-                const priceResponse = await fetch('./executor_bot_prices.csv');
+                const priceResponse = await fetch('./executor_bot_prices.csv', { cache: 'no-store' });
                 if (!priceResponse.ok) throw new Error(t('errLoadPrices', priceResponse.status));
                 const priceText = await priceResponse.text();
                 priceData = parseCSV(priceText);
@@ -571,6 +591,9 @@
                     }
                 }
 
+                // Always allow selecting today as the latest end date.
+                maxTime = Math.max(maxTime, Date.now());
+
                 minDate = new Date(minTime);
                 maxDate = new Date(maxTime);
                 startDate = new Date(minDate);
@@ -587,6 +610,17 @@
             }
         }
 
+        function snapToTradeStart(dayOffset) {
+            if (_tradeStartDates.length === 0) return dayOffset;
+            const targetMs = minDate.getTime() + dayOffset * 86400000;
+            let bestIdx = 0, bestDiff = Infinity;
+            for (let i = 0; i < _tradeStartDates.length; i++) {
+                const diff = Math.abs(_tradeStartDates[i].getTime() - targetMs);
+                if (diff < bestDiff) { bestDiff = diff; bestIdx = i; }
+            }
+            return Math.round((_tradeStartDates[bestIdx].getTime() - minDate.getTime()) / 86400000);
+        }
+
         function setupSliders() {
             const daysRange = Math.ceil((maxDate - minDate) / (1000 * 60 * 60 * 24));
             
@@ -595,11 +629,16 @@
 
             const fiveYearsAgo = new Date(maxDate.getFullYear() - 5, maxDate.getMonth(), maxDate.getDate());
             const defaultStart = fiveYearsAgo > minDate ? fiveYearsAgo : minDate;
-            const defaultStartDay = Math.ceil((defaultStart - minDate) / (1000 * 60 * 60 * 24));
+            const rawStartDay  = Math.ceil((defaultStart - minDate) / (1000 * 60 * 60 * 24));
+            const defaultStartDay = snapToTradeStart(rawStartDay);
             startDate = new Date(minDate.getTime() + defaultStartDay * 24 * 60 * 60 * 1000);
 
+            // Keep end on the actual max date (today/last candle), do not snap back.
+            const defaultEndDay = daysRange;
+            endDate = new Date(minDate.getTime() + defaultEndDay * 24 * 60 * 60 * 1000);
+
             document.getElementById('startSlider').value = defaultStartDay;
-            document.getElementById('endSlider').value = daysRange;
+            document.getElementById('endSlider').value = defaultEndDay;
             
             updateDateLabels();
         }
@@ -641,7 +680,8 @@
         }
 
         function updateStartDate(event) {
-            const value = parseInt(event.target.value);
+            const value = snapToTradeStart(parseInt(event.target.value));
+            event.target.value = value;
             startDate = new Date(minDate.getTime() + value * 24 * 60 * 60 * 1000);
             
             // Keep last selected rolling period and recalculate
@@ -659,7 +699,11 @@
         }
 
         function updateEndDate(event) {
-            const value = parseInt(event.target.value);
+            const rawValue = parseInt(event.target.value);
+            const sliderMax = parseInt(event.target.max);
+            // Allow only the last endpoint to be exact max date; otherwise keep snapping.
+            const value = rawValue >= sliderMax ? sliderMax : snapToTradeStart(rawValue);
+            event.target.value = value;
             endDate = new Date(minDate.getTime() + value * 24 * 60 * 60 * 1000);
             
             // Keep last selected rolling period and recalculate
@@ -752,29 +796,29 @@
                         return tradeDate >= startDate && tradeDate <= endDate;
                     });
 
-                    // Fill NaN values
-                    filtered.forEach(row => {
-                        if (isNaN(row.PROFIT_PERCENT)) row.PROFIT_PERCENT = 0;
-                    });
+                    const filteredWithProfit = filtered.map(row => ({
+                        ...row,
+                        _effectiveProfit: getEffectiveProfitPercentForDate(row, endDate)
+                    })).filter(row => Number.isFinite(row._effectiveProfit));
 
-                    const buyData = filtered.filter(row => row.TRADE_TYPE === 'buy');
-                    const sellData = filtered.filter(row => row.TRADE_TYPE === 'sell');
+                    const buyData = filteredWithProfit.filter(row => row.TRADE_TYPE === 'buy');
+                    const sellData = filteredWithProfit.filter(row => row.TRADE_TYPE === 'sell');
 
-                    const buyWins = buyData.filter(row => row.PROFIT_PERCENT > 0).length;
-                    const buyLosses = buyData.filter(row => row.PROFIT_PERCENT < 0).length;
-                    const sellWins = sellData.filter(row => row.PROFIT_PERCENT > 0).length;
-                    const sellLosses = sellData.filter(row => row.PROFIT_PERCENT < 0).length;
+                    const buyWins = buyData.filter(row => row._effectiveProfit > 0).length;
+                    const buyLosses = buyData.filter(row => row._effectiveProfit < 0).length;
+                    const sellWins = sellData.filter(row => row._effectiveProfit > 0).length;
+                    const sellLosses = sellData.filter(row => row._effectiveProfit < 0).length;
 
                     // Calculate averages with leverage applied
-                    const buyWinAvg = buyWins > 0 ? (buyData.filter(row => row.PROFIT_PERCENT > 0).reduce((sum, row) => sum + (row.PROFIT_PERCENT * leverage), 0) / buyWins).toFixed(2) : '0.00';
-                    const buyLossAvg = buyLosses > 0 ? (buyData.filter(row => row.PROFIT_PERCENT < 0).reduce((sum, row) => sum + (row.PROFIT_PERCENT * leverage), 0) / buyLosses).toFixed(2) : '0.00';
-                    const sellWinAvg = sellWins > 0 ? (sellData.filter(row => row.PROFIT_PERCENT > 0).reduce((sum, row) => sum + (row.PROFIT_PERCENT * leverage), 0) / sellWins).toFixed(2) : '0.00';
-                    const sellLossAvg = sellLosses > 0 ? (sellData.filter(row => row.PROFIT_PERCENT < 0).reduce((sum, row) => sum + (row.PROFIT_PERCENT * leverage), 0) / sellLosses).toFixed(2) : '0.00';
+                    const buyWinAvg = buyWins > 0 ? (buyData.filter(row => row._effectiveProfit > 0).reduce((sum, row) => sum + (row._effectiveProfit * leverage), 0) / buyWins).toFixed(2) : '0.00';
+                    const buyLossAvg = buyLosses > 0 ? (buyData.filter(row => row._effectiveProfit < 0).reduce((sum, row) => sum + (row._effectiveProfit * leverage), 0) / buyLosses).toFixed(2) : '0.00';
+                    const sellWinAvg = sellWins > 0 ? (sellData.filter(row => row._effectiveProfit > 0).reduce((sum, row) => sum + (row._effectiveProfit * leverage), 0) / sellWins).toFixed(2) : '0.00';
+                    const sellLossAvg = sellLosses > 0 ? (sellData.filter(row => row._effectiveProfit < 0).reduce((sum, row) => sum + (row._effectiveProfit * leverage), 0) / sellLosses).toFixed(2) : '0.00';
 
                     // Calculate final ROI with leverage applied
                     let roiMoney = 1;
-                    for (const row of filtered) {
-                        roiMoney *= (1 + (row.PROFIT_PERCENT * leverage) / 100);
+                    for (const row of filteredWithProfit) {
+                        roiMoney *= (1 + (row._effectiveProfit * leverage) / 100);
                     }
                     const finalRoi = Math.round((roiMoney - 1) * 10000) / 100;
 
@@ -808,20 +852,20 @@
 
                     // Minimum (worst) single losing trade
                     const allLosingRows = [
-                        ...buyData.filter(row => row.PROFIT_PERCENT < 0),
-                        ...sellData.filter(row => row.PROFIT_PERCENT < 0)
+                        ...buyData.filter(row => row._effectiveProfit < 0),
+                        ...sellData.filter(row => row._effectiveProfit < 0)
                     ];
                     const minLoss = allLosingRows.length > 0
-                        ? Math.round(Math.min(...allLosingRows.map(row => row.PROFIT_PERCENT * leverage)))
+                        ? Math.round(Math.min(...allLosingRows.map(row => row._effectiveProfit * leverage)))
                         : 0;
 
                     // Max drawdown from sequential equity curve
-                    const sortedFiltered = [...filtered].sort((a, b) => new Date(a.TRADE_START) - new Date(b.TRADE_START));
+                    const sortedFiltered = [...filteredWithProfit].sort((a, b) => new Date(a.TRADE_START) - new Date(b.TRADE_START));
                     let ddMoney = 1;
                     let ddPeak = 1;
                     let maxDrawdownPct = 0;
                     for (const row of sortedFiltered) {
-                        ddMoney *= (1 + (row.PROFIT_PERCENT * leverage) / 100);
+                        ddMoney *= (1 + (row._effectiveProfit * leverage) / 100);
                         if (ddMoney > ddPeak) ddPeak = ddMoney;
                         const drawdown = (ddMoney - ddPeak) / ddPeak * 100;
                         if (drawdown < maxDrawdownPct) maxDrawdownPct = drawdown;
@@ -873,6 +917,28 @@
             return _allBtcSorted[lo].price;
         }
 
+        function getEffectiveProfitPercentForDate(row, targetDate) {
+            const baseProfit = (typeof row.PROFIT_PERCENT === 'number' && Number.isFinite(row.PROFIT_PERCENT))
+                ? row.PROFIT_PERCENT
+                : NaN;
+
+            const tradeEnd = row.TRADE_END instanceof Date
+                ? row.TRADE_END
+                : (row.TRADE_END ? new Date(row.TRADE_END) : null);
+            const isClosed = tradeEnd instanceof Date && !isNaN(tradeEnd.getTime());
+            if (isClosed) return baseProfit;
+
+            if (!(typeof row.START_PRICE === 'number' && row.START_PRICE > 0)) return baseProfit;
+            const side = typeof row.TRADE_TYPE === 'string' ? row.TRADE_TYPE.trim().toLowerCase() : '';
+            if (side !== 'buy' && side !== 'sell') return baseProfit;
+
+            const px = findClosestPrice(targetDate || maxDate || new Date());
+            if (!(typeof px === 'number' && Number.isFinite(px))) return baseProfit;
+
+            const direction = side === 'buy' ? 1 : -1;
+            return direction * ((px - row.START_PRICE) / row.START_PRICE) * 100;
+        }
+
         function calculatePeriodicAnalysis(table, tableIndex) {
             if (priceData.length === 0 || !startDate || !endDate) return;
 
@@ -906,9 +972,8 @@
                 for (const row of table.data) {
                     // TRADE_START is already a Date object (parsed in parseCSV)
                     if (row.TRADE_START >= current && row.TRADE_START < endWindow) {
-                        if (!isNaN(row.PROFIT_PERCENT)) {
-                            moneyIter *= (1 + (row.PROFIT_PERCENT * leverage) / 100);
-                        }
+                        const effProfit = getEffectiveProfitPercentForDate(row, endWindow);
+                        if (Number.isFinite(effProfit)) moneyIter *= (1 + (effProfit * leverage) / 100);
                     }
                 }
 
@@ -1016,11 +1081,27 @@
                     const dateB = new Date(b.TRADE_START);
                     return dateB - dateA;
                 });
+
+                const latestBtcPrice = _allBtcSorted.length > 0
+                    ? _allBtcSorted[_allBtcSorted.length - 1].price
+                    : null;
                 
                 sortedData.forEach(row => {
                     const tr = document.createElement('tr');
+                    const tradeEndDate = row.TRADE_END instanceof Date ? row.TRADE_END : (row.TRADE_END ? new Date(row.TRADE_END) : null);
+                    const isActiveTrade = !(tradeEndDate instanceof Date) || isNaN(tradeEndDate.getTime());
+
                     // Pre-compute ROI label for mobile stacked layout
-                    const rawProfit = row['PROFIT_PERCENT'];
+                    let rawProfit = row['PROFIT_PERCENT'];
+
+                    if (isActiveTrade && typeof latestBtcPrice === 'number' && typeof row.START_PRICE === 'number' && row.START_PRICE > 0) {
+                        const side = typeof row.TRADE_TYPE === 'string' ? row.TRADE_TYPE.trim().toLowerCase() : '';
+                        if (side === 'buy' || side === 'sell') {
+                            const direction = side === 'buy' ? 1 : -1;
+                            rawProfit = direction * ((latestBtcPrice - row.START_PRICE) / row.START_PRICE) * 100;
+                        }
+                    }
+
                     let roiStr = '-';
                     let roiClass = '';
                     if (typeof rawProfit === 'number' && !isNaN(rawProfit) && isFinite(rawProfit)) {
@@ -1030,6 +1111,12 @@
                     headers.forEach(header => {
                         const td = document.createElement('td');
                         let value = row[header];
+
+                        if (isActiveTrade && (header === 'TRADE_END' || header === 'STOP_PRICE')) {
+                            value = '-';
+                        } else if (isActiveTrade && header === 'PROFIT_PERCENT') {
+                            value = rawProfit;
+                        }
                         
                         if (value === undefined || value === null || value === '' || 
                             (typeof value === 'number' && isNaN(value))) {
@@ -1105,9 +1192,8 @@
             const sortedTrades = tradeTables[0].data
                 .filter(row =>
                     row.TRADE_START instanceof Date && !isNaN(row.TRADE_START.getTime()) &&
-                    row.TRADE_END   instanceof Date && !isNaN(row.TRADE_END.getTime()) &&
                     typeof row.START_PRICE === 'number' &&
-                    typeof row.PROFIT_PERCENT === 'number')
+                    typeof row.TRADE_TYPE === 'string')
                 .sort((a, b) => a.TRADE_START - b.TRADE_START);
 
             // Stride for intra-trade BTC interpolation based on selected period
@@ -1116,7 +1202,7 @@
             // ── Build / restore cached equity data ──────────────────────────────
             // allPoints is identical for the same trades+prices+leverage regardless
             // of which period button is active, so cache and skip on period switches.
-            const _eqDataKey = `${leverage}|${tradeTables[0].data.length}|${priceData.length}`;
+            const _eqDataKey = `${leverage}|${tradeTables[0].data.length}|${priceData.length}|${maxDate ? maxDate.getTime() : 0}`;
             let allPoints, allTradeMarkers;
 
             if (_cachedEquityDataKey !== _eqDataKey) {
@@ -1126,22 +1212,33 @@
                 allTradeMarkers = [];
 
                 for (const trade of sortedTrades) {
+                    const tradeEnd = trade.TRADE_END instanceof Date
+                        ? trade.TRADE_END
+                        : (trade.TRADE_END ? new Date(trade.TRADE_END) : null);
+                    const effectiveTradeEnd = (tradeEnd instanceof Date && !isNaN(tradeEnd.getTime()))
+                        ? tradeEnd
+                        : new Date(maxDate);
+                    if (effectiveTradeEnd <= trade.TRADE_START) continue;
+
+                    const effectiveProfit = getEffectiveProfitPercentForDate(trade, effectiveTradeEnd);
+                    if (!Number.isFinite(effectiveProfit)) continue;
+
                     const equityAtEntry = runningEquity;
                     allTradeMarkers.push({ date: new Date(trade.TRADE_START), value: equityAtEntry });
 
                     const isLong = trade.TRADE_TYPE === 'buy';
                     for (const c of _btcForEquity) {
                         if (c.ts <= trade.TRADE_START) continue;
-                        if (c.ts >= trade.TRADE_END) break;
+                        if (c.ts >= effectiveTradeEnd) break;
                         const pnlFactor = isLong
                             ? (c.price - trade.START_PRICE) / trade.START_PRICE * leverage
                             : (trade.START_PRICE - c.price) / trade.START_PRICE * leverage;
                         allPointsRaw.push({ date: c.ts, value: equityAtEntry * (1 + pnlFactor) });
                     }
 
-                    runningEquity = equityAtEntry * (1 + (trade.PROFIT_PERCENT * leverage) / 100);
-                    allPointsRaw.push({ date: new Date(trade.TRADE_END), value: runningEquity });
-                    allTradeMarkers.push({ date: new Date(trade.TRADE_END), value: runningEquity });
+                    runningEquity = equityAtEntry * (1 + (effectiveProfit * leverage) / 100);
+                    allPointsRaw.push({ date: new Date(effectiveTradeEnd), value: runningEquity });
+                    allTradeMarkers.push({ date: new Date(effectiveTradeEnd), value: runningEquity });
                 }
 
                 allPointsRaw.sort((a, b) => a.date - b.date);

@@ -1463,6 +1463,11 @@
             cursor: default;
             pointer-events: none;
         }
+        .dp-day.dp-non-trade {
+            color: #3a3f4a;
+            cursor: default;
+            pointer-events: none;
+        }
         .dp-day.empty { cursor: default; pointer-events: none; }
         .slider-value.date-clickable {
             cursor: pointer;
