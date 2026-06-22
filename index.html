@@ -221,10 +221,10 @@
       <div style="border:1px solid var(--border);border-radius:18px;background:var(--surface);box-shadow:var(--shadow);overflow:hidden">
         <div style="display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;padding:18px 20px;border-bottom:1px solid var(--border)">
           <label style="display:flex;flex-direction:column;gap:5px;font-size:11px;color:var(--text-mute);font-family:'IBM Plex Mono';text-transform:uppercase;letter-spacing:.5px">{{ t.filter_from }}
-            <input type="date" min="2018-03-07" max="2026-06-21" value="{{ tFrom }}" onChange="{{ setTFrom }}" style="height:38px;padding:0 10px;border-radius:9px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-family:'IBM Plex Mono';font-size:13px;color-scheme:dark">
+            <input type="date" min="2018-03-07" max="2026-06-21" value="{{ tFrom }}" onChange="{{ setTFrom }}" style="height:38px;padding:0 10px;border-radius:9px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-family:'IBM Plex Mono';font-size:13px">
           </label>
           <label style="display:flex;flex-direction:column;gap:5px;font-size:11px;color:var(--text-mute);font-family:'IBM Plex Mono';text-transform:uppercase;letter-spacing:.5px">{{ t.filter_to }}
-            <input type="date" min="2018-03-07" max="2026-06-21" value="{{ tTo }}" onChange="{{ setTTo }}" style="height:38px;padding:0 10px;border-radius:9px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-family:'IBM Plex Mono';font-size:13px;color-scheme:dark">
+            <input type="date" min="2018-03-07" max="2026-06-21" value="{{ tTo }}" onChange="{{ setTTo }}" style="height:38px;padding:0 10px;border-radius:9px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-family:'IBM Plex Mono';font-size:13px">
           </label>
           <button onClick="{{ resetTrades }}" style="height:38px;padding:0 14px;border-radius:9px;border:1px solid var(--border);background:var(--surface-2);color:var(--text-dim);font-size:13px;cursor:pointer;font-weight:500" style-hover="border-color:var(--border-2)">{{ t.filter_reset }}</button>
           <button onClick="{{ toggleSort }}" style="height:38px;padding:0 14px;border-radius:9px;border:1px solid var(--border);background:var(--surface-2);color:var(--text-dim);font-size:13px;cursor:pointer;font-weight:500;font-family:'IBM Plex Mono'" style-hover="border-color:var(--border-2)">⇅ {{ sortLabel }}</button>
