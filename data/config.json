@@ -1,0 +1,32 @@
+{
+  "platforms": [
+    {
+      "id": "binance",
+      "name": "Binance",
+      "logo": "assets/logos/binance.png",
+      "url": "https://www.binance.com/en/copy-trading/lead-details/4965482140792366337?ref=1116146315"
+    },
+    {
+      "id": "bybit",
+      "name": "Bybit",
+      "logo": "assets/logos/bybit.png",
+      "url": "https://bybit.onelink.me/EhY6/8h2m7q19"
+    }
+  ],
+  "referral": {
+    "url": "https://docs.google.com/forms/d/e/1FAIpQLSdVxDKx6fsbRRK9LPzzon3383NdzJcCBmxF1f7rRDm4h4JZgg/viewform"
+  },
+  "guideSteps": 7,
+  "videos": [
+    {
+      "provider": "youtube",
+      "embed": "https://www.youtube.com/embed/5JZoTzN0IsE",
+      "title": { "tr": "Binance: Para yatırma ve kullanım", "en": "Binance: Deposits & usage" }
+    },
+    {
+      "provider": "wistia",
+      "embed": "https://fast.wistia.net/embed/iframe/tqo4k4g1bu",
+      "title": { "tr": "Binance: Copy trading nasıl çalışır", "en": "Binance: How copy trading works" }
+    }
+  ]
+}
