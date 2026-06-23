@@ -670,7 +670,7 @@ class Component extends DCLogic {
       roi:this.fmtPct(roi,0), roiMult:roi!=null?this.fmtX(1+roi/100):'',
       roiColor:roi==null?'var(--text-mute)':(roi>=0?'var(--pos)':'var(--neg)'),
       broi:this.fmtPct(broi,1), broiMult:broi!=null?this.fmtX(1+broi/100):'',
-      maxdd:dd!=null?'-'+dd.toFixed(1)+'%':'-', ddRange:ddR,
+      maxdd:dd!=null?'-'+Math.abs(dd).toFixed(1)+'%':'-', ddRange:ddR,
       winrate:wr.toFixed(0)+'%', winLose:wins+' / '+losses,
       startDate:this.fmtDate(this.parseTs(s)), endDate:this.fmtDate(this.parseTs(e)),
     };
