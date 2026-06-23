@@ -291,10 +291,10 @@
       <div style="border:1px solid var(--border);border-radius:18px;background:var(--surface);box-shadow:var(--shadow);overflow:hidden">
         <div style="display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;padding:18px 20px;border-bottom:1px solid var(--border)">
           <label style="display:flex;flex-direction:column;gap:5px;font-size:11px;color:var(--text-mute);font-family:'IBM Plex Mono';text-transform:uppercase;letter-spacing:.5px">{{ t.filter_from }}
-            <input type="date" min="2018-03-07" max="2026-06-21" value="{{ tFrom }}" onChange="{{ setTFrom }}" style="height:38px;padding:0 10px;border-radius:9px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-family:'IBM Plex Mono';font-size:13px">
+            <input type="date" min="{{ tMin }}" max="{{ tMax }}" value="{{ tFrom }}" onChange="{{ setTFrom }}" style="height:38px;padding:0 10px;border-radius:9px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-family:'IBM Plex Mono';font-size:13px">
           </label>
           <label style="display:flex;flex-direction:column;gap:5px;font-size:11px;color:var(--text-mute);font-family:'IBM Plex Mono';text-transform:uppercase;letter-spacing:.5px">{{ t.filter_to }}
-            <input type="date" min="2018-03-07" max="2026-06-21" value="{{ tTo }}" onChange="{{ setTTo }}" style="height:38px;padding:0 10px;border-radius:9px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-family:'IBM Plex Mono';font-size:13px">
+            <input type="date" min="{{ tMin }}" max="{{ tMax }}" value="{{ tTo }}" onChange="{{ setTTo }}" style="height:38px;padding:0 10px;border-radius:9px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-family:'IBM Plex Mono';font-size:13px">
           </label>
           <button onClick="{{ resetTrades }}" style="height:38px;padding:0 14px;border-radius:9px;border:1px solid var(--border);background:var(--surface-2);color:var(--text-dim);font-size:13px;cursor:pointer;font-weight:500" style-hover="border-color:var(--border-2)">{{ t.filter_reset }}</button>
           <button onClick="{{ toggleSort }}" style="height:38px;padding:0 14px;border-radius:9px;border:1px solid var(--border);background:var(--surface-2);color:var(--text-dim);font-size:13px;cursor:pointer;font-weight:500;font-family:'IBM Plex Mono'" style-hover="border-color:var(--border-2)">⇅ {{ sortLabel }}</button>
@@ -631,11 +631,15 @@ class Component extends DCLogic {
     this.monthly=monthly.rows.map(r=>({m:r[0],p:+r[1],b:+r[2]}));
     this.yearly=yearly.rows.map(r=>({y:r[0],p:+r[1],b:+r[2]}));
     this.trades=trades.rows.map(r=>({type:r[0],start:r[1],entry:+r[2],end:r[3],exit:+r[4],dur:+r[5],pnl:r[6]===''?null:+r[6]}));
+    const tradeDates=this.trades.flatMap(x=>x.end?[x.start.slice(0,10),x.end.slice(0,10)]:[x.start.slice(0,10)]);
+    const now=new Date(); const todayStr=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+    this.tMin=tradeDates.reduce((a,b)=>b<a?b:a);
+    this.tMax=tradeDates.reduce((a,b)=>b>a?b:a,todayStr);
     this.allSeries=this.toSeries(allCsv.rows);
     this.chartData['all']=this.allSeries;
     this.chartData[this.state.tf]=this.toSeries(tf.rows);
     this.computeHeroBasic();
-    this.setState({ready:true},()=>{ this.drawChart(); this.loadPerf(); });
+    this.setState({ready:true,tFrom:this.tMin,tTo:this.tMax},()=>{ this.drawChart(); this.loadPerf(); });
   }
   computeHeroBasic(){
     const d=this.allSeries; if(!d||!d.length) return;
@@ -677,7 +681,7 @@ class Component extends DCLogic {
 
   setTFrom=(e)=>this.setState({tFrom:e.target.value});
   setTTo=(e)=>this.setState({tTo:e.target.value});
-  resetTrades=()=>this.setState({tFrom:'',tTo:''});
+  resetTrades=()=>this.setState({tFrom:this.tMin,tTo:this.tMax});
   toggleSort=()=>this.setState({tNewest:!this.state.tNewest});
   setFaq=(i)=>this.setState({faqOpen:this.state.faqOpen===i?null:i});
   guidePrev=()=>this.setState({guideIdx:(this.state.guideIdx+6)%7});
@@ -1034,7 +1038,7 @@ class Component extends DCLogic {
       // trades
       tradeRows:tb.rows, tradeShown:tb.shown, tradeTotal:tb.total,
       tradeWin:tb.win, tradeLoss:tb.loss, tradeAvg:this.fmtPct(tb.avg,1), tradeAvgColor:tb.avg>=0?'var(--pos)':'var(--neg)',
-      tFrom:this.state.tFrom, tTo:this.state.tTo,
+      tFrom:this.state.tFrom, tTo:this.state.tTo, tMin:this.tMin||'', tMax:this.tMax||'',
       setTFrom:this.setTFrom, setTTo:this.setTTo, resetTrades:this.resetTrades, toggleSort:this.toggleSort,
       sortLabel:this.state.tNewest?(lang==='tr'?'Yeni → Eski':'New → Old'):(lang==='tr'?'Eski → Yeni':'Old → New'),
       // perf
