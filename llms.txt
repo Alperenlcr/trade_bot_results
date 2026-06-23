@@ -1,0 +1,24 @@
+# Executor
+
+> Executor is an algorithmic trend-following trading strategy that trades BTC futures with 2x leverage, 24/7. This site is its performance dashboard, built from real historical and live trading data (Turkish/English, light/dark theme).
+
+This is a single-page dashboard, not a blog or docs site. Key sections on https://executor-bot.com/:
+
+- Performance: annual/monthly returns, rolling-window analysis, max drawdown, BTC benchmark comparison
+- Trades: full historical trade log (entry/exit, PnL, duration), filterable by date
+- Analysis: equity curve vs BTC, monthly return heatmap
+- Strategy: a plain-language explanation of how Executor trades
+- FAQ: who should/shouldn't invest, risk, custody, leverage, profit share, withdrawals, copy trading mechanics
+- Guide: step-by-step copy trading setup on Binance/Bybit
+
+## Facts
+- Asset traded: BTC only, perpetual futures, max recommended leverage 2x
+- Access model: copy trading — funds stay in the user's own exchange account, the system only mirrors trade entries/exits
+- Profit share: typically 10% of realized profit, no fee on losing periods
+- Historical claim: no losing calendar year on record (per the Performance section data)
+
+## Contact
+- Email: alperenlcr@gmail.com
+
+## Notes
+Not financial advice. Past performance does not guarantee future results.
