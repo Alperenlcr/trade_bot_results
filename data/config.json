@@ -14,7 +14,8 @@
     }
   ],
   "referral": {
-    "url": "https://docs.google.com/forms/d/e/1FAIpQLSdVxDKx6fsbRRK9LPzzon3383NdzJcCBmxF1f7rRDm4h4JZgg/viewform"
+    "url": "https://docs.google.com/forms/d/e/1FAIpQLSdVxDKx6fsbRRK9LPzzon3383NdzJcCBmxF1f7rRDm4h4JZgg/viewform",
+    "formEndpoint": "https://script.google.com/macros/s/AKfycbzWnrVi3zSaKqeSUvrNJcuoqNNGktuMx0mLw6jETUT1QK7D3I24JLNVUz64z2u9TF0q/exec"
   },
   "guideSteps": 7,
   "videos": [
