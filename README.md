@@ -14,7 +14,7 @@ Türkçe / İngilizce dil ve açık / koyu tema desteği vardır. Tüm grafik, t
 ├── README.md
 ├── assets/
 │   ├── logos/              # binance.png, bybit.png, logo.png
-│   └── guide/              # step-1.jpeg … step-7.jpeg (Binance kurulum adımları)
+│   └── guide/              # step-1.jpeg … step-6.jpeg (Binance kurulum adımları)
 └── data/
     ├── i18n.json           # Tüm arayüz metinleri (tr / en)
     ├── config.json         # Platform linkleri, referans linki, videolar
