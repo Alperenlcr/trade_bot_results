@@ -547,8 +547,14 @@ export default class App extends React.Component<Props, State> {
       { label: t.nav_faq, href: '#sss' },
       { label: t.nav_guide, href: '#rehber' },
     ];
+    const targetLocale = this.lang === 'tr' ? 'en' : 'tr';
     const langHref = this.lang === 'tr' ? '/en/' : '/';
     const langLabel = this.lang === 'tr' ? 'TR / EN' : 'EN / TR';
+    // Record the choice before navigating, so the returning-visitor bounce
+    // script on "/" (see BaseLayout.astro) reflects the just-picked locale
+    // instead of a stale value — otherwise switching EN -> TR would land on
+    // "/" only to be immediately bounced back to "/en/" by that script.
+    const onToggleLang = () => { try { localStorage.setItem('exec_lang', targetLocale); } catch (e) {} };
     const themeIcon = this.state.theme === 'dark' ? '☀' : '☾';
     return (
       <header style={sx(`position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);background:color-mix(in srgb,var(--bg) 82%,transparent);border-bottom:1px solid var(--border)`)}>
@@ -563,7 +569,7 @@ export default class App extends React.Component<Props, State> {
             ))}
           </nav>
           <div style={sx(`display:flex;align-items:center;gap:8px;margin-left:auto`)}>
-            <a href={langHref} style={sx(`height:34px;padding:0 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:'IBM Plex Mono';font-size:12px;font-weight:600;cursor:pointer;letter-spacing:.5px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center`)}>{langLabel}</a>
+            <a href={langHref} onClick={onToggleLang} style={sx(`height:34px;padding:0 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:'IBM Plex Mono';font-size:12px;font-weight:600;cursor:pointer;letter-spacing:.5px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center`)}>{langLabel}</a>
             <button onClick={this.toggleTheme} aria-label="theme" style={sx(`width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;display:grid;place-items:center;font-size:15px`)}>{themeIcon}</button>
             <a href="#baglan" className="cta-head" style={sx(`height:34px;padding:0 16px;border-radius:8px;background:var(--accent);color:var(--accent-contrast);font-size:13.5px;font-weight:600;text-decoration:none;display:none;align-items:center`)}>{t.nav_cta}</a>
           </div>
