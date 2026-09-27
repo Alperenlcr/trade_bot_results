@@ -2,6 +2,9 @@
 // repo root (untouched, so the daily automation that pushes updated
 // data/tables/*.csv keeps working exactly as before) into dist/, plus the
 // large/lazy-fetched CSVs that are intentionally NOT embedded at build time.
+// (assets/guide/*.webp is generated into the source folder beforehand by
+// scripts/optimize-images.mjs, so the plain copy('assets') below carries it
+// into dist/ along with everything else — no separate step needed here.)
 import { cpSync, mkdirSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
@@ -21,8 +24,9 @@ function copy(rel) {
 copy('assets');
 copy('CNAME');
 copy('robots.txt');
-copy('sitemap.xml');
 copy('llms.txt');
+// sitemap.xml is generated at build time by src/pages/sitemap.xml.ts (its
+// <lastmod> reflects the actual build date), not copied as a static file.
 
 // Large / lazily-fetched tables that are NOT embedded at build time — kept
 // as static files so the client fetches them at runtime exactly like today.

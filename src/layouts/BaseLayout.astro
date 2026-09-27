@@ -10,10 +10,19 @@ export interface Props {
 }
 const { locale, faq, bounceToEnIfPreferred = false } = Astro.props as Props;
 
-const SITE = 'https://executor-bot.com';
+// GitHub Pages 301-redirects the apex domain to www (confirmed via DNS/curl),
+// so www is the actual serving origin — canonical/OG/JSON-LD must point here
+// directly rather than at a URL that redirects.
+const SITE = 'https://www.executor-bot.com';
 const isTr = locale === 'tr';
 
-const title = 'Executor Bot | BTC Trend Following Crypto Trading Bot';
+// TR title is keyword-targeted for Turkish search intent (bitcoin/kripto
+// trading botu, algoritmik trading, copy trading) — the original shipped
+// the English title on both locales, a missed opportunity for TR search
+// visibility. EN title is unchanged (it was already well-targeted).
+const title = isTr
+  ? 'Executor Bot | BTC Algoritmik Trading ve Copy Trading Botu'
+  : 'Executor Bot | BTC Trend Following Crypto Trading Bot';
 const description = isTr
   ? 'Executor, BTC futures üzerinde 7/24 çalışan algoritmik trend-takip stratejisidir. Gerçek geçmiş veriye dayalı performans, işlem geçmişi ve analizleri inceleyin.'
   : 'Executor is an algorithmic trend-following strategy that trades BTC futures 24/7. Review real historical performance, trade history and analysis based on actual data.';
@@ -113,7 +122,7 @@ const faqJsonLd = {
   @media(min-width:900px){.cta-head{display:inline-flex !important}}
   @media(max-width:880px){
     .app nav{display:none !important}
-    .an-grid,.gd-grid{grid-template-columns:1fr !important}
+    .an-grid{grid-template-columns:1fr !important}
   }
   @media(max-width:760px){
     .cta-grid{grid-template-columns:1fr !important}

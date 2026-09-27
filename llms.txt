@@ -3,7 +3,7 @@
 > Executor is an algorithmic trend-following trading strategy that trades BTC futures with 2x leverage, 24/7. This site is its performance dashboard, built from real historical and live trading data (Turkish/English, light/dark theme).
 
 This is a single-page dashboard, not a blog or docs site, available in two languages:
-Turkish at https://executor-bot.com/ and English at https://executor-bot.com/en/.
+Turkish at https://www.executor-bot.com/ and English at https://www.executor-bot.com/en/.
 Key sections (same structure on both):
 
 - Performance: annual/monthly returns, rolling-window analysis, max drawdown, BTC benchmark comparison

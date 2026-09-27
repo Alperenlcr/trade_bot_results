@@ -358,7 +358,6 @@ export default class App extends React.Component<Props, State> {
   loc() { return this.lang === 'tr' ? 'tr-TR' : 'en-US'; }
   fmtPct(v: number | null | undefined, dec = 1, sign = true) { if (v == null || isNaN(v)) return '-'; const s = v > 0 && sign ? '+' : ''; return s + v.toLocaleString(this.loc(), { minimumFractionDigits: dec, maximumFractionDigits: dec }) + '%'; }
   fmtX(m: number) { if (m >= 1000) return '×' + (m / 1000).toLocaleString(this.loc(), { maximumFractionDigits: m >= 10000 ? 0 : 1 }) + 'K'; return '×' + m.toLocaleString(this.loc(), { maximumFractionDigits: m >= 100 ? 0 : 1 }); }
-  fmtInt(v: number) { return Math.round(v).toLocaleString(this.loc()); }
   fmtNum(v: number, dec = 0) { return v.toLocaleString(this.loc(), { minimumFractionDigits: dec, maximumFractionDigits: dec }); }
   fmtDate(ts: number) { const d = new Date(ts); return d.toLocaleDateString(this.loc(), { day: '2-digit', month: 'short', year: 'numeric' }); }
 
@@ -957,10 +956,12 @@ export default class App extends React.Component<Props, State> {
   renderGuide() {
     const t = this.t;
     const lang = this.lang;
-    const cfg = this.cfg || { platforms: [], videos: [], referral: {} };
+    const cfg = this.cfg || { videos: [], referral: {} };
     const psuf = lang === 'tr' ? 'Copy Trade Portföyü' : 'Copy Trade Portfolio';
     const videos: { title: string; provider: string; open: () => void }[] = (cfg.videos || []).map((v: any, i: number) => ({ title: v.title[lang], provider: v.provider, open: () => this.openVid(i) }));
     const step = (n: number) => `/assets/guide/step-${n}-${lang}.jpeg`;
+    const stepWebp = (n: number) => `/assets/guide/step-${n}-${lang}.webp`;
+    const stepAlt = (n: number) => (lang === 'tr' ? `Binance kurulum adımı ${n}` : `Binance setup step ${n}`);
     const nums = [1, 2, 3, 4, 5, 6];
     return (
       <section id="rehber" style={sx(`padding:56px 0`)}>
@@ -977,7 +978,10 @@ export default class App extends React.Component<Props, State> {
           {nums.map((n) => (
             <div key={n} style={sx(`flex:none;width:184px;scroll-snap-align:start`)}>
               <div onClick={() => this.openImg(n - 1)} className="lift" style={sx(`position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--border);background:#0d0d0d;box-shadow:var(--shadow);cursor:zoom-in`)}>
-                <div style={sx(`background-image:url(${step(n)});width:100%;aspect-ratio:922/2049;background-size:cover;background-position:top center;background-repeat:no-repeat`)}></div>
+                <picture style={sx(`display:block;width:100%;aspect-ratio:922/2049`)}>
+                  <source srcSet={stepWebp(n)} type="image/webp" />
+                  <img src={step(n)} alt={stepAlt(n)} loading="lazy" width={922} height={2049} style={sx(`width:100%;height:100%;object-fit:cover;object-position:top center;display:block`)} />
+                </picture>
                 <span style={sx(`position:absolute;top:10px;left:10px;width:27px;height:27px;border-radius:8px;background:var(--accent);color:var(--accent-contrast);display:grid;place-items:center;font-family:'Space Grotesk';font-weight:700;font-size:13px;box-shadow:0 2px 8px rgba(0,0,0,.35)`)}>{n}</span>
               </div>
             </div>
@@ -1079,9 +1083,10 @@ export default class App extends React.Component<Props, State> {
     const lb = this.state.lb;
     if (!lb) return null;
     const cfg = this.cfg || { videos: [] };
-    let lbImg = '', lbEmbed = '', lbCaption = '', lbCounter = '';
+    let lbImg = '', lbImgWebp = '', lbEmbed = '', lbCaption = '', lbCounter = '';
     const isImage = lb.kind === 'image', isVideo = lb.kind === 'video';
-    if (isImage) { lbImg = `/assets/guide/step-${lb.i + 1}-${lang}.jpeg`; lbCounter = `${lb.i + 1} / 6`; lbCaption = t.gd_steps || ''; }
+    let lbAlt = '';
+    if (isImage) { lbImg = `/assets/guide/step-${lb.i + 1}-${lang}.jpeg`; lbImgWebp = `/assets/guide/step-${lb.i + 1}-${lang}.webp`; lbCounter = `${lb.i + 1} / 6`; lbCaption = t.gd_steps || ''; lbAlt = `${lang === 'tr' ? 'Binance/Bybit kurulum adımı' : 'Binance/Bybit setup step'} ${lb.i + 1}`; }
     else { const v = (cfg.videos || [])[lb.i] || {}; lbEmbed = v.embed || ''; lbCounter = `${lb.i + 1} / ${(cfg.videos || []).length}`; lbCaption = v.title ? v.title[lang] : ''; }
     return (
       <div onClick={this.lbClose} style={sx(`position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.86);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px`)}>
@@ -1089,7 +1094,12 @@ export default class App extends React.Component<Props, State> {
         <button onClick={this.lbPrev} aria-label="prev" style={sx(`position:absolute;left:12px;top:50%;transform:translateY(-50%);width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:rgba(20,24,28,.6);color:#fff;font-size:22px;cursor:pointer;z-index:2`)}>‹</button>
         <button onClick={this.lbNext} aria-label="next" style={sx(`position:absolute;right:12px;top:50%;transform:translateY(-50%);width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:rgba(20,24,28,.6);color:#fff;font-size:22px;cursor:pointer;z-index:2`)}>›</button>
         <div onClick={this.lbStop} style={sx(`display:flex;flex-direction:column;align-items:center;gap:14px;max-width:94vw`)}>
-          {isImage && <img src={lbImg} alt="" style={sx(`max-height:80vh;max-width:min(90vw,440px);width:auto;height:auto;border-radius:14px;box-shadow:0 24px 60px rgba(0,0,0,.5);display:block`)} />}
+          {isImage && (
+            <picture>
+              <source srcSet={lbImgWebp} type="image/webp" />
+              <img src={lbImg} alt={lbAlt} width={922} height={2049} style={sx(`max-height:80vh;max-width:min(90vw,440px);width:auto;height:auto;border-radius:14px;box-shadow:0 24px 60px rgba(0,0,0,.5);display:block`)} />
+            </picture>
+          )}
           {isVideo && (
             <div style={sx(`width:min(92vw,920px);aspect-ratio:16/9;border-radius:14px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.5);background:#000`)}>
               <iframe src={lbEmbed} title="video" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowFullScreen style={sx(`width:100%;height:100%;border:0;display:block`)}></iframe>
@@ -1140,10 +1150,10 @@ export default class App extends React.Component<Props, State> {
                 <div style={sx(`font-size:12px;color:var(--text-mute);font-family:'IBM Plex Mono';text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px`)}>{t.ref_platform}</div>
                 <div style={sx(`display:flex;gap:8px`)}>
                   <button onClick={this.setRefBinance} style={sx(refBinanceStyle)}>
-                    <img src="/assets/logos/binance.png" style={sx(`width:18px;height:18px;border-radius:4px;object-fit:cover`)} /> Binance
+                    <img src="/assets/logos/binance.png" alt="" style={sx(`width:18px;height:18px;border-radius:4px;object-fit:cover`)} /> Binance
                   </button>
                   <button onClick={this.setRefBybit} style={sx(refBybitStyle)}>
-                    <img src="/assets/logos/bybit.png" style={sx(`width:18px;height:18px;border-radius:4px;object-fit:cover`)} /> Bybit
+                    <img src="/assets/logos/bybit.png" alt="" style={sx(`width:18px;height:18px;border-radius:4px;object-fit:cover`)} /> Bybit
                   </button>
                 </div>
               </div>

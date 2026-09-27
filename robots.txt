@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://executor-bot.com/sitemap.xml
+Sitemap: https://www.executor-bot.com/sitemap.xml
