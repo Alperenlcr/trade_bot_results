@@ -1,0 +1,79 @@
+@import "tailwindcss";
+@import "@fontsource/space-mono/400.css";
+@import "@fontsource/space-mono/700.css";
+@import "@fontsource/ibm-plex-sans/400.css";
+@import "@fontsource/ibm-plex-sans/600.css";
+@import "@fontsource/ibm-plex-sans-arabic/400.css";
+@import "@fontsource/ibm-plex-sans-arabic/600.css";
+
+/* Marka token'ları — kaynak: bot-ui README.md › Görsel Kimlik.
+   static: App.tsx inline stilleri var(--font-*) kullandığı için hepsi :root'a yazılsın. */
+@theme static {
+  --color-bg: #101826;
+  --color-surface: #16202e;
+  --color-border: #2a3547;
+  --color-text: #ede7dc;
+  --color-text-soft: #a79e8c;
+  --color-accent: #c6a874;
+  --color-on-accent: #16202e;
+  --color-positive: #8fbfa4;
+
+  /* Arapça: IBM Plex Sans Arabic (unicode-range ile yalnızca gerekirse iner).
+     Çince: sistem fontları — CJK web fontu çok ağır. */
+  --font-display: "Space Mono", "IBM Plex Sans Arabic", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", ui-monospace, monospace;
+  --font-body: "IBM Plex Sans", "IBM Plex Sans Arabic", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
+
+  --radius-s: 2px;
+  --radius-m: 4px;
+  --radius-l: 6px;
+}
+
+@layer base {
+  html {
+    @apply bg-bg font-body text-text antialiased;
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+    color-scheme: dark;
+  }
+  h1, h2, h3 {
+    @apply font-display tracking-[-0.02em];
+  }
+  /* Space Mono'da Arapça glif yok ve monospace boşluğu kelime aralarını açıyor;
+     negatif harf aralığı da harf bağlantılarını bozar. */
+  :lang(ar) :is(h1, h2, h3) {
+    @apply font-body tracking-normal;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-accent;
+  }
+  ::selection {
+    @apply bg-accent text-on-accent;
+  }
+}
+
+/* Dashboard (App.tsx) değişkenleri. Grafik canvas'ı bu değerleri getComputedStyle ile
+   okur ve sonlarına alfa ekler (accent + '33'), o yüzden 6 haneli hex kalmalı. */
+.app {
+  --bg: #101826; --bg-elev: #131c2a; --surface: #16202e; --surface-2: #1c2738;
+  --border: #2a3547; --border-2: #364358; --text: #ede7dc; --text-dim: #a79e8c; --text-mute: #948c7b;
+  --accent: #c6a874; --accent-2: #b09260; --accent-contrast: #16202e;
+  --pos: #8fbfa4; --neg: #d98b7e; --btc: #7fa6d6; --grid: #1e2839;
+  --spx: #b89ad9; --ndx: #6fc3c9;
+  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.28);
+}
+.app ::-webkit-scrollbar { height: 10px; width: 10px }
+.app ::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 6px }
+.app ::-webkit-scrollbar-track { background: transparent }
+:lang(ar) .app * { letter-spacing: normal !important }
+/* App başlıkları font-display'i inline veriyor; Space Mono'da Arapça glif yok (bkz. base katmanı). */
+:lang(ar) .app { --font-display: var(--font-body) }
+@keyframes pulse { 0%, 100% { opacity: .5 } 50% { opacity: 1 } }
+.lift { transition: transform .18s ease, border-color .18s ease, background .18s ease }
+.lift:hover { transform: translateY(-2px) }
+@media (max-width: 880px) {
+  .an-grid, .hero-grid { grid-template-columns: 1fr !important }
+}
+@media (max-width: 760px) {
+  .cta-grid { grid-template-columns: 1fr !important }
+  .cta-grid > div:last-child { border-inline-start: none !important; border-top: 1px solid var(--border) !important }
+}

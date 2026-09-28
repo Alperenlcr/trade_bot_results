@@ -1,0 +1,73 @@
+---
+import { getPath, useTranslations, type Lang } from '../i18n/utils';
+
+const { lang } = Astro.props as { lang: Lang };
+const t = useTranslations(lang);
+const text = { ...t.cookie, more: t.pages.cookies.title, href: getPath('cookies', lang) };
+---
+<div data-consent-banner hidden role="dialog" aria-label={text.more}
+  class="fixed inset-x-4 bottom-4 z-50 mx-auto flex max-w-2xl flex-wrap items-center gap-4 rounded-l border border-border bg-surface p-4 text-sm">
+  <p class="flex-1 text-text-soft">{text.body} <a href={text.href} class="text-accent underline">{text.more}</a></p>
+  <button data-consent="denied" class="rounded-m border border-border px-3 py-2">{text.decline}</button>
+  <button data-consent="granted" class="rounded-m bg-accent px-3 py-2 font-semibold text-on-accent">{text.accept}</button>
+</div>
+
+<script>
+  const KEY = 'executor-trade-consent';
+  const clarityId = import.meta.env.PUBLIC_CLARITY_ID;
+  const GA_ID = 'G-FFNNFDNLZQ';
+
+  function loadGa() {
+    const w = window as any;
+    w.dataLayer = w.dataLayer || [];
+    w.gtag = function () { w.dataLayer.push(arguments); };
+    w.gtag('js', new Date());
+    w.gtag('config', GA_ID);
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
+    document.head.append(s);
+  }
+
+  function loadAnalytics() { loadGa(); loadClarity(); }
+
+  function loadClarity() {
+    if (!clarityId) return;
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = `https://www.clarity.ms/tag/${clarityId}`;
+    document.head.append(s);
+  }
+
+  // GA ve Clarity çerezleri kök domaine yazılır; onay geri çekilince her ihtimale karşı iki
+  // domain varyantında silinir ve sayfa yenilenir (yüklenmiş script bellekten çıkar).
+  function clearAnalytics() {
+    const root = location.hostname.split('.').slice(-2).join('.');
+    const ga = document.cookie.split('; ').map((c) => c.split('=')[0]).filter((n) => n.startsWith('_ga'));
+    for (const name of ['_clck', '_clsk', ...ga]) {
+      for (const domain of ['', `; domain=.${root}`]) {
+        document.cookie = `${name}=; max-age=0; path=/${domain}`;
+      }
+    }
+  }
+
+  // 404 sayfasında dil başına bir band var; gizli dil bloğundakiler görünmez kalır.
+  const banners = document.querySelectorAll<HTMLElement>('[data-consent-banner]');
+  const showBanner = (show: boolean) => banners.forEach((b) => (b.hidden = !show));
+
+  const stored = localStorage.getItem(KEY);
+  if (stored === 'granted') loadAnalytics();
+  else if (!stored) showBanner(true);
+
+  document.addEventListener('click', (e) => {
+    const el = (e.target as HTMLElement).closest<HTMLElement>('[data-consent], [data-consent-reset]');
+    if (!el) return;
+    if (el.hasAttribute('data-consent-reset')) return showBanner(true);
+    const choice = el.dataset.consent!;
+    const previous = localStorage.getItem(KEY);
+    localStorage.setItem(KEY, choice);
+    showBanner(false);
+    if (choice === 'granted') loadAnalytics();
+    else if (previous === 'granted') { clearAnalytics(); location.reload(); }
+  });
+</script>

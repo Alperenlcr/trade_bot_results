@@ -15,5 +15,7 @@
       "embed": "https://fast.wistia.net/embed/iframe/tqo4k4g1bu",
       "title": { "tr": "Binance: Copy trading nasıl çalışır", "en": "Binance: How copy trading works" }
     }
-  ]
+  ],
+  "calculator": { "deductProfitShare": true, "profitSharePct": 10 },
+  "social": { "x": "1", "tiktok": "2", "threads": "3", "youtube": "4" }
 }

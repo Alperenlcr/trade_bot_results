@@ -1,0 +1,313 @@
+{
+  "meta": {
+    "title": "Executor Trade — Transparent performance. Smart following.",
+    "description": "Executor Trade is a copy-trading bot that mirrors the trades of its algorithmic BTC strategy to your Binance or Bybit account in real time, transparently."
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "cta": "Contact Us",
+    "language": "Language"
+  },
+  "hero": {
+    "title": "Follow elite performance with algorithmic precision.",
+    "subtitle": "Executor Trade mirrors its algorithmic strategy's trades to your account in real time, transparently.",
+    "stats": {
+      "portfolio": "Total follower capital",
+      "followers": "Investors following"
+    }
+  },
+  "how": {
+    "title": "Get started in 3 steps",
+    "steps": [
+      {
+        "title": "Follow on your exchange",
+        "body": "Start following Executor Trade from the copy-trading page of Binance or Bybit. No extra app, no API key."
+      },
+      {
+        "title": "Trades are copied automatically",
+        "body": "Positions the strategy opens and closes are mirrored to your account automatically, using the amount and leverage you set."
+      },
+      {
+        "title": "Stay in control",
+        "body": "Change your settings, stop copying or withdraw your balance at any time from your exchange."
+      }
+    ]
+  },
+  "trust": {
+    "title": "Your funds stay under your control",
+    "items": [
+      "Your funds stay in your own exchange account; they are never transferred to Executor Trade.",
+      "Copying runs through the exchange's own copy-trading system; Executor Trade never asks for your password or API key.",
+      "You can set extra limits, such as BTC-only trading and a maximum of 2x leverage."
+    ]
+  },
+  "faq": {
+    "title": "Frequently asked questions",
+    "items": [
+      {
+        "q": "Who should invest?",
+        "a": "It suits those who can think long term and want to diversify their portfolio, especially those looking to put part of their capital that won't be needed in the short term to work. Taking the backtest and the bot's live period on the exchanges together, the historical average annual return is above 100%. Individual results depend on when you start following: a follower who joins at a bad moment and leaves early may make a loss. Across all followers, overall ROI to date is positive. Future results may differ."
+      },
+      {
+        "q": "Who shouldn't invest?",
+        "a": "It may not suit investors looking for short-term gains. Because the strategy aims to catch large moves, some positions stay open for a long time and the number of trades can be low; the expected performance may not show over a few weeks or months. Historical analyses show more stable results over longer periods."
+      },
+      {
+        "q": "How should I invest?",
+        "a": "Returns become more stable the longer you stay invested. So rather than a large lump sum, adding capital at regular intervals (for example, monthly) with a long-term view is more suitable."
+      },
+      {
+        "q": "I want to invest, but how?",
+        "a": "The Guide section below has links to the platforms and setup steps. If you run into problems, reach us via the \"Contact Us\" button."
+      },
+      {
+        "q": "What are the risks?",
+        "a": "Every algorithmic strategy carries risk. The strategy was developed on historical data and runs live today. In backtests using rolling one-year windows, none of the periods examined showed an annual loss; however, a backtest is a simulation, not the result of real trades. Market dynamics can change and past performance does not guarantee future results. Review the charts, trades and analyses to make your own assessment."
+      },
+      {
+        "q": "Is my money safe?",
+        "a": "In copy trading, your assets are held in your own account and only you have access. The system only copies opened and closed trades. You can set additional limits, such as allowing BTC trades only and a maximum of 2x leverage."
+      },
+      {
+        "q": "Can I withdraw my money later?",
+        "a": "Yes. You can leave the system at any time and withdraw all or part of your balance."
+      },
+      {
+        "q": "How is it different from other copy-trading leads?",
+        "a": "This strategy trades BTC only, uses 2x leverage and keeps trade frequency low. When evaluating a portfolio, we recommend reviewing past performance, leverage, traded assets and maximum drawdown. The goal is a controlled, long-term approach rather than high-risk short-term trading."
+      },
+      {
+        "q": "Do I have to open trades manually?",
+        "a": "No. Once the copy-trading connection is set up, trades run fully automatically; opening, closing and managing positions is handled by the system."
+      },
+      {
+        "q": "Can I set my own leverage?",
+        "a": "Yes. Platforms let users apply the leverage they choose. However, the recommended leverage is 2x, and anything above 3x is not recommended."
+      },
+      {
+        "q": "What is profit share?",
+        "a": "Copy-trading platforms pass a portion of followers' profits to the strategy manager. This rate is usually at least 10%, and the system uses this standard rate. Nothing is deducted in periods without profit."
+      },
+      {
+        "q": "Will new bots come for other assets?",
+        "a": "Yes. Work to improve the Executor's performance is ongoing, and new versions are rolled out at regular intervals. Strategies for altcoins and non-crypto assets are also planned."
+      }
+    ]
+  },
+  "guide": {
+    "title": "Guide",
+    "intro": "Start following Executor Trade on Binance or Bybit in a few steps.",
+    "open": "Open copy-trading page",
+    "steps": [
+      {
+        "title": "Open an account",
+        "body": "Create a Binance or Bybit account and complete identity verification."
+      },
+      {
+        "title": "Fund your account",
+        "body": "Deposit the USDT you plan to use for copy trading."
+      },
+      {
+        "title": "Copy Executor Trade",
+        "body": "Open Executor Trade's copy-trading page from the links below and start copying."
+      },
+      {
+        "title": "Set amount and leverage",
+        "body": "Choose your investment amount, set leverage to 2x (above 3x is not recommended) and confirm. Trades then run automatically."
+      }
+    ],
+    "exchanges": "Supported exchanges"
+  },
+  "finalCta": {
+    "title": "Transparent performance. Smart following."
+  },
+  "footer": {
+    "risk": "Crypto asset trading involves high risk. Past performance is not a guarantee of future results.",
+    "legal": "Legal"
+  },
+  "pages": {
+    "about": {
+      "title": "About",
+      "description": "Executor Trade is an algorithmic BTC copy-trading bot followed on Binance and Bybit. Our approach, transparency and roadmap.",
+      "sections": [
+        {
+          "title": "What is Executor Trade?",
+          "body": "Executor Trade is a single algorithmic strategy that trades BTC. You follow it through the copy-trading system of Binance or Bybit: your funds stay in your own exchange account, and we never ask for your password or API key."
+        },
+        {
+          "title": "Our approach",
+          "body": "The strategy trades BTC only, uses 2x leverage and keeps trade frequency low, aiming to catch large moves rather than chase short-term gains. It was developed on historical data, tested under different market conditions and runs live today. Because followers join at different times, each follower's result is different."
+        },
+        {
+          "title": "Transparency",
+          "body": "The strategy's trade history is publicly visible on the exchange's copy-trading page. Profit share is taken only in profitable periods, at the exchange's standard rate; nothing is deducted when there is no profit."
+        },
+        {
+          "title": "What's next",
+          "body": "Work on improving the executor continues and new versions are released at regular intervals. Strategies for altcoins and non-crypto assets are planned."
+        }
+      ]
+    },
+    "risk": {
+      "title": "Risk Disclosure",
+      "description": "Risks of following Executor Trade: crypto volatility, leverage and liquidation, strategy, exchange and technical risks. Please read before investing.",
+      "sections": [
+        {
+          "title": "Not investment advice",
+          "body": "Information on this site is for general purposes only and is not investment, financial or tax advice. Every decision to follow Executor Trade is yours; seek independent advice if needed."
+        },
+        {
+          "title": "Market risk",
+          "body": "Crypto assets, including BTC, are highly volatile. Prices can move sharply in a short time, and you may lose part or all of the capital you allocate. Only invest money you can afford to lose."
+        },
+        {
+          "title": "Leverage and liquidation",
+          "body": "Leverage magnifies both gains and losses. A sharp move against an open position can lead to liquidation and loss of the margin. The recommended leverage is 2x; higher leverage increases this risk significantly."
+        },
+        {
+          "title": "Strategy risk",
+          "body": "Executor Trade is an algorithmic strategy developed and tested on historical data. Market conditions can change, and a strategy that worked in the past may underperform or lose money in the future. Past performance is not a guarantee of future results."
+        },
+        {
+          "title": "Your result may differ",
+          "body": "Because followers join at different times and choose their own amount and leverage, each follower's result is different and may differ from the strategy's published performance. Execution delays and price differences (slippage) can also affect results."
+        },
+        {
+          "title": "Exchange and technical risk",
+          "body": "Copying runs on Binance or Bybit. Exchange outages, maintenance, rule changes or account restrictions may prevent trades from being copied or closed on time. Executor Trade is not responsible for the operation of the exchanges."
+        },
+        {
+          "title": "Legal and tax",
+          "body": "Access to crypto assets and copy trading may be restricted in some countries. It is your responsibility to comply with the laws and tax obligations that apply to you."
+        }
+      ]
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "description": "What personal data the Executor Trade website processes, why, for how long, who it is shared with and your rights under GDPR and KVKK.",
+      "sections": [
+        {
+          "title": "Scope and controller",
+          "body": "This policy covers the Executor Trade website. The controller is Executor Trade; you can reach us with the \"Contact Us\" button on every page. The site has no sign-up, account or payment; the only form is the optional referral form."
+        },
+        {
+          "title": "What we process",
+          "body": "Technical request data: when you visit, our hosting provider Vercel processes your IP address, browser and request information to deliver and protect the site. Measurement: only with your consent, Google Analytics and Microsoft Clarity record how the site is used (see the Cookie Policy). Referral form: if you submit it, we process your e-mail address, the exchange nicknames and the referrer's exchange ID (UID) to record the referral and pay commissions. Contact: if you write to us, we process your name, contact details and message."
+        },
+        {
+          "title": "Why and on what basis",
+          "body": "To run and secure the site (legitimate interest), to measure and improve it (only with your consent), to run the referral program you applied for (your request), and to answer your messages (your request / legitimate interest). We do not sell your data or use it for advertising profiles."
+        },
+        {
+          "title": "Your exchange account",
+          "body": "Copying runs on Binance or Bybit, and your account data is processed by the exchange under its own privacy policy. Executor Trade never asks for your password or API key and cannot access your funds. We may see only the limited information the exchange shows to a lead trader, and we use it only to run the strategy and to publish aggregated figures such as the number of followers."
+        },
+        {
+          "title": "Service providers and transfers",
+          "body": "We use Vercel (hosting), Google (Analytics with consent; storage of referral form submissions) and Microsoft (Clarity, with consent). These providers may process data outside your country, including in the United States; such transfers rely on the safeguards the providers offer, such as standard contractual clauses."
+        },
+        {
+          "title": "How long we keep it",
+          "body": "Technical logs are kept briefly by Vercel for operation and security. Analytics and Clarity data are kept according to Google's and Microsoft's retention periods. Referral form data is kept while the referral and its commission period last, and for the records the payments require. Contact messages are kept as long as needed to answer you and then deleted, unless the law requires otherwise."
+        },
+        {
+          "title": "Your rights",
+          "body": "Depending on the law that applies to you (including GDPR and Turkey's KVKK), you can ask to access, correct or delete your data, object to or restrict processing, and withdraw consent at any time via \"Cookie settings\". Use the \"Contact Us\" button for requests. You also have the right to complain to your data protection authority."
+        },
+        {
+          "title": "Children and changes",
+          "body": "The site is not intended for anyone under 18. We may update this policy; the current version is always on this page."
+        }
+      ]
+    },
+    "cookies": {
+      "title": "Cookie Policy",
+      "description": "Which cookies and similar technologies Executor Trade uses, why, for how long, and how to change your choice at any time.",
+      "sections": [
+        {
+          "title": "In short",
+          "body": "This site has no sign-up or account. The only non-essential technologies are Google Analytics and the Microsoft Clarity heatmap, and they load only if you accept them in the cookie banner."
+        },
+        {
+          "title": "Essential: your choice",
+          "body": "When you accept or decline, your choice is stored in your browser's local storage under the key \"executor-trade-consent\" so the banner is not shown again. It contains no personal data and stays until you clear it."
+        },
+        {
+          "title": "Analytics (Google Analytics, with consent)",
+          "body": "If you accept, Google Analytics counts page views and measures how the site is used. It sets the cookies _ga and _ga_<ID> (up to 2 years). The data is processed by Google under its privacy policy."
+        },
+        {
+          "title": "Heatmap (Microsoft Clarity, with consent)",
+          "body": "If you accept, Microsoft Clarity records how the site is used (clicks, scrolling, mouse movement and session replays) to help us improve it. It sets cookies such as _clck (1 year) and _clsk (1 day); Microsoft may also use its own cookies such as MUID. The data is processed by Microsoft under its privacy statement."
+        },
+        {
+          "title": "Exchange links",
+          "body": "Links to Binance and Bybit take you to those sites, which apply their own cookie policies. The referral code is carried in the link; we do not set a cookie for it."
+        },
+        {
+          "title": "Changing your choice",
+          "body": "You can change your choice at any time with the \"Cookie settings\" button at the bottom of every page. If you withdraw consent, analytics cookies are deleted and Google Analytics and Clarity no longer load. You can also clear cookies and site data from your browser settings."
+        }
+      ]
+    },
+    "terms": {
+      "title": "Terms of Use",
+      "description": "Terms of use for the Executor Trade website: the nature of the service, your responsibilities, referral links, liability and changes.",
+      "sections": [
+        {
+          "title": "Acceptance",
+          "body": "By using the Executor Trade website you accept these terms. The site is for introduction and information; if you do not accept the terms, please do not use it."
+        },
+        {
+          "title": "What Executor Trade is (and is not)",
+          "body": "Executor Trade is an algorithmic strategy that you can follow through the copy-trading systems of Binance and Bybit. Executor Trade is not an exchange, broker, portfolio manager or investment adviser, and it does not hold or manage your funds. Copy trading is provided by the exchange, and your relationship with it is governed by the exchange's own terms."
+        },
+        {
+          "title": "Not investment advice",
+          "body": "Nothing on this site is investment, financial, legal or tax advice, or an offer or solicitation to buy or sell any asset. Crypto trading involves high risk; please read the Risk Disclosure before investing."
+        },
+        {
+          "title": "Your responsibilities",
+          "body": "You confirm that you are at least 18 and that using crypto assets and copy trading is legal where you live. You are responsible for your exchange account, its security, and your choice of amount and leverage."
+        },
+        {
+          "title": "Performance information",
+          "body": "Figures on this site (such as follower count, portfolio value or historical returns) are provided for information, may be delayed or rounded, and may differ from your own result. The data shown on the exchange is authoritative. Past performance is not a guarantee of future results."
+        },
+        {
+          "title": "Fees and referral links",
+          "body": "The website is free to use. Profit share is charged by the exchange under its rules, only in profitable periods. Links to Binance and Bybit are referral links; Executor Trade may receive a commission from the exchange when you use them, at no extra cost to you."
+        },
+        {
+          "title": "Changes to the strategy",
+          "body": "The strategy may be updated, paused or discontinued at any time, including to protect followers under unusual market conditions. You can stop copying at any time from your exchange."
+        },
+        {
+          "title": "Intellectual property",
+          "body": "The Executor Trade name, logo, texts and designs on this site belong to Executor Trade and may not be copied or used without permission."
+        },
+        {
+          "title": "Limitation of liability",
+          "body": "To the extent permitted by law, Executor Trade is not liable for trading losses, missed or delayed trades, exchange outages or decisions made based on information on this site. Nothing in these terms limits liability that cannot be limited by law."
+        },
+        {
+          "title": "Changes and contact",
+          "body": "We may update these terms; the current version is always on this page. For questions, use the \"Contact Us\" button."
+        }
+      ]
+    },
+    "notFound": {
+      "title": "Page not found",
+      "description": "The page you are looking for does not exist.",
+      "back": "Back to home"
+    }
+  },
+  "placeholder": "Content in preparation.",
+  "cookie": {
+    "body": "We use analytics cookies to improve this site.",
+    "accept": "Accept",
+    "decline": "Decline",
+    "settings": "Cookie settings"
+  }
+}

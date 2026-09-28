@@ -1,0 +1,30 @@
+---
+import Logo from './Logo.astro';
+import LangSwitcher from './LangSwitcher.astro';
+import dash from '../../data/i18n.json';
+import { contactUrl, getPath, useTranslations, type Lang, type RouteKey } from '../i18n/utils';
+
+interface Props { lang: Lang; route?: RouteKey }
+const { lang, route = 'home' } = Astro.props;
+const t = useTranslations(lang);
+const d = dash[lang];
+const sections = [
+  ['performans', d.nav_perf], ['hesapla', d.nav_calc], ['strateji', d.nav_strategy],
+  ['islemler', d.nav_trades], ['analiz', d.nav_analysis], ['sss', d.nav_faq], ['rehber', d.nav_guide],
+];
+// Ana sayfada aynı sayfa içi anchor; diğer sayfalarda ana sayfanın ilgili bölümüne gider.
+const sectionBase = Astro.props.route === 'home' ? '' : getPath('home', lang); // 404'te route yok
+---
+<header class="sticky top-0 z-40 border-b border-border bg-bg/90 backdrop-blur">
+  <nav class="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-4 sm:px-6">
+    <a href={getPath('home', lang)} aria-label="Executor Trade"><Logo /></a>
+    <div class="hidden items-center gap-5 text-sm lg:flex">
+      {sections.map(([id, label]) => <a href={`${sectionBase}#${id}`} class="text-text-soft hover:text-text">{label}</a>)}
+    </div>
+    <div class="flex items-center gap-3 text-sm sm:gap-6">
+      <a href={getPath('about', lang)} class="hidden py-1 text-text-soft hover:text-text sm:inline-block">{t.nav.about}</a>
+      <LangSwitcher lang={lang} route={route} />
+      <a href={contactUrl} class="whitespace-nowrap rounded-m bg-accent px-3 py-2 font-semibold text-on-accent sm:px-4">{t.nav.cta}</a>
+    </div>
+  </nav>
+</header>
