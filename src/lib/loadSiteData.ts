@@ -1,12 +1,11 @@
 import { existsSync, readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { useTranslations, type Lang } from '../i18n/utils';
 
 // data/ lives at the repo root (untouched — a daily external automation
-// updates data/tables/*.csv and pushes directly to it), two levels above
-// this file (src/lib/loadSiteData.ts -> src/ -> repo root).
-const ROOT = fileURLToPath(new URL('../../', import.meta.url));
+// updates data/tables/*.csv and pushes directly to it). Resolved from the
+// cwd, not import.meta.url: Astro 7 bundles this file into dist/.prerender/.
+const ROOT = process.cwd();
 const DATA_DIR = path.join(ROOT, 'data');
 
 export interface MonthlyRow { m: string; p: number; b: number }
