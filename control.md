@@ -112,7 +112,8 @@ Astro + bot-ui geçişinden kalan, kod dışında yapılması gereken işler.
       resmi olmayan API'sinden geliyor. Yahoo bulut IP'lerini zaman zaman engeller; ilk action loglarında
       `hourly.csv: N rows` satırını gör. Gelmezse dosya eski haliyle kalır ve grafik sonraki günleri
       günlük kapanışla tamamlar (kısa aralıklarda basamaklı görünüm geri gelir) — birkaç gün kırmızıysa bak.
-      Kullanım koşulları FRED'dekiyle aynı soru: ticari kullanım için lisans gerekebilir.
+      Kullanım koşulları FRED'dekiyle aynı soru: ticari kullanım için lisans gerekebilir. Grafikteki kaynak notu
+      ("Endeks verisi: Yahoo Finance / FRED…") kaldırıldı; koşullar kaynak belirtmeyi şart koşuyorsa geri ekle.
 
 ## Geçmiş performans hesaplayıcı
 

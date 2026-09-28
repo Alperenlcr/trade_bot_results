@@ -419,6 +419,7 @@ export default class App extends React.Component<Props, State> {
   selectTf = async (tf: string) => {
     const autoLog = (tf === '3y' || tf === '5y' || tf === 'all');
     await this.ensureTf(tf);
+    this.sel = null; // canvas'taki taralı alan state'ten ayrı tutuluyor; o da sıfırlanmalı
     this.setState({ tf, log: autoLog, selection: null }, () => this.drawChart());
   };
   clearSelection = () => { this.sel = null; this.setState({ selection: null }, () => this.drawChart()); };
@@ -476,8 +477,14 @@ export default class App extends React.Component<Props, State> {
     ctx.strokeStyle = c.grid; ctx.fillStyle = c.mute; ctx.lineWidth = 1;
     for (const tk of ticks) { const y = Y(tk); if (y < padT - 1 || y > padT + plotH + 1) continue; ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W - padR, y); ctx.stroke(); ctx.textAlign = 'right'; ctx.fillText(this.tickLabel(tk), padL - 8, y); }
     ctx.textAlign = 'center'; ctx.textBaseline = 'top';
-    const xt = this.xTicks(t0, t1, 5);
-    for (const tt of xt) { const x = X(tt); ctx.fillStyle = c.mute; ctx.fillText(this.xLabel(tt, t1 - t0), x, padT + plotH + 7); }
+    const xt = this.xTicks(t0, t1, plotW < 500 ? 3 : 5);
+    let lastR = -Infinity;
+    for (const tt of xt) {
+      const label = this.xLabel(tt, t1 - t0), hw = ctx.measureText(label).width / 2;
+      const x = Math.min(Math.max(X(tt), padL + hw), W - hw - 2); // kenarda kesilmesin
+      if (x - hw < lastR + 8) continue; // kaydırılan etiket komşusuna binmesin
+      ctx.fillStyle = c.mute; ctx.fillText(label, x, padT + plotH + 7); lastR = x + hw;
+    }
     const sel = this.sel;
     if (sel) { const xa = X(data[sel.a].t), xb = X(data[sel.b].t); ctx.fillStyle = c.accent + '1f'; ctx.fillRect(Math.min(xa, xb), padT, Math.abs(xb - xa), plotH); ctx.strokeStyle = c.accent + '66'; ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.moveTo(xa, padT); ctx.lineTo(xa, padT + plotH); ctx.moveTo(xb, padT); ctx.lineTo(xb, padT + plotH); ctx.stroke(); ctx.setLineDash([]); }
     if (showBtc) { ctx.strokeStyle = c.btc; ctx.lineWidth = 1.4; ctx.globalAlpha = .9; ctx.beginPath(); data.forEach((d, i) => { const x = X(d.t), y = Y(eq(d.b)); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }); ctx.stroke(); ctx.globalAlpha = 1; }
@@ -529,7 +536,19 @@ export default class App extends React.Component<Props, State> {
     if (v >= 10) return '×' + v.toLocaleString(this.loc(), { maximumFractionDigits: 0 });
     return '×' + v.toLocaleString(this.loc(), { maximumFractionDigits: 1 });
   }
-  xTicks(t0: number, t1: number, n: number) { const out: number[] = []; for (let i = 0; i <= n; i++) out.push(t0 + (t1 - t0) * i / n); return out; }
+  // Eşit aralık yerine ay/yıl başlarına oturur; eşit aralıkta aynı ay (3A) ya da yıl (3Y) iki kez yazılıyordu.
+  xTicks(t0: number, t1: number, n: number) {
+    const out: number[] = []; const years = t1 - t0 > 2 * 365 * 864e5;
+    const units = (t1 - t0) / ((years ? 365.25 : 30.44) * 864e5);
+    const step = years ? Math.max(1, Math.ceil(units / n)) : [1, 2, 3, 6].find((s) => units / s <= n) ?? 12;
+    const d0 = new Date(t0);
+    for (let k = years ? d0.getFullYear() + 1 : d0.getFullYear() * 12 + d0.getMonth() + 1; ; k++) {
+      const t = years ? new Date(k, 0, 1).getTime() : new Date(Math.floor(k / 12), k % 12, 1).getTime();
+      if (t > t1) break;
+      if (k % step === 0) out.push(t);
+    }
+    return out;
+  }
   xLabel(ts: number, span: number) { const d = new Date(ts); if (span > 2 * 365 * 864e5) return '' + d.getFullYear(); const mo = d.toLocaleDateString(this.loc(), { month: 'short' }); return mo + ' ' + String(d.getFullYear()).slice(2); }
 
   attachChartEvents(el: HTMLCanvasElement) {
@@ -708,7 +727,6 @@ export default class App extends React.Component<Props, State> {
             <div style={sx(`padding:20px 20px 8px`)}>
               <div style={sx(`display:flex;align-items:baseline;gap:20px;flex-wrap:wrap;margin-bottom:6px`)}>
                 <div>
-                  <div style={sx(`font-size:11px;color:var(--text-mute);font-family:var(--font-display);letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px;display:flex;align-items:center;gap:7px`)}><span style={sx(`width:14px;height:3px;border-radius:2px;background:var(--accent)`)}></span><span style={sx(`color:var(--accent);font-weight:600`)}>{t.legend_portfolio}</span> · {t.cumulative}</div>
                   <div style={sx(`display:flex;align-items:baseline;gap:6px`)}>
                     <span style={sx(`font-family:var(--font-display);font-weight:600;font-size:30px;letter-spacing:-.5px;color:${chartHeadColor}`)}>{chartHeadValue}</span>
                     <span style={sx(`font-size:13px;color:var(--text-mute)`)}>{chartHeadMult}</span>
@@ -722,7 +740,7 @@ export default class App extends React.Component<Props, State> {
                     </div>
                     <div style={sx(`text-align:end`)}>
                       <div style={sx(`font-family:var(--font-display);font-weight:600;font-size:20px;color:${selColor}`)}>{selReturn}</div>
-                      <div style={sx(`font-size:11px;color:var(--btc);font-family:var(--font-display)`)}>BTC {selBtc}</div>
+                      {this.state.showBtc && <div style={sx(`font-size:11px;color:var(--btc);font-family:var(--font-display)`)}>BTC {selBtc}</div>}
                       {selIdx.map((x) => <div key={x.key} style={sx(`font-size:11px;color:var(${x.color});font-family:var(--font-display)`)}>{x.label} {x.v}</div>)}
                     </div>
                     <button onClick={this.clearSelection} style={sx(`width:26px;height:26px;border-radius:4px;border:1px solid var(--border);background:var(--bg-elev);color:var(--text-dim);cursor:pointer;font-size:14px`)}>✕</button>
@@ -736,7 +754,7 @@ export default class App extends React.Component<Props, State> {
                 <span style={sx(`display:inline-flex;align-items:center;gap:7px`)}><span style={sx(`width:14px;height:3px;border-radius:2px;background:var(--accent)`)}></span>{t.legend_portfolio}</span>
                 {this.state.showBtc && <span style={sx(`display:inline-flex;align-items:center;gap:7px`)}><span style={sx(`width:14px;height:3px;border-radius:2px;background:var(--btc)`)}></span>{t.legend_btc}</span>}
                 {this.activeIdx().map((x) => <span key={x.key} style={sx(`display:inline-flex;align-items:center;gap:7px`)}><span style={sx(`width:14px;height:3px;border-radius:2px;background:var(${x.color})`)}></span>{x.label}</span>)}
-                <span style={sx(`margin-inline-start:auto;color:var(--text-mute);font-size:11.5px`)}>{this.state.showIdx.length > 0 && <>{t.idx_source} · </>}{t.chart_hint}</span>
+                <span style={sx(`margin-inline-start:auto;color:var(--text-mute);font-size:11.5px`)}>{t.chart_hint}</span>
               </div>
             </div>
           )}
