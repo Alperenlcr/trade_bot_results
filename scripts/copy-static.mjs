@@ -31,4 +31,5 @@ copy('llms.txt');
 // as static files so the client fetches them at runtime exactly like today.
 const LAZY_TABLES = ['3m.csv', '6m.csv', '1y.csv', '3y.csv', '5y.csv', 'all.csv', 'performance.csv'];
 for (const f of LAZY_TABLES) copy(path.join('data', 'tables', f));
-copy(path.join('data', 'indices', 'daily.csv')); // chart index lines, fetched on toggle
+copy(path.join('data', 'indices', 'daily.csv')); // chart index lines (older history)
+copy(path.join('data', 'indices', 'hourly.csv')); // chart index lines, last 2 years

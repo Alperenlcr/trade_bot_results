@@ -1,6 +1,6 @@
 name: Update data
 
-# Daily S&P 500 / Nasdaq-100 closes for the performance chart (data/indices/daily.csv)
+# S&P 500 / Nasdaq-100 closes for the performance chart (data/indices/daily.csv + hourly.csv)
 # and Binance + Bybit AUM / follower counts for the hero follower card (data/binance.json, data/bybit.json).
 # Runs after the US close, before the daily trade-results push.
 on:
@@ -29,6 +29,6 @@ jobs:
           git diff --quiet data/indices data/binance.json data/bybit.json && exit 0
           git config user.name 'github-actions[bot]'
           git config user.email '41898283+github-actions[bot]@users.noreply.github.com'
-          git add data/indices/daily.csv data/binance.json data/bybit.json
+          git add data/indices data/binance.json data/bybit.json
           git commit -m "Update data: $(date -u +%F)"
           git pull --rebase && git push

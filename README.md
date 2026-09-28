@@ -38,7 +38,7 @@ npm run preview   # üretilen dist/'i yerel olarak sun
 │       └── styleUtil.ts           # inline CSS string → React style objesi yardımcı fonksiyonu
 ├── scripts/copy-static.mjs        # build sonrası assets/, robots.txt, sitemap.xml, llms.txt
 │                                   #   ve lazy-fetch edilen büyük CSV'leri dist/'e kopyalar
-├── scripts/fetch-indices.mjs      # FRED'den S&P 500 + Nasdaq-100 günlük kapanış → data/indices/daily.csv
+├── scripts/fetch-indices.mjs      # S&P 500 + Nasdaq-100: FRED günlük → daily.csv, Yahoo saatlik (son 2 yıl) → hourly.csv
 ├── scripts/fetch-binance-stats.mjs # Binance AUM + takipçi sayısı → data/binance.json (takipçi kartı)
 ├── scripts/fetch-bybit-stats.mjs  # Bybit AUM + takipçi sayısı → data/bybit.json (headless Chrome ile)
 ├── .github/workflows/indices.yml  # üç fetch script'ini her gün 01:30 UTC'de çalıştırıp commit'ler
@@ -49,7 +49,7 @@ npm run preview   # üretilen dist/'i yerel olarak sun
     ├── i18n.json                  # Dashboard metinleri (en / tr / ar / zh)
     ├── config.json                # Platform linkleri, referans linki, videolar
     ├── binance.json, bybit.json   # Borsa başına AUM + takipçi; sitede toplamları (indices.yml günceller)
-    ├── indices/daily.csv          # S&P 500 / Nasdaq-100 (indices.yml günceller; grafikte karşılaştırma)
+    ├── indices/daily.csv, hourly.csv # S&P 500 / Nasdaq-100 (indices.yml günceller; grafikte karşılaştırma)
     └── tables/                    # Tüm sayısal veri (CSV) — otomasyon burayı günceller
         ├── 3m.csv 6m.csv 1y.csv 3y.csv 5y.csv all.csv   # portföy + BTC birikimli getiri
         ├── daily.csv monthly.csv yearly.csv             # gün / ay / yıl serileri

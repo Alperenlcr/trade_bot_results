@@ -135,6 +135,7 @@ export default class App extends React.Component<Props, State> {
 
   async fetchCsv(name: string, dir = '/data/tables/') {
     const r = await fetch(dir + name);
+    if (!r.ok) throw new Error(`${name}: HTTP ${r.status}`); // yoksa 404 sayfası CSV diye okunurdu
     const txt = await r.text();
     const lines = txt.trim().split('\n');
     const head = lines[0].split(',');
@@ -375,8 +376,15 @@ export default class App extends React.Component<Props, State> {
 
   async loadIdx() {
     if (this.idx) return;
-    const d = await this.fetchCsv('daily.csv', '/data/indices/');
-    this.idx = { t: d.rows.map((r) => this.parseTs(r[0])), v: INDICES.map((_, i) => d.rows.map((r) => +r[i + 1])) };
+    // Son 2 yıl saatlik (hourly.csv), dışı günlük (daily.csv); saatlik gelmezse/eskirse günlük tamamlar.
+    const [d, h] = await Promise.all([
+      this.fetchCsv('daily.csv', '/data/indices/'),
+      this.fetchCsv('hourly.csv', '/data/indices/').catch(() => ({ rows: [] as string[][] })),
+    ]);
+    const h0 = h.rows.length ? this.parseTs(h.rows[0][0]) : Infinity;
+    const h1 = h.rows.length ? this.parseTs(h.rows[h.rows.length - 1][0]) : -Infinity;
+    const rows = [...d.rows.filter((r) => this.parseTs(r[0]) < h0), ...h.rows, ...d.rows.filter((r) => this.parseTs(r[0]) > h1)];
+    this.idx = { t: rows.map((r) => this.parseTs(r[0])), v: INDICES.map((_, i) => rows.map((r) => +r[i + 1])) };
   }
   toggleIdx = async (key: string) => {
     await this.loadIdx();

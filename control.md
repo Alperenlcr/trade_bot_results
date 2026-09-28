@@ -108,6 +108,11 @@ Astro + bot-ui geçişinden kalan, kod dışında yapılması gereken işler.
       `scripts/fetch-indices.mjs` değişir).
 - [ ] **FRED erişimi** — FRED kaynağı kısıtlarsa action kırmızı olur; mevcut CSV korunur, grafikte
       çizgiler son başarılı güne kadar gider. Birkaç gün üst üste kırmızıysa bak.
+- [ ] **Yahoo saatlik veri** — son 2 yılın saatlik kapanışları (`data/indices/hourly.csv`) Yahoo Finance'in
+      resmi olmayan API'sinden geliyor. Yahoo bulut IP'lerini zaman zaman engeller; ilk action loglarında
+      `hourly.csv: N rows` satırını gör. Gelmezse dosya eski haliyle kalır ve grafik sonraki günleri
+      günlük kapanışla tamamlar (kısa aralıklarda basamaklı görünüm geri gelir) — birkaç gün kırmızıysa bak.
+      Kullanım koşulları FRED'dekiyle aynı soru: ticari kullanım için lisans gerekebilir.
 
 ## Geçmiş performans hesaplayıcı
 
@@ -149,7 +154,7 @@ Astro + bot-ui geçişinden kalan, kod dışında yapılması gereken işler.
 - **Arapça/Çince rehber ekran görüntüleri** İngilizce görselleri kullanıyor (yalnızca tr/en var).
 - **Gizlilik/çerez metinleri** barındırma sağlayıcısı olarak artık Vercel'i yazıyor (4 dil).
 - **Endeks çizgileri** varsayılan açık (düğmelerle kapatılabilir); görünen aralığın başına göre yeniden bazlanır
-  (fiyat endeksi, temettü hariç). Hafta sonu/tatil günlerinde son kapanış düz devam eder.
+  (fiyat endeksi, temettü hariç). Son 2 yıl saatlik, öncesi günlük; borsa kapalıyken (gece, hafta sonu, tatil) son fiyat düz devam eder.
 - **`google-apps-script.js`** referral formunun ayrı backend'i; içindeki e-posta siteye çıkmıyor,
   dokunulmadı.
 - **Ana sayfa sırası:** karşılama → performans → hesaplayıcı → 3 adımda başla → fonların kontrolü → strateji →
