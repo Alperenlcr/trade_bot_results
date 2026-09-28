@@ -621,7 +621,7 @@ export default class App extends React.Component<Props, State> {
         <h1 style={sx(`font-family:var(--font-display);font-weight:600;font-size:clamp(34px,5vw,58px);line-height:1.04;letter-spacing:-1.5px;max-width:18ch;margin-bottom:22px`)}>{t.hero_title}</h1>
         <p style={sx(`font-size:clamp(16px,2vw,19px);color:var(--text-dim);max-width:60ch;line-height:1.6;margin-bottom:34px`)}>{t.hero_sub}</p>
         <div style={sx(`display:flex;gap:12px;flex-wrap:wrap`)}>
-          <a href="#baglan" className="lift" style={sx(`height:48px;padding:0 24px;border-radius:4px;background:var(--accent);color:var(--accent-contrast);font-weight:600;font-size:15px;text-decoration:none;display:inline-flex;align-items:center;gap:8px`)}>{t.hero_cta_primary} →</a>
+          <a href="#connect" className="lift" style={sx(`height:48px;padding:0 24px;border-radius:4px;background:var(--accent);color:var(--accent-contrast);font-weight:600;font-size:15px;text-decoration:none;display:inline-flex;align-items:center;gap:8px`)}>{t.hero_cta_primary} →</a>
         </div>
         </div>
         {followerCard}
@@ -664,7 +664,7 @@ export default class App extends React.Component<Props, State> {
     const isChartView = this.state.view === 'chart', isMonthlyView = this.state.view === 'monthly';
 
     return (
-      <section id="performans" style={sx(`padding:56px 0`)}>
+      <section id="performance" style={sx(`padding:56px 0`)}>
         <div style={sx(`display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px`)}>
           <div>
             <div style={sx(`font-family:var(--font-display);font-size:12px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px`)}>{t.perf_eyebrow}</div>
@@ -785,7 +785,7 @@ export default class App extends React.Component<Props, State> {
     const cell = `padding:18px 20px;border-radius:6px;background:var(--surface-2);border:1px solid var(--border)`;
     const cellLabel = `font-size:12.5px;color:var(--text-dim);margin-bottom:6px`;
     return (
-      <section id="hesapla" style={sx(`padding:56px 0`)}>
+      <section id="calculator" style={sx(`padding:56px 0`)}>
         <div style={sx(`margin-bottom:24px`)}>
           <div style={sx(`font-family:var(--font-display);font-size:12px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px`)}>{t.calc_eyebrow}</div>
           <h2 style={sx(`font-family:var(--font-display);font-weight:600;font-size:clamp(26px,3.5vw,38px);letter-spacing:-.8px;margin-bottom:10px`)}>{t.calc_title}</h2>
@@ -839,7 +839,7 @@ export default class App extends React.Component<Props, State> {
     const tb = this.state.ready ? this.buildTrades() : { rows: [] as any[], total: 0, shown: 0, win: 0, loss: 0, avg: 0 };
     const sortLabel = this.state.tNewest ? t.sort_new : t.sort_old;
     return (
-      <section id="islemler" style={sx(`padding:56px 0`)}>
+      <section id="trades" style={sx(`padding:56px 0`)}>
         <div style={sx(`margin-bottom:24px`)}>
           <div style={sx(`font-family:var(--font-display);font-size:12px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px`)}>{t.trades_eyebrow}</div>
           <h2 style={sx(`font-family:var(--font-display);font-weight:600;font-size:clamp(26px,3.5vw,38px);letter-spacing:-.8px;margin-bottom:10px`)}>{t.trades_title}</h2>
@@ -902,7 +902,7 @@ export default class App extends React.Component<Props, State> {
     const perfEndOpts = (this.state.perfStart ? this.endsFor(this.state.perfStart) : []).map((d) => ({ value: d, label: this.fmtDate(this.parseTs(d)) }));
     const perf = this.buildPerf();
     return (
-      <section id="analiz" style={sx(`padding:56px 0`)}>
+      <section id="analysis" style={sx(`padding:56px 0`)}>
         <div style={sx(`margin-bottom:24px`)}>
           <div style={sx(`font-family:var(--font-display);font-size:12px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px`)}>{t.an_eyebrow}</div>
           <h2 style={sx(`font-family:var(--font-display);font-weight:600;font-size:clamp(26px,3.5vw,38px);letter-spacing:-.8px;margin-bottom:10px`)}>{t.an_title}</h2>
@@ -1004,7 +1004,7 @@ export default class App extends React.Component<Props, State> {
     const t = this.t;
     const strategyCards: { t: string; b: string }[] = t.strategy || [];
     return (
-      <section id="strateji" style={sx(`padding:56px 0`)}>
+      <section id="strategy" style={sx(`padding:56px 0`)}>
         <div style={sx(`margin-bottom:24px`)}>
           <div style={sx(`font-family:var(--font-display);font-size:12px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px`)}>{t.str_eyebrow}</div>
           <h2 style={sx(`font-family:var(--font-display);font-weight:600;font-size:clamp(26px,3.5vw,38px);letter-spacing:-.8px`)}>{t.str_title}</h2>
@@ -1025,7 +1025,7 @@ export default class App extends React.Component<Props, State> {
     const t = this.t;
     const faqItems: { q: string; a: string }[] = t.faq || [];
     return (
-      <section id="sss" style={sx(`padding:56px 0`)}>
+      <section id="faq" style={sx(`padding:56px 0`)}>
         <div style={sx(`margin-bottom:24px`)}>
           <div style={sx(`font-family:var(--font-display);font-size:12px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px`)}>{t.faq_eyebrow}</div>
           <h2 style={sx(`font-family:var(--font-display);font-weight:600;font-size:clamp(26px,3.5vw,38px);letter-spacing:-.8px`)}>{t.faq_title}</h2>
@@ -1062,7 +1062,7 @@ export default class App extends React.Component<Props, State> {
     const stepAlt = (n: number) => `${t.gd_step_alt} ${n}`;
     const nums = [1, 2, 3, 4, 5, 6];
     return (
-      <section id="rehber" style={sx(`padding:56px 0`)}>
+      <section id="guide" style={sx(`padding:56px 0`)}>
         <div style={sx(`margin-bottom:24px`)}>
           <div style={sx(`font-family:var(--font-display);font-size:12px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px`)}>{t.gd_eyebrow}</div>
           <h2 style={sx(`font-family:var(--font-display);font-weight:600;font-size:clamp(26px,3.5vw,38px);letter-spacing:-.8px;margin-bottom:10px`)}>{t.gd_title}</h2>
@@ -1118,7 +1118,7 @@ export default class App extends React.Component<Props, State> {
   renderCta() {
     const t = this.t;
     return (
-      <section id="baglan" style={sx(`padding:40px 0 64px`)}>
+      <section id="connect" style={sx(`padding:40px 0 64px`)}>
         <div style={sx(`border:1px solid var(--border);border-radius:6px;overflow:hidden;background:var(--surface);box-shadow:var(--shadow)`)}>
           <div className="cta-grid" style={sx(`display:grid;grid-template-columns:1fr 1fr`)}>
             <div style={sx(`padding:clamp(28px,4vw,46px);display:flex;flex-direction:column;justify-content:center;gap:14px;background:color-mix(in srgb,var(--accent) 8%,var(--surface))`)}>

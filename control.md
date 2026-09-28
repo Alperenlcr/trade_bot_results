@@ -125,7 +125,7 @@ Astro + bot-ui geçişinden kalan, kod dışında yapılması gereken işler.
 - [ ] **Hukuki metin** — kartın altında "simülasyondur, komisyon ve kayma dahil değil, geçmiş performans
       garanti etmez" notu var (4 dil). Gerekirse hukukçuya okut.
 - **Not:** Hesaplayıcı `all.csv`'yi (~130 KB) ilk grafik çizildikten sonra arka planda çekiyor; sayfa
-  açılış hızını etkilemiyor. Menüde "Performans"ın yanında `#hesapla` bağlantısı var.
+  açılış hızını etkilemiyor. Menüde "Performans"ın yanında `#calculator` bağlantısı var.
 
 ## Yayından sonra (SEO)
 

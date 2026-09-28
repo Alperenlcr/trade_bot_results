@@ -9,8 +9,8 @@ const { lang, route = 'home' } = Astro.props;
 const t = useTranslations(lang);
 const d = dash[lang];
 const sections = [
-  ['performans', d.nav_perf], ['hesapla', d.nav_calc], ['strateji', d.nav_strategy],
-  ['islemler', d.nav_trades], ['analiz', d.nav_analysis], ['sss', d.nav_faq], ['rehber', d.nav_guide],
+  ['performance', d.nav_perf], ['calculator', d.nav_calc], ['strategy', d.nav_strategy],
+  ['trades', d.nav_trades], ['analysis', d.nav_analysis], ['faq', d.nav_faq], ['guide', d.nav_guide],
 ];
 // Ana sayfada aynı sayfa içi anchor; diğer sayfalarda ana sayfanın ilgili bölümüne gider.
 const sectionBase = Astro.props.route === 'home' ? '' : getPath('home', lang); // 404'te route yok
