@@ -65,6 +65,7 @@ export default class App extends React.Component<Props, State> {
   _perfStarted = false;
   canvas: HTMLCanvasElement | null = null;
   honeypot: HTMLInputElement | null = null;
+  refTimer: ReturnType<typeof setTimeout> | undefined;
   _ro: ResizeObserver | null = null;
   sel: Selection | null = null;
   hoverI: number | null = null;
@@ -110,6 +111,7 @@ export default class App extends React.Component<Props, State> {
   get t(): any { return (this.i18n && this.i18n[this.lang]) || {}; }
 
   async componentDidMount() {
+    addEventListener('keydown', this.onKey);
     this.loadPerf();
     this.countUp();
     // Endeks dosyası gelmezse grafik yine çizilir, yalnız endeks çizgileri olmaz.
@@ -118,6 +120,23 @@ export default class App extends React.Component<Props, State> {
     // Hesaplayıcı tüm geçmişe ihtiyaç duyar; ilk grafik çizildikten sonra arka planda yüklenir.
     this.ensureTf('all').then(() => this.forceUpdate(), () => {});
   }
+
+  componentWillUnmount() {
+    removeEventListener('keydown', this.onKey);
+    clearTimeout(this.refTimer);
+    this._ro?.disconnect();
+  }
+
+  onKey = (e: KeyboardEvent) => {
+    if (e.key === 'Escape') { if (this.state.lb) this.lbClose(); else if (this.state.refModal) this.closeRefModal(); }
+    else if (this.state.lb && e.key === 'ArrowLeft') this.lbPrev();
+    else if (this.state.lb && e.key === 'ArrowRight') this.lbNext();
+  };
+
+  // role="button" div'ler için Enter/Space ile tıklama.
+  onActivate = (fn: () => void) => (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fn(); }
+  };
 
   // Son değer SSR HTML'inde hazır (SEO, JS'siz); burada yalnızca 0'dan sayarak oraya varılır.
   // DOM'a doğrudan yazılır: her karede setState tüm dashboard'u yeniden render ederdi.
@@ -228,8 +247,8 @@ export default class App extends React.Component<Props, State> {
     );
   }
 
-  closeRefModal = () => this.setState({ refModal: false });
-  openRefModal = () => this.setState({ refModal: true, refDone: false, refErr: '', refSubmitting: false, refRefNick: '', refRefID: '', refNewNick: '', refEmail: '' });
+  closeRefModal = () => { clearTimeout(this.refTimer); this.setState({ refModal: false }); };
+  openRefModal = () => { clearTimeout(this.refTimer); this.setState({ refModal: true, refDone: false, refErr: '', refSubmitting: false, refRefNick: '', refRefID: '', refNewNick: '', refEmail: '' }); };
   stopProp = (e: React.SyntheticEvent) => e.stopPropagation();
   setRefBinance = () => this.setState({ refPlatform: 'binance' });
   setRefBybit = () => this.setState({ refPlatform: 'bybit' });
@@ -260,17 +279,18 @@ export default class App extends React.Component<Props, State> {
     if (ep) {
       try {
         const r = await fetch(ep, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(payload) });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
         const json = await r.json().catch(() => ({}));
         if (json.success === false) throw new Error(json.error || 'Server error');
         this.setState({ refSubmitting: false, refDone: true });
-        setTimeout(() => this.setState({ refModal: false }), 3000);
+        this.refTimer = setTimeout(this.closeRefModal, 3000);
       } catch (e) {
         this.setState({ refSubmitting: false, refErr: t.ref_error });
       }
     } else {
       window.open((this.cfg && this.cfg.referral && this.cfg.referral.url) || '#', '_blank');
       this.setState({ refSubmitting: false, refDone: true });
-      setTimeout(() => this.setState({ refModal: false }), 3000);
+      this.refTimer = setTimeout(this.closeRefModal, 3000);
     }
   };
 
@@ -432,7 +452,7 @@ export default class App extends React.Component<Props, State> {
     this.idx = { t: rows.map((r) => parseTs(r[0])), v: INDICES.map((_, i) => rows.map((r) => +r[i + 1])) };
   }
   toggleIdx = async (key: string) => {
-    await this.loadIdx();
+    try { await this.loadIdx(); } catch { return; } // endeks dosyası gelmediyse buton değişmez
     const on = this.state.showIdx;
     this.setState({ showIdx: on.includes(key) ? on.filter((k) => k !== key) : [...on, key] }, () => this.drawChart());
   };
@@ -1128,7 +1148,7 @@ export default class App extends React.Component<Props, State> {
     const step = (n: number) => `/assets/guide/step-${n}-${this.imgLang()}.jpeg`;
     const stepWebp = (n: number) => `/assets/guide/step-${n}-${this.imgLang()}.webp`;
     const stepAlt = (n: number) => `${t.gd_step_alt} ${n}`;
-    const nums = [1, 2, 3, 4, 5, 6];
+    const nums = Array.from({ length: (this.cfg && this.cfg.guideSteps) || 6 }, (_, i) => i + 1);
     return (
       <section id="guide" className="sec">
         <div className="sec-head">
@@ -1143,7 +1163,7 @@ export default class App extends React.Component<Props, State> {
         <div className="snap-row">
           {nums.map((n) => (
             <div key={n} style={sx(`flex:none;width:184px;scroll-snap-align:start`)}>
-              <div onClick={() => this.openImg(n - 1)} className="lift" style={sx(`position:relative;border-radius:6px;overflow:hidden;border:1px solid var(--border);background:#0d0d0d;box-shadow:var(--shadow);cursor:zoom-in`)}>
+              <div role="button" tabIndex={0} onClick={() => this.openImg(n - 1)} onKeyDown={this.onActivate(() => this.openImg(n - 1))} className="lift" style={sx(`position:relative;border-radius:6px;overflow:hidden;border:1px solid var(--border);background:#0d0d0d;box-shadow:var(--shadow);cursor:zoom-in`)}>
                 <picture style={sx(`display:block;width:100%;aspect-ratio:922/2049`)}>
                   <source srcSet={stepWebp(n)} type="image/webp" />
                   <img src={step(n)} alt={stepAlt(n)} loading="lazy" width={922} height={2049} style={sx(`width:100%;height:100%;object-fit:cover;object-position:top center;display:block`)} />
@@ -1158,7 +1178,7 @@ export default class App extends React.Component<Props, State> {
           <div className="caps-label" style={sx(`margin-bottom:14px`)}>{t.gd_videos}</div>
           <div className="snap-row" style={sx(`padding-bottom:14px`)}>
             {videos.map((v, i) => (
-              <div key={i} onClick={v.open} className="lift" style={sx(`flex:none;width:300px;scroll-snap-align:start;border:1px solid var(--border);border-radius:6px;overflow:hidden;background:var(--surface);box-shadow:var(--shadow);cursor:pointer`)}>
+              <div key={i} role="button" tabIndex={0} onClick={v.open} onKeyDown={this.onActivate(v.open)} className="lift" style={sx(`flex:none;width:300px;scroll-snap-align:start;border:1px solid var(--border);border-radius:6px;overflow:hidden;background:var(--surface);box-shadow:var(--shadow);cursor:pointer`)}>
                 <div style={sx(`position:relative;aspect-ratio:16/9;background:color-mix(in srgb,var(--accent) 10%,var(--surface-2));display:grid;place-items:center`)}>
                   <span style={sx(`width:54px;height:54px;border-radius:50%;background:var(--accent);display:grid;place-items:center;color:var(--accent-contrast);font-size:20px;padding-left:4px;box-shadow:0 4px 16px rgba(0,0,0,.25)`)}>▶</span>
                   <span style={sx(`position:absolute;top:11px;inset-inline-start:13px;font-family:var(--font-display);font-size:10.5px;font-weight:600;color:var(--text-dim);letter-spacing:.5px;text-transform:uppercase`)}>{v.provider}</span>
@@ -1219,13 +1239,13 @@ export default class App extends React.Component<Props, State> {
     let lbImg = '', lbImgWebp = '', lbEmbed = '', lbCaption = '', lbCounter = '';
     const isImage = lb.kind === 'image', isVideo = lb.kind === 'video';
     let lbAlt = '';
-    if (isImage) { lbImg = `/assets/guide/step-${lb.i + 1}-${this.imgLang()}.jpeg`; lbImgWebp = `/assets/guide/step-${lb.i + 1}-${this.imgLang()}.webp`; lbCounter = `${lb.i + 1} / 6`; lbCaption = t.gd_steps || ''; lbAlt = `${t.gd_step_alt} ${lb.i + 1}`; }
+    if (isImage) { lbImg = `/assets/guide/step-${lb.i + 1}-${this.imgLang()}.jpeg`; lbImgWebp = `/assets/guide/step-${lb.i + 1}-${this.imgLang()}.webp`; lbCounter = `${lb.i + 1} / ${cfg.guideSteps || 6}`; lbCaption = t.gd_steps || ''; lbAlt = `${t.gd_step_alt} ${lb.i + 1}`; }
     else { const v = (cfg.videos || [])[lb.i] || {}; lbEmbed = v.embed || ''; lbCounter = `${lb.i + 1} / ${(cfg.videos || []).length}`; lbCaption = v.title ? (v.title[lang] ?? v.title.en) : ''; }
     return (
-      <div onClick={this.lbClose} className="overlay" style={sx(`z-index:200;background:rgba(0,0,0,.86)`)}>
-        <button onClick={this.lbClose} aria-label="close" className="lb-btn" style={sx(`top:16px;right:16px;width:42px;height:42px;border-radius:6px;font-size:18px`)}>✕</button>
-        <button onClick={this.lbPrev} aria-label="prev" className="lb-btn lb-nav" style={sx(`left:12px`)}>‹</button>
-        <button onClick={this.lbNext} aria-label="next" className="lb-btn lb-nav" style={sx(`right:12px`)}>›</button>
+      <div onClick={this.lbClose} role="dialog" aria-modal="true" aria-label={lbCaption} className="overlay" style={sx(`z-index:200;background:rgba(0,0,0,.86)`)}>
+        <button onClick={this.lbClose} autoFocus aria-label={t.lb_close} className="lb-btn" style={sx(`top:16px;right:16px;width:42px;height:42px;border-radius:6px;font-size:18px`)}>✕</button>
+        <button onClick={this.lbPrev} aria-label={t.lb_prev} className="lb-btn lb-nav" style={sx(`left:12px`)}>‹</button>
+        <button onClick={this.lbNext} aria-label={t.lb_next} className="lb-btn lb-nav" style={sx(`right:12px`)}>›</button>
         <div onClick={this.lbStop} style={sx(`display:flex;flex-direction:column;align-items:center;gap:14px;max-width:94vw`)}>
           {isImage && (
             <picture>
@@ -1255,15 +1275,15 @@ export default class App extends React.Component<Props, State> {
     const termsContent = this.buildTermsEl();
     return (
       <div onClick={this.closeRefModal} className="overlay" style={sx(`z-index:210;background:rgba(0,0,0,.72)`)}>
-        <div onClick={this.stopProp} style={sx(`width:100%;max-width:520px;max-height:90vh;overflow-y:auto;border-radius:6px;background:var(--bg-elev);border:1px solid var(--border);box-shadow:0 24px 64px rgba(0,0,0,.4)`)}>
+        <div onClick={this.stopProp} role="dialog" aria-modal="true" aria-labelledby="ref-modal-title" style={sx(`width:100%;max-width:520px;max-height:90vh;overflow-y:auto;border-radius:6px;background:var(--bg-elev);border:1px solid var(--border);box-shadow:0 24px 64px rgba(0,0,0,.4)`)}>
           <div style={sx(`display:flex;align-items:center;justify-content:space-between;padding:22px 24px 18px;border-bottom:1px solid var(--border)`)}>
             <div style={sx(`display:flex;align-items:center;gap:12px`)}>
               <span style={sx(`width:36px;height:36px;border-radius:4px;background:color-mix(in srgb,var(--accent) 18%,transparent);display:grid;place-items:center;color:var(--accent)`)}>
                 <PeopleIcon size={20} />
               </span>
-              <span style={sx(`font-family:var(--font-display);font-weight:600;font-size:17px;letter-spacing:-.3px`)}>{t.ref_modal_title}</span>
+              <span id="ref-modal-title" style={sx(`font-family:var(--font-display);font-weight:600;font-size:17px;letter-spacing:-.3px`)}>{t.ref_modal_title}</span>
             </div>
-            <button onClick={this.closeRefModal} className="icon-btn" style={sx(`width:34px;height:34px;background:var(--surface-2);font-size:16px;display:grid;place-items:center`)}>✕</button>
+            <button onClick={this.closeRefModal} autoFocus aria-label={t.lb_close} className="icon-btn" style={sx(`width:34px;height:34px;background:var(--surface-2);font-size:16px;display:grid;place-items:center`)}>✕</button>
           </div>
 
           {this.state.refDone && (
@@ -1291,23 +1311,23 @@ export default class App extends React.Component<Props, State> {
 
               <label className="ref-field">
                 <span className="ref-label">{t.ref_email} <span className="req">*</span></span>
-                <input type="email" value={this.state.refEmail} onInput={this.onRefEmail} placeholder={t.ref_email_ph} className="ref-input" />
+                <input type="email" value={this.state.refEmail} onChange={this.onRefEmail} placeholder={t.ref_email_ph} className="ref-input" />
               </label>
 
               <label className="ref-field">
                 <span className="ref-label">{t.ref_ref_nick} <span className="req">*</span></span>
-                <input type="text" value={this.state.refRefNick} onInput={this.onRefRefNick} placeholder={t.ref_ref_nick_ph} className="ref-input" />
+                <input type="text" value={this.state.refRefNick} onChange={this.onRefRefNick} placeholder={t.ref_ref_nick_ph} className="ref-input" />
               </label>
 
               <label className="ref-field">
                 <span className="ref-label">{t.ref_ref_id} <span className="req">*</span></span>
-                <input type="text" inputMode="numeric" value={this.state.refRefID} onInput={this.onRefRefID} placeholder={t.ref_ref_id_ph} className="ref-input" style={sx(`font-family:var(--font-display)`)} />
+                <input type="text" inputMode="numeric" value={this.state.refRefID} onChange={this.onRefRefID} placeholder={t.ref_ref_id_ph} className="ref-input" style={sx(`font-family:var(--font-display)`)} />
                 <span style={sx(`font-size:11.5px;color:var(--text-mute);line-height:1.5`)}>{t.ref_uid_hint}</span>
               </label>
 
               <label className="ref-field">
                 <span className="ref-label">{t.ref_new_nick} <span className="req">*</span></span>
-                <input type="text" value={this.state.refNewNick} onInput={this.onRefNewNick} placeholder={t.ref_new_nick_ph} className="ref-input" />
+                <input type="text" value={this.state.refNewNick} onChange={this.onRefNewNick} placeholder={t.ref_new_nick_ph} className="ref-input" />
               </label>
 
               <input ref={(el) => { this.honeypot = el; }} name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" style={sx(`position:absolute;left:-9999px;width:1px;height:1px;opacity:0`)} />

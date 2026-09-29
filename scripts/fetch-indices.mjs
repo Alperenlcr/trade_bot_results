@@ -34,8 +34,12 @@ async function fetchHourly(symbol) {
   const r = (await res.json()).chart.result[0];
   const close = r.indicators.quote[0].close;
   const map = new Map();
-  r.timestamp.forEach((t, i) => {
-    if (close[i] != null) map.set(new Date((t + 3600) * 1000).toISOString().slice(0, 16).replace('T', ' '), close[i].toFixed(2));
+  const ts = r.timestamp;
+  ts.forEach((t, i) => {
+    // Seans 9:30'da açılıp tam saatte kapanır: günün son barı (sonraki bar ertesi gün) 30 dk sürer.
+    // ponytail: son eleman da seans sonu sayılır; workflow kapanıştan sonra çalıştığı için doğru.
+    const end = i + 1 < ts.length && ts[i + 1] - t <= 3600 ? t + 3600 : t + 1800;
+    if (close[i] != null) map.set(new Date(end * 1000).toISOString().slice(0, 16).replace('T', ' '), close[i].toFixed(2));
   });
   if (map.size < 1000) throw new Error(`${symbol}: only ${map.size} rows`);
   return map;

@@ -15,7 +15,7 @@ const text = { ...t.cookie, more: t.pages.cookies.title, href: getPath('cookies'
 <script>
   const KEY = 'executor-trade-consent';
   const clarityId = import.meta.env.PUBLIC_CLARITY_ID;
-  const GA_ID = 'G-FFNNFDNLZQ';
+  const GA_ID = import.meta.env.PUBLIC_GA_ID ?? 'G-FFNNFDNLZQ';
 
   function loadGa() {
     const w = window as any;
