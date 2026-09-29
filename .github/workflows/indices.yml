@@ -20,11 +20,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - run: node scripts/fetch-indices.mjs
+      # Each fetch may fail on its own (the others still get committed); the last step turns the job red.
+      - id: indices
+        run: node scripts/fetch-indices.mjs
         continue-on-error: true
-      - run: node scripts/fetch-binance-stats.mjs
+      - id: binance
+        run: node scripts/fetch-binance-stats.mjs
         continue-on-error: true
-      - run: node scripts/fetch-bybit-stats.mjs # needs Chrome (preinstalled on ubuntu-latest)
+      - id: bybit
+        run: node scripts/fetch-bybit-stats.mjs # needs Chrome (preinstalled on ubuntu-latest)
         continue-on-error: true
       - run: |
           git diff --quiet data/indices data/binance.json data/bybit.json && exit 0
@@ -33,3 +37,7 @@ jobs:
           git add data/indices data/binance.json data/bybit.json
           git commit -m "Update data: $(date -u +%F)"
           git pull --rebase && git push
+      - if: steps.indices.outcome == 'failure' || steps.binance.outcome == 'failure' || steps.bybit.outcome == 'failure'
+        run: |
+          echo "::error::fetch failed: indices=${{ steps.indices.outcome }} binance=${{ steps.binance.outcome }} bybit=${{ steps.bybit.outcome }}"
+          exit 1

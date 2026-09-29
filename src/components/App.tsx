@@ -5,6 +5,7 @@ import type { Lang } from '../i18n/utils';
 import { contactUrl } from '../data/contact';
 import { exchanges } from '../data/exchanges';
 import { parseCsv, parseTs } from '../lib/csv';
+import { groupPerf } from '../lib/perf';
 
 // data/indices/daily.csv sütunları (scripts/fetch-indices.mjs üretir). Renkler global.css › .app.
 const INDICES = [
@@ -85,9 +86,12 @@ export default class App extends React.Component<Props, State> {
     this.yearly = d.yearly;
     this.trades = d.trades;
     this.allEnds = d.allEnds;
+    this.heroAnnual = d.heroAnnual;
+    this.heroWorst1Y = d.heroWorst1Y;
     const tradeDates = this.trades.flatMap((x) => x.end ? [x.start.slice(0, 10), x.end.slice(0, 10)] : [x.start.slice(0, 10)]);
     this.tMin = tradeDates.reduce((a, b) => (b < a ? b : a));
-    this.tMax = tradeDates.reduce((a, b) => (b > a ? b : a), this.isoDate(Date.now()));
+    // Date.now() değil: build ile tarayıcıdaki değer farklı olur, hydration tutmazdı.
+    this.tMax = tradeDates.reduce((a, b) => (b > a ? b : a), this.isoDate(this.allEnds[1].t));
     this.computeHeroBasic();
 
     this.state = {
@@ -176,27 +180,12 @@ export default class App extends React.Component<Props, State> {
     if (this._perfStarted) return; this._perfStarted = true;
     const [d, daily] = await Promise.all([this.fetchCsv('performance.csv'), this.fetchCsv('daily.csv').catch(() => null)]);
     if (daily) this.dailyEq = { d: daily.rows.map((r) => r[0]), q: daily.rows.map((r) => 1 + +r[1] / 100) };
-    const H = d.head; const idx: Record<string, number> = {}; H.forEach((h, i) => idx[h] = i); this.perfIdx = idx;
-    this.perfByStart = new Map();
-    for (const r of d.rows) {
-      const s = r[0]; if (!this.perfByStart.has(s)) this.perfByStart.set(s, []);
-      this.perfByStart.get(s)!.push(r);
-    }
-    this.perfStarts = [...this.perfByStart.keys()].sort();
-    const lastEnd = this.perfStarts.reduce((mx, s) => { const es = this.perfByStart.get(s)!; const e = es[es.length - 1][1]; return e > mx ? e : mx; }, '');
-    const frFull = this.perfRow(this.perfStarts[0], lastEnd);
-    const mw = frFull ? frFull[idx['MIN_ROLLING_1Y']] : null; this.heroWorst1Y = (mw === '' || mw == null) ? null : +mw;
-    const target = parseTs(lastEnd) - 5 * 365.25 * 864e5;
-    let s5 = this.perfStarts[0], best = Infinity;
-    for (const s of this.perfStarts) { const dd = Math.abs(parseTs(s) - target); if (dd < best) { best = dd; s5 = s; } }
-    const ends5 = this.endsFor(s5);
-    const defEnd = ends5.includes(lastEnd) ? lastEnd : ends5[ends5.length - 1];
-    const fr5 = this.perfRow(s5, defEnd); const a1 = fr5 ? fr5[idx['AVG_ROLLING_1Y']] : null;
-    this.heroAnnual = (a1 === '' || a1 == null) ? null : +a1;
-    this.setState({ perfLoaded: true, perfStart: s5, perfEnd: defEnd });
+    const perf = groupPerf(d);
+    this.perfIdx = perf.idx; this.perfByStart = perf.byStart; this.perfStarts = perf.starts;
+    this.setState({ perfLoaded: true, perfStart: perf.defStart, perfEnd: perf.defEnd });
   }
 
-  endsFor(start: string) { const a = this.perfByStart.get(start) || []; return a.map((r) => r[1]); }
+  endsFor(start: string) { return (this.perfByStart.get(start) || []).map((r) => r[1]); }
   perfRow(start: string, end: string) { const a = this.perfByStart.get(start) || []; return a.find((r) => r[1] === end) || a[a.length - 1]; }
 
   setPerfStart = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -395,7 +384,8 @@ export default class App extends React.Component<Props, State> {
 
   fmtRange(a: string, b: string) { return [a, b].map((x) => this.fmtDate(parseTs(x)).replace(/ /g, '\u00a0')).join(' → '); } // dar ekranda yalnızca okta kırılsın
 
-  isoDate(t: number) { const d = new Date(t); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  // Tarihler UTC okunur ve UTC gösterilir (parseTs); böylece her saat diliminde CSV'deki gün görünür.
+  isoDate(t: number) { return new Date(t).toISOString().slice(0, 10); }
   setCalcAmount = (e: React.ChangeEvent<HTMLInputElement>) => this.setState({ calcAmount: e.target.value });
   setCalcDate = (e: React.ChangeEvent<HTMLInputElement>) => this.setState({ calcDate: e.target.value });
   setCalcMonthly = (e: React.ChangeEvent<HTMLInputElement>) => this.setState({ calcMonthly: e.target.value });
@@ -415,8 +405,8 @@ export default class App extends React.Component<Props, State> {
     const joins: number[] = []; // her eklemenin bota katıldığı an (Infinity: veri sonuna kadar katılamadı)
     const s0 = new Date(t0);
     for (let m = 1; monthly > 0; m++) {
-      const y = s0.getFullYear(), mo = s0.getMonth() + m;
-      const at = new Date(y, mo, Math.min(s0.getDate(), new Date(y, mo + 1, 0).getDate())).getTime();
+      const y = s0.getUTCFullYear(), mo = s0.getUTCMonth() + m;
+      const at = Date.UTC(y, mo, Math.min(s0.getUTCDate(), new Date(Date.UTC(y, mo + 1, 0)).getUTCDate()));
       if (at > last.t) break;
       joins.push(starts.find((x) => x > at) ?? Infinity);
     }
@@ -472,7 +462,7 @@ export default class App extends React.Component<Props, State> {
   fmtPct(v: number | null | undefined, dec = 1, sign = true) { if (v == null || isNaN(v)) return '-'; const s = v > 0 && sign ? '+' : ''; return this.ltr(s + v.toLocaleString(this.loc(), { minimumFractionDigits: dec, maximumFractionDigits: dec }) + '%'); }
   fmtX(m: number) { if (m >= 1000) return '×' + (m / 1000).toLocaleString(this.loc(), { maximumFractionDigits: m >= 10000 ? 0 : 1 }) + 'K'; return '×' + m.toLocaleString(this.loc(), { maximumFractionDigits: m >= 100 ? 0 : 1 }); }
   fmtNum(v: number, dec = 0) { return v.toLocaleString(this.loc(), { minimumFractionDigits: dec, maximumFractionDigits: dec }); }
-  fmtDate(ts: number) { const d = new Date(ts); return d.toLocaleDateString(this.loc(), { day: '2-digit', month: 'short', year: 'numeric' }); }
+  fmtDate(ts: number) { return new Date(ts).toLocaleDateString(this.loc(), { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' }); }
 
   // ---------- handlers ----------
   toggleBtc = () => this.setState({ showBtc: !this.state.showBtc }, () => this.drawChart());
@@ -607,14 +597,14 @@ export default class App extends React.Component<Props, State> {
     const units = (t1 - t0) / ((years ? 365.25 : 30.44) * 864e5);
     const step = years ? Math.max(1, Math.ceil(units / n)) : [1, 2, 3, 6].find((s) => units / s <= n) ?? 12;
     const d0 = new Date(t0);
-    for (let k = years ? d0.getFullYear() + 1 : d0.getFullYear() * 12 + d0.getMonth() + 1; ; k++) {
-      const t = years ? new Date(k, 0, 1).getTime() : new Date(Math.floor(k / 12), k % 12, 1).getTime();
+    for (let k = years ? d0.getUTCFullYear() + 1 : d0.getUTCFullYear() * 12 + d0.getUTCMonth() + 1; ; k++) {
+      const t = years ? Date.UTC(k, 0, 1) : Date.UTC(Math.floor(k / 12), k % 12, 1);
       if (t > t1) break;
       if (k % step === 0) out.push(t);
     }
     return out;
   }
-  xLabel(ts: number, span: number) { const d = new Date(ts); if (span > 2 * 365 * 864e5) return '' + d.getFullYear(); const mo = d.toLocaleDateString(this.loc(), { month: 'short' }); return mo + ' ' + String(d.getFullYear()).slice(2); }
+  xLabel(ts: number, span: number) { const d = new Date(ts); if (span > 2 * 365 * 864e5) return '' + d.getUTCFullYear(); const mo = d.toLocaleDateString(this.loc(), { month: 'short', timeZone: 'UTC' }); return mo + ' ' + String(d.getUTCFullYear()).slice(2); }
 
   attachChartEvents(el: HTMLCanvasElement) {
     const idxAt = (cx: number) => {
@@ -627,6 +617,8 @@ export default class App extends React.Component<Props, State> {
     const move = (e: PointerEvent) => { const cx = e.clientX; this.hoverI = idxAt(cx); if (dragging) { const cur = idxAt(cx); this.sel = { a: Math.min(startI, cur), b: Math.max(startI, cur) }; } this.drawChart(); };
     el.addEventListener('pointermove', move);
     el.addEventListener('pointerleave', () => { this.hoverI = null; this.drawChart(); });
+    // touch-action:pan-y → dokunmatikte dikey kaydırma başlayınca tarayıcı pointercancel gönderir; seçim iptal.
+    el.addEventListener('pointercancel', () => { dragging = false; this.sel = null; this.hoverI = null; this.drawChart(); });
     el.addEventListener('pointerdown', (e) => { dragging = true; startI = idxAt(e.clientX); this.sel = { a: startI, b: startI }; el.setPointerCapture(e.pointerId); });
     el.addEventListener('pointerup', () => { dragging = false; if (this.sel && Math.abs(this.sel.b - this.sel.a) > 1) { this.setState({ selection: { ...this.sel } }); } else { this.sel = null; this.setState({ selection: null }); } this.drawChart(); });
   }
@@ -681,7 +673,7 @@ export default class App extends React.Component<Props, State> {
     const t = this.t;
     const hb = this.heroBasic;
     const yrTxt = t.yr;
-    const liveYears = Math.max(1, new Date().getFullYear() - 2025);
+    const liveYears = Math.max(1, new Date(this.allEnds[1].t).getUTCFullYear() - 2025); // son veri noktası: SSR ile aynı
     const heroStats = hb ? [
       { value: this.heroAnnual != null ? this.fmtPct(this.heroAnnual, 0) : '···', label: t.st_annual, sub: t.st_annual_sub, color: 'var(--pos)' },
       { value: this.heroWorst1Y != null ? this.fmtPct(this.heroWorst1Y, 1) : '···', label: t.st_worst, sub: t.st_worst_sub, color: 'var(--accent)' },
@@ -809,7 +801,7 @@ export default class App extends React.Component<Props, State> {
                 )}
               </div>
               <div style={sx(`position:relative;width:100%;height:380px`)}>
-                <canvas ref={this.canvasRef} style={sx(`width:100%;height:100%;display:block;cursor:crosshair;touch-action:none`)}></canvas>
+                <canvas ref={this.canvasRef} style={sx(`width:100%;height:100%;display:block;cursor:crosshair;touch-action:pan-y`)}></canvas>
               </div>
               <div style={sx(`display:flex;align-items:center;gap:18px;padding:10px 2px 6px;font-size:12px;color:var(--text-dim);flex-wrap:wrap`)}>
                 <span className="legend-item"><span className="legend-line" style={sx(`background:var(--accent)`)}></span>{t.legend_portfolio}</span>

@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { useTranslations, type Lang } from '../i18n/utils';
 import { parseCsv, parseTs } from './csv';
+import { groupPerf } from './perf';
 
 // data/ lives at the repo root (untouched — a daily external automation
 // updates data/tables/*.csv and pushes directly to it). Resolved from the
@@ -22,6 +23,8 @@ export interface SiteInitialData {
   trades: TradeRow[];
   defaultTf: string;
   allEnds: [SeriesPoint, SeriesPoint];
+  heroAnnual: number | null;
+  heroWorst1Y: number | null;
 }
 
 function readCsv(name: string): { head: string[]; rows: string[][] } {
@@ -62,5 +65,8 @@ export function loadSiteData(lang: Lang): SiteInitialData {
   const pt = (r: string[]): SeriesPoint => ({ t: parseTs(r[0]), p: +r[1], b: +r[2] });
   const allEnds: [SeriesPoint, SeriesPoint] = [pt(allRows[0]), pt(allRows[allRows.length - 1])];
 
-  return { i18n, config, monthly, yearly, trades, defaultTf: DEFAULT_TF, allEnds };
+  // Hero'daki yıllık getiri / en kötü 1 yıl da SSR'da hazır olsun (JS'siz ziyaretçi ve arama motorları '···' görmesin).
+  const { annual: heroAnnual, worst1Y: heroWorst1Y } = groupPerf(readCsv('performance.csv'));
+
+  return { i18n, config, monthly, yearly, trades, defaultTf: DEFAULT_TF, allEnds, heroAnnual, heroWorst1Y };
 }
