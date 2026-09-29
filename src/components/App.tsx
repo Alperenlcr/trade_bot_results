@@ -68,6 +68,7 @@ export default class App extends React.Component<Props, State> {
   honeypot: HTMLInputElement | null = null;
   refTimer: ReturnType<typeof setTimeout> | undefined;
   _ro: ResizeObserver | null = null;
+  _perfIo: IntersectionObserver | null = null;
   sel: Selection | null = null;
   hoverI: number | null = null;
   _X: ((t: number) => number) | null = null;
@@ -116,7 +117,16 @@ export default class App extends React.Component<Props, State> {
 
   async componentDidMount() {
     addEventListener('keydown', this.onKey);
-    this.loadPerf();
+    // performance.csv ~7,5 MB ve yalnızca Analiz bölümü kullanıyor: bölüm görünüme yaklaşınca indirilir.
+    const an = document.getElementById('analysis');
+    if (an) {
+      this._perfIo = new IntersectionObserver((es) => {
+        if (!es.some((e) => e.isIntersecting)) return;
+        this._perfIo?.disconnect();
+        this.loadPerf().catch(() => {});
+      }, { rootMargin: '800px 0px' });
+      this._perfIo.observe(an);
+    }
     this.countUp();
     // Endeks dosyası gelmezse grafik yine çizilir, yalnız endeks çizgileri olmaz.
     await Promise.all([this.ensureTf(this.state.tf), this.loadIdx().catch(() => {})]);
@@ -129,6 +139,7 @@ export default class App extends React.Component<Props, State> {
     removeEventListener('keydown', this.onKey);
     clearTimeout(this.refTimer);
     this._ro?.disconnect();
+    this._perfIo?.disconnect();
   }
 
   onKey = (e: KeyboardEvent) => {
@@ -1332,7 +1343,7 @@ export default class App extends React.Component<Props, State> {
                 <div style={sx(`padding:11px 14px;border-radius:4px;background:color-mix(in srgb,var(--neg) 12%,transparent);border:1px solid var(--neg);font-size:13px;color:var(--neg)`)}>{this.state.refErr}</div>
               )}
 
-              <button onClick={this.submitRef} style={sx(refSubmitStyle)}>{refSubmitLabel}</button>
+              <button onClick={this.submitRef} disabled={this.state.refSubmitting} style={sx(refSubmitStyle)}>{refSubmitLabel}</button>
             </div>
           )}
         </div>
