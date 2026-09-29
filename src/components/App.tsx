@@ -33,7 +33,7 @@ interface State {
   ready: boolean;
   tFrom: string; tTo: string; tNewest: boolean;
   faqOpen: number | null;
-  calcAmount: string; calcDate: string;
+  calcAmount: string; calcDate: string; calcMonthly: string;
   perfLoaded: boolean; perfStart: string | null; perfEnd: string | null;
   lb: LightboxState | null;
   refModal: boolean; refPlatform: 'binance' | 'bybit';
@@ -93,7 +93,7 @@ export default class App extends React.Component<Props, State> {
       ready: true,
       tFrom: this.tMin, tTo: this.tMax, tNewest: true,
       faqOpen: 0,
-      calcAmount: '500', calcDate: this.isoDate(this.allEnds[1].t - 365 * 864e5),
+      calcAmount: '500', calcMonthly: '0', calcDate: this.isoDate(this.allEnds[1].t - 365 * 864e5),
       perfLoaded: false, perfStart: null, perfEnd: null,
       lb: null,
       refModal: false, refPlatform: 'binance', refRefNick: '', refRefID: '', refNewNick: '', refEmail: '',
@@ -380,23 +380,38 @@ export default class App extends React.Component<Props, State> {
   isoDate(t: number) { const d = new Date(t); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
   setCalcAmount = (e: React.ChangeEvent<HTMLInputElement>) => this.setState({ calcAmount: e.target.value });
   setCalcDate = (e: React.ChangeEvent<HTMLInputElement>) => this.setState({ calcDate: e.target.value });
+  setCalcMonthly = (e: React.ChangeEvent<HTMLInputElement>) => this.setState({ calcMonthly: e.target.value });
   // all.csv üzerinden simülasyon. Kâr payı high-water mark ile her veri noktasında kesilir.
   // ponytail: borsalar kâr payını günlük/pozisyon kapanışında keser; 8 saatlik noktalar buna yakın bir yaklaşım.
-  calc(amount: number, t0: number) {
+  // Aylık ekleme her ay başlangıç gününde (kısa ayda ayın son günü) gelir; açık işlem kapanıp sonraki işlem
+  // başlayana kadar bekler (trades.csv'de işlemler arası boşluk yok). Son açık işlemde bekleyen para nakit sayılır.
+  // ponytail: all.csv 8 saatlik; katılım, işlem başlangıcından sonraki ilk veri noktasına yuvarlanır.
+  calc(amount: number, t0: number, monthly = 0) {
     const d = this.chartData.all;
     const i0 = d ? d.findIndex((x) => x.t >= t0) : -1;
-    if (!d || i0 < 0 || i0 >= d.length - 1 || !(amount > 0)) return null;
+    if (!d || i0 < 0 || i0 >= d.length - 1 || !(amount > 0) || !(monthly >= 0)) return null;
     const c = this.cfg.calculator ?? {};
     const share = c.deductProfitShare ? (c.profitSharePct ?? 0) / 100 : 0;
     const eq = (x: number) => 1 + x / 100;
-    let v = amount, hwm = amount, fee = 0, peak = amount, dd = 0;
+    const last = d[d.length - 1], starts = this.trades.map((x) => this.parseTs(x.start));
+    const joins: number[] = []; // her eklemenin bota katıldığı an (Infinity: veri sonuna kadar katılamadı)
+    const s0 = new Date(t0);
+    for (let m = 1; monthly > 0; m++) {
+      const y = s0.getFullYear(), mo = s0.getMonth() + m;
+      const at = new Date(y, mo, Math.min(s0.getDate(), new Date(y, mo + 1, 0).getDate())).getTime();
+      if (at > last.t) break;
+      joins.push(starts.find((x) => x > at) ?? Infinity);
+    }
+    let v = amount, hwm = amount, fee = 0, peak = amount, dd = 0, btcU = amount / eq(d[i0].b), j = 0;
     for (let k = i0 + 1; k < d.length; k++) {
       v *= eq(d[k].p) / eq(d[k - 1].p);
       if (v > hwm) { const f = (v - hwm) * share; v -= f; fee += f; hwm = v; }
       peak = Math.max(peak, v); dd = Math.min(dd, (v / peak - 1) * 100);
+      for (; j < joins.length && joins[j] <= d[k].t; j++) { peak *= (v + monthly) / v; v += monthly; hwm += monthly; btcU += monthly / eq(d[k].b); }
     }
-    const last = d[d.length - 1];
-    return { start: d[i0].t, end: last.t, value: v, fee, dd, sharePct: share * 100, btc: amount * eq(last.b) / eq(d[i0].b) };
+    const pending = (joins.length - j) * monthly;
+    return { start: d[i0].t, end: last.t, value: v + pending, fee, dd, sharePct: share * 100, btc: btcU * eq(last.b) + pending,
+      invested: amount + joins.length * monthly };
   }
   toSeries(rows: string[][]): SeriesPoint[] { return rows.map((r) => ({ t: this.parseTs(r[0]), p: +r[1], b: +r[2] })); }
 
@@ -833,11 +848,12 @@ export default class App extends React.Component<Props, State> {
 
   renderCalculator() {
     const t = this.t;
-    const amount = Number(this.state.calcAmount);
-    const r = this.chartData.all ? this.calc(amount, this.parseTs(this.state.calcDate)) : null;
+    const amount = Number(this.state.calcAmount), monthly = Number(this.state.calcMonthly || 0);
+    const r = this.chartData.all ? this.calc(amount, this.parseTs(this.state.calcDate), monthly) : null;
+    const invested = r ? r.invested : amount;
     const usd = (v: number) => (v < 0 ? '-$' : '$') + new Intl.NumberFormat(this.loc(), { maximumFractionDigits: 0 }).format(Math.abs(v));
-    const pct = (v: number) => this.fmtPct((v / amount - 1) * 100, 1);
-    const color = (v: number) => (v >= amount ? 'var(--pos)' : 'var(--neg)');
+    const pct = (v: number) => this.fmtPct((v / invested - 1) * 100, 1);
+    const color = (v: number) => (v >= invested ? 'var(--pos)' : 'var(--neg)');
     const label = `display:flex;flex-direction:column;gap:5px;font-size:11px;color:var(--text-mute);font-family:var(--font-display);text-transform:uppercase;letter-spacing:.5px`;
     const input = `height:42px;padding:0 12px;border-radius:4px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-family:var(--font-display);font-size:15px`;
     const cell = `padding:18px 20px;border-radius:6px;background:var(--surface-2);border:1px solid var(--border)`;
@@ -857,6 +873,9 @@ export default class App extends React.Component<Props, State> {
             <label style={sx(label)}>{t.calc_date}
               <input type="date" min={this.isoDate(this.allEnds[0].t)} max={this.isoDate(this.allEnds[1].t - 864e5)} value={this.state.calcDate} onChange={this.setCalcDate} style={sx(input)} />
             </label>
+            <label style={sx(label)}>{t.calc_monthly}
+              <input type="number" inputMode="decimal" min="0" step="any" value={this.state.calcMonthly} onChange={this.setCalcMonthly} style={sx(input + ';width:180px')} />
+            </label>
           </div>
           {!this.chartData.all ? (
             <div style={sx(`color:var(--text-mute);font-family:var(--font-display)`)}>···</div>
@@ -867,7 +886,8 @@ export default class App extends React.Component<Props, State> {
               <div style={sx(cell + ';border-color:var(--accent)')}>
                 <div style={sx(cellLabel + ';display:flex;align-items:center;gap:7px')}><span style={sx(`width:14px;height:3px;border-radius:2px;background:var(--accent)`)}></span><span style={sx(`color:var(--accent);font-weight:600`)}>{t.legend_portfolio}</span> · {t.calc_value}</div>
                 <div style={sx(`font-family:var(--font-display);font-weight:700;font-size:30px;color:${color(r.value)}`)}>{usd(r.value)}</div>
-                <div style={sx(`font-size:13px;color:var(--text-dim);margin-top:4px`)}>{t.calc_profit}: {this.ltr(usd(r.value - amount))} ({pct(r.value)})</div>
+                <div style={sx(`font-size:13px;color:var(--text-dim);margin-top:4px`)}>{t.calc_profit}: {this.ltr(usd(r.value - invested))} ({pct(r.value)})</div>
+                {monthly > 0 && <div style={sx(`font-size:13px;color:var(--text-dim);margin-top:2px`)}>{t.calc_invested}: {usd(invested)}</div>}
               </div>
               <div style={sx(cell)}>
                 <div style={sx(cellLabel)}>{t.calc_btc}</div>
