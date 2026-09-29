@@ -617,18 +617,18 @@ export default class App extends React.Component<Props, State> {
     const years = [...new Set((this.monthly || []).map((r) => r.m.slice(0, 4)))];
     const metric = this.state.metric;
     const cell = (v: number | null) => {
-      if (v == null || isNaN(v)) return { label: '', style: `padding:7px 4px;text-align:center;font-family:var(--font-display);font-size:12px;color:var(--text-mute);background:var(--surface-2);border-radius:2px;opacity:.4` };
+      if (v == null || isNaN(v)) return { label: '', cls: 'mcell empty', style: '' };
       const a = Math.min(Math.abs(v) / 55, 1);
       const col = v >= 0 ? `color-mix(in srgb, var(--pos) ${10 + a * 72}%, transparent)` : `color-mix(in srgb, var(--neg) ${10 + a * 72}%, transparent)`;
       const tc = a >= 0.75 ? 'var(--bg)' : a >= 0.25 ? 'var(--text)' : (v >= 0 ? 'var(--pos)' : 'var(--neg)');
-      return { label: this.ltr((v > 0 ? '+' : '') + v.toFixed(0)), style: `padding:7px 4px;text-align:center;font-family:var(--font-display);font-size:12px;font-weight:600;color:${tc};background:${col};border-radius:2px` };
+      return { label: this.ltr((v > 0 ? '+' : '') + v.toFixed(0)), cls: 'mcell', style: `color:${tc};background:${col}` };
     };
     return years.map((y) => {
       const cells = [];
       for (let m = 1; m <= 12; m++) { const key = y + '-' + String(m).padStart(2, '0'); const r = map[key]; const v = r ? (metric === 'portfolio' ? r.p : r.b) : null; cells.push(cell(v)); }
       const yr = ymap[y]; const yv = yr ? (metric === 'portfolio' ? yr.p : yr.b) : null;
       const yc = cell(yv);
-      return { year: y, cells, yearLabel: yc.label, yearStyle: yc.style + ';font-weight:600;border:1px solid var(--border)' };
+      return { year: y, cells, total: { ...yc, cls: yc.cls + ' total' } };
     });
   }
 
@@ -700,7 +700,7 @@ export default class App extends React.Component<Props, State> {
         </div>
         <div style={sx(`display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px`)}>
           {heroStats.map((s, i) => (
-            <div key={i} className="lift" style={sx(`padding:22px;border-radius:6px;border:1px solid var(--border);background:var(--surface);box-shadow:var(--shadow)`)}>
+            <div key={i} className="lift tile">
               <div style={sx(`font-family:var(--font-display);font-weight:600;font-size:34px;letter-spacing:-1px;color:${s.color};line-height:1`)}>{s.value}</div>
               <div style={sx(`font-size:13px;color:var(--text);font-weight:600;margin-top:10px`)}>{s.label}</div>
               <div style={sx(`font-size:12px;color:var(--text-mute);margin-top:3px;line-height:1.4`)}>{s.sub}</div>
@@ -713,11 +713,7 @@ export default class App extends React.Component<Props, State> {
 
   renderPerformance() {
     const t = this.t;
-    const tfBtn = (active: boolean) => `height:30px;padding:0 13px;border-radius:4px;border:none;cursor:pointer;font-family:var(--font-display);font-size:12.5px;font-weight:600;transition:all .15s;${active ? 'background:var(--accent);color:var(--accent-contrast)' : 'background:transparent;color:var(--text-dim)'}`;
-    const timeframes = ['3m', '6m', '1y', '3y', '5y', 'all'].map((id) => ({ id, label: t['tf_' + id], style: tfBtn(this.state.tf === id) }));
-    const viewBtn = (active: boolean) => `height:30px;padding:0 16px;border-radius:4px;border:none;cursor:pointer;font-family:var(--font-body);font-size:13px;font-weight:600;transition:all .15s;${active ? 'background:var(--accent);color:var(--accent-contrast)' : 'background:transparent;color:var(--text-dim)'}`;
-    const ctrlBtn = (active: boolean) => `height:32px;padding:0 12px;border-radius:4px;border:1px solid ${active ? 'var(--accent)' : 'var(--border)'};background:${active ? 'color-mix(in srgb,var(--accent) 14%,transparent)' : 'var(--surface-2)'};color:${active ? 'var(--accent)' : 'var(--text-dim)'};cursor:pointer;font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:7px;transition:all .15s`;
-    const metBtn = (active: boolean) => `height:28px;padding:0 13px;border-radius:2px;border:none;cursor:pointer;font-size:12.5px;font-weight:600;${active ? 'background:var(--accent);color:var(--accent-contrast)' : 'background:transparent;color:var(--text-dim)'}`;
+    const timeframes = ['3m', '6m', '1y', '3y', '5y', 'all'].map((id) => ({ id, label: t['tf_' + id], on: this.state.tf === id }));
     const data = this.curData(); const lastP = data.length ? data[data.length - 1].p : null;
     const chartHeadValue = lastP != null ? this.fmtPct(lastP, 1) : '···';
     const chartHeadMult = lastP != null ? this.fmtX(1 + lastP / 100) : '';
@@ -736,35 +732,35 @@ export default class App extends React.Component<Props, State> {
     const isChartView = this.state.view === 'chart', isMonthlyView = this.state.view === 'monthly';
 
     return (
-      <section id="performance" style={sx(`padding:56px 0`)}>
+      <section id="performance" className="sec">
         <div style={sx(`display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px`)}>
           <div>
-            <div style={sx(`font-family:var(--font-display);font-size:12px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px`)}>{t.perf_eyebrow}</div>
-            <h2 style={sx(`font-family:var(--font-display);font-weight:600;font-size:clamp(26px,3.5vw,38px);letter-spacing:-.8px`)}>{t.perf_title}</h2>
+            <div className="eyebrow">{t.perf_eyebrow}</div>
+            <h2 className="sec-title">{t.perf_title}</h2>
           </div>
           <div style={sx(`display:inline-flex;padding:4px;border-radius:4px;border:1px solid var(--border);background:var(--surface)`)}>
-            <button onClick={this.setViewChart} style={sx(viewBtn(isChartView))}>{t.view_chart}</button>
-            <button onClick={this.setViewMonthly} style={sx(viewBtn(isMonthlyView))}>{t.view_monthly}</button>
+            <button onClick={this.setViewChart} className={`seg-btn view${isChartView ? ' on' : ''}`}>{t.view_chart}</button>
+            <button onClick={this.setViewMonthly} className={`seg-btn view${isMonthlyView ? ' on' : ''}`}>{t.view_monthly}</button>
           </div>
         </div>
 
-        <div style={sx(`border:1px solid var(--border);border-radius:6px;background:var(--surface);box-shadow:var(--shadow);overflow:hidden`)}>
-          <div style={sx(`display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:18px 20px;border-bottom:1px solid var(--border)`)}>
-            <div style={sx(`display:inline-flex;padding:3px;border-radius:4px;background:var(--surface-2);gap:2px`)}>
+        <div className="panel">
+          <div className="panel-bar" style={sx(`align-items:center;justify-content:space-between`)}>
+            <div className="seg">
               {timeframes.map((tf) => (
-                <button key={tf.id} onClick={() => this.selectTf(tf.id)} style={sx(tf.style)}>{tf.label}</button>
+                <button key={tf.id} onClick={() => this.selectTf(tf.id)} className={`seg-btn tf${tf.on ? ' on' : ''}`}>{tf.label}</button>
               ))}
             </div>
             <div style={sx(`display:flex;align-items:center;gap:8px`)}>
-              <button onClick={this.toggleBtc} style={sx(ctrlBtn(this.state.showBtc))}>
-                <span style={sx(`width:9px;height:9px;border-radius:2px;background:var(--btc)`)}></span>{t.compare_btc}
+              <button onClick={this.toggleBtc} className={`ctrl-btn${this.state.showBtc ? ' on' : ''}`}>
+                <span className="swatch" style={sx(`background:var(--btc)`)}></span>{t.compare_btc}
               </button>
               {INDICES.map((x) => (
-                <button key={x.key} onClick={() => this.toggleIdx(x.key)} style={sx(ctrlBtn(this.state.showIdx.includes(x.key)))}>
-                  <span style={sx(`width:9px;height:9px;border-radius:2px;background:var(${x.color})`)}></span>{x.label}
+                <button key={x.key} onClick={() => this.toggleIdx(x.key)} className={`ctrl-btn${this.state.showIdx.includes(x.key) ? ' on' : ''}`}>
+                  <span className="swatch" style={sx(`background:var(${x.color})`)}></span>{x.label}
                 </button>
               ))}
-              <button onClick={this.toggleLog} style={sx(ctrlBtn(this.state.log))}>Log</button>
+              <button onClick={this.toggleLog} className={`ctrl-btn${this.state.log ? ' on' : ''}`}>Log</button>
             </div>
           </div>
 
@@ -788,7 +784,7 @@ export default class App extends React.Component<Props, State> {
                       {this.state.showBtc && <div style={sx(`font-size:11px;color:var(--btc);font-family:var(--font-display)`)}>BTC {selBtc}</div>}
                       {selIdx.map((x) => <div key={x.key} style={sx(`font-size:11px;color:var(${x.color});font-family:var(--font-display)`)}>{x.label} {x.v}</div>)}
                     </div>
-                    <button onClick={this.clearSelection} style={sx(`width:26px;height:26px;border-radius:4px;border:1px solid var(--border);background:var(--bg-elev);color:var(--text-dim);cursor:pointer;font-size:14px`)}>✕</button>
+                    <button onClick={this.clearSelection} className="icon-btn" style={sx(`width:26px;height:26px;background:var(--bg-elev);font-size:14px`)}>✕</button>
                   </div>
                 )}
               </div>
@@ -796,9 +792,9 @@ export default class App extends React.Component<Props, State> {
                 <canvas ref={this.canvasRef} style={sx(`width:100%;height:100%;display:block;cursor:crosshair;touch-action:none`)}></canvas>
               </div>
               <div style={sx(`display:flex;align-items:center;gap:18px;padding:10px 2px 6px;font-size:12px;color:var(--text-dim);flex-wrap:wrap`)}>
-                <span style={sx(`display:inline-flex;align-items:center;gap:7px`)}><span style={sx(`width:14px;height:3px;border-radius:2px;background:var(--accent)`)}></span>{t.legend_portfolio}</span>
-                {this.state.showBtc && <span style={sx(`display:inline-flex;align-items:center;gap:7px`)}><span style={sx(`width:14px;height:3px;border-radius:2px;background:var(--btc)`)}></span>{t.legend_btc}</span>}
-                {this.activeIdx().map((x) => <span key={x.key} style={sx(`display:inline-flex;align-items:center;gap:7px`)}><span style={sx(`width:14px;height:3px;border-radius:2px;background:var(${x.color})`)}></span>{x.label}</span>)}
+                <span className="legend-item"><span className="legend-line" style={sx(`background:var(--accent)`)}></span>{t.legend_portfolio}</span>
+                {this.state.showBtc && <span className="legend-item"><span className="legend-line" style={sx(`background:var(--btc)`)}></span>{t.legend_btc}</span>}
+                {this.activeIdx().map((x) => <span key={x.key} className="legend-item"><span className="legend-line" style={sx(`background:var(${x.color})`)}></span>{x.label}</span>)}
                 <span style={sx(`margin-inline-start:auto;color:var(--text-mute);font-size:11.5px`)}>{t.chart_hint}</span>
               </div>
             </div>
@@ -807,9 +803,9 @@ export default class App extends React.Component<Props, State> {
           {isMonthlyView && (
             <div style={sx(`padding:18px 20px`)}>
               <div style={sx(`display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap`)}>
-                <div style={sx(`display:inline-flex;padding:3px;border-radius:4px;background:var(--surface-2);gap:2px`)}>
-                  <button onClick={this.setMetricPortfolio} style={sx(metBtn(this.state.metric === 'portfolio'))}>{t.legend_portfolio}</button>
-                  <button onClick={this.setMetricBtc} style={sx(metBtn(this.state.metric === 'btc'))}>BTC</button>
+                <div className="seg">
+                  <button onClick={this.setMetricPortfolio} className={`seg-btn met${this.state.metric === 'portfolio' ? ' on' : ''}`}>{t.legend_portfolio}</button>
+                  <button onClick={this.setMetricBtc} className={`seg-btn met${this.state.metric === 'btc' ? ' on' : ''}`}>BTC</button>
                 </div>
                 <span style={sx(`font-size:12px;color:var(--text-mute);margin-inline-start:auto`)}>{t.monthly_hint}</span>
               </div>
@@ -829,9 +825,9 @@ export default class App extends React.Component<Props, State> {
                       <tr key={i}>
                         <td style={sx(`font-family:var(--font-display);font-size:12.5px;color:var(--text);font-weight:600;padding:4px 8px`)}>{row.year}</td>
                         {row.cells.map((c, j) => (
-                          <td key={j} style={sx(c.style)}>{c.label}</td>
+                          <td key={j} className={c.cls} style={sx(c.style)}>{c.label}</td>
                         ))}
-                        <td style={sx(row.yearStyle)}>{row.yearLabel}</td>
+                        <td className={row.total.cls} style={sx(row.total.style)}>{row.total.label}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -852,27 +848,23 @@ export default class App extends React.Component<Props, State> {
     const usd = (v: number) => (v < 0 ? '-$' : '$') + new Intl.NumberFormat(this.loc(), { maximumFractionDigits: 0 }).format(Math.abs(v));
     const pct = (v: number) => this.fmtPct((v / invested - 1) * 100, 1);
     const color = (v: number) => (v >= invested ? 'var(--pos)' : 'var(--neg)');
-    const label = `display:flex;flex-direction:column;gap:5px;font-size:11px;color:var(--text-mute);font-family:var(--font-display);text-transform:uppercase;letter-spacing:.5px`;
-    const input = `height:42px;padding:0 12px;border-radius:4px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-family:var(--font-display);font-size:15px`;
-    const cell = `padding:18px 20px;border-radius:6px;background:var(--surface-2);border:1px solid var(--border)`;
-    const cellLabel = `font-size:12.5px;color:var(--text-dim);margin-bottom:6px`;
     return (
-      <section id="calculator" style={sx(`padding:56px 0`)}>
-        <div style={sx(`margin-bottom:24px`)}>
-          <div style={sx(`font-family:var(--font-display);font-size:12px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px`)}>{t.calc_eyebrow}</div>
-          <h2 style={sx(`font-family:var(--font-display);font-weight:600;font-size:clamp(26px,3.5vw,38px);letter-spacing:-.8px;margin-bottom:10px`)}>{t.calc_title}</h2>
-          <p style={sx(`font-size:15px;color:var(--text-dim);max-width:62ch;line-height:1.6`)}>{t.calc_sub}</p>
+      <section id="calculator" className="sec">
+        <div className="sec-head">
+          <div className="eyebrow">{t.calc_eyebrow}</div>
+          <h2 className="sec-title">{t.calc_title}</h2>
+          <p className="sec-sub">{t.calc_sub}</p>
         </div>
         <div style={sx(`border:1px solid var(--border);border-top:2px solid var(--accent);border-radius:6px;background:var(--surface);box-shadow:var(--shadow);padding:24px`)}>
           <div style={sx(`display:flex;gap:16px;flex-wrap:wrap;margin-bottom:24px`)}>
-            <label style={sx(label)}>{t.calc_amount}
-              <input type="number" inputMode="decimal" min="1" step="any" value={this.state.calcAmount} onChange={this.setCalcAmount} style={sx(input + ';width:180px')} />
+            <label className="field">{t.calc_amount}
+              <input type="number" inputMode="decimal" min="1" step="any" value={this.state.calcAmount} onChange={this.setCalcAmount} className="inp lg" style={sx(`width:180px`)} />
             </label>
-            <label style={sx(label)}>{t.calc_date}
-              <input type="date" min={this.isoDate(this.allEnds[0].t)} max={this.isoDate(this.allEnds[1].t - 864e5)} value={this.state.calcDate} onChange={this.setCalcDate} style={sx(input)} />
+            <label className="field">{t.calc_date}
+              <input type="date" min={this.isoDate(this.allEnds[0].t)} max={this.isoDate(this.allEnds[1].t - 864e5)} value={this.state.calcDate} onChange={this.setCalcDate} className="inp lg" />
             </label>
-            <label style={sx(label)}>{t.calc_monthly}
-              <input type="number" inputMode="decimal" min="0" step="any" value={this.state.calcMonthly} onChange={this.setCalcMonthly} style={sx(input + ';width:180px')} />
+            <label className="field">{t.calc_monthly}
+              <input type="number" inputMode="decimal" min="0" step="any" value={this.state.calcMonthly} onChange={this.setCalcMonthly} className="inp lg" style={sx(`width:180px`)} />
             </label>
           </div>
           {!this.chartData.all ? (
@@ -881,23 +873,23 @@ export default class App extends React.Component<Props, State> {
             <div style={sx(`color:var(--text-mute);font-size:14px`)}>{t.calc_invalid}</div>
           ) : (
             <div style={sx(`display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px`)}>
-              <div style={sx(cell + ';border-color:var(--accent)')}>
-                <div style={sx(cellLabel + ';display:flex;align-items:center;gap:7px')}><span style={sx(`width:14px;height:3px;border-radius:2px;background:var(--accent)`)}></span><span style={sx(`color:var(--accent);font-weight:600`)}>{t.legend_portfolio}</span> · {t.calc_value}</div>
+              <div className="calc-cell" style={sx(`border-color:var(--accent)`)}>
+                <div className="calc-label" style={sx(`display:flex;align-items:center;gap:7px`)}><span className="legend-line" style={sx(`background:var(--accent)`)}></span><span style={sx(`color:var(--accent);font-weight:600`)}>{t.legend_portfolio}</span> · {t.calc_value}</div>
                 <div style={sx(`font-family:var(--font-display);font-weight:700;font-size:30px;color:${color(r.value)}`)}>{usd(r.value)}</div>
-                <div style={sx(`font-size:13px;color:var(--text-dim);margin-top:4px`)}>{t.calc_profit}: {this.ltr(usd(r.value - invested))} ({pct(r.value)})</div>
+                <div className="calc-sub">{t.calc_profit}: {this.ltr(usd(r.value - invested))} ({pct(r.value)})</div>
                 {monthly > 0 && <div style={sx(`font-size:13px;color:var(--text-dim);margin-top:2px`)}>{t.calc_invested}: {usd(invested)}</div>}
               </div>
-              <div style={sx(cell)}>
-                <div style={sx(cellLabel)}>{t.calc_btc}</div>
+              <div className="calc-cell">
+                <div className="calc-label">{t.calc_btc}</div>
                 <div style={sx(`font-family:var(--font-display);font-weight:600;font-size:24px;color:var(--btc)`)}>{usd(r.btc)}</div>
-                <div style={sx(`font-size:13px;color:var(--text-dim);margin-top:4px`)}>{pct(r.btc)}</div>
+                <div className="calc-sub">{pct(r.btc)}</div>
               </div>
-              <div style={sx(cell)}>
-                <div style={sx(cellLabel)}>{r.sharePct ? t.calc_fee.replace('{pct}', String(r.sharePct)) : t.calc_fee_off}</div>
+              <div className="calc-cell">
+                <div className="calc-label">{r.sharePct ? t.calc_fee.replace('{pct}', String(r.sharePct)) : t.calc_fee_off}</div>
                 <div style={sx(`font-family:var(--font-display);font-weight:600;font-size:24px;color:var(--text)`)}>{r.sharePct ? usd(r.fee) : '-'}</div>
               </div>
-              <div style={sx(cell)}>
-                <div style={sx(cellLabel)}>{t.calc_dd}</div>
+              <div className="calc-cell">
+                <div className="calc-label">{t.calc_dd}</div>
                 <div style={sx(`font-family:var(--font-display);font-weight:600;font-size:24px;color:var(--neg)`)}>{this.fmtPct(r.dd, 1)}</div>
               </div>
             </div>
@@ -915,22 +907,22 @@ export default class App extends React.Component<Props, State> {
     const tb = this.buildTrades();
     const sortLabel = this.state.tNewest ? t.sort_new : t.sort_old;
     return (
-      <section id="trades" style={sx(`padding:56px 0`)}>
-        <div style={sx(`margin-bottom:24px`)}>
-          <div style={sx(`font-family:var(--font-display);font-size:12px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px`)}>{t.trades_eyebrow}</div>
-          <h2 style={sx(`font-family:var(--font-display);font-weight:600;font-size:clamp(26px,3.5vw,38px);letter-spacing:-.8px;margin-bottom:10px`)}>{t.trades_title}</h2>
-          <p style={sx(`font-size:15px;color:var(--text-dim);max-width:62ch;line-height:1.6`)}>{t.trades_sub}</p>
+      <section id="trades" className="sec">
+        <div className="sec-head">
+          <div className="eyebrow">{t.trades_eyebrow}</div>
+          <h2 className="sec-title">{t.trades_title}</h2>
+          <p className="sec-sub">{t.trades_sub}</p>
         </div>
-        <div style={sx(`border:1px solid var(--border);border-radius:6px;background:var(--surface);box-shadow:var(--shadow);overflow:hidden`)}>
-          <div style={sx(`display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;padding:18px 20px;border-bottom:1px solid var(--border)`)}>
-            <label style={sx(`display:flex;flex-direction:column;gap:5px;font-size:11px;color:var(--text-mute);font-family:var(--font-display);text-transform:uppercase;letter-spacing:.5px`)}>{t.filter_from}
-              <input type="date" min={this.tMin} max={this.tMax} value={this.state.tFrom} onChange={this.setTFrom} style={sx(`height:38px;padding:0 10px;border-radius:4px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-family:var(--font-display);font-size:13px`)} />
+        <div className="panel">
+          <div className="panel-bar" style={sx(`align-items:flex-end`)}>
+            <label className="field">{t.filter_from}
+              <input type="date" min={this.tMin} max={this.tMax} value={this.state.tFrom} onChange={this.setTFrom} className="inp" />
             </label>
-            <label style={sx(`display:flex;flex-direction:column;gap:5px;font-size:11px;color:var(--text-mute);font-family:var(--font-display);text-transform:uppercase;letter-spacing:.5px`)}>{t.filter_to}
-              <input type="date" min={this.tMin} max={this.tMax} value={this.state.tTo} onChange={this.setTTo} style={sx(`height:38px;padding:0 10px;border-radius:4px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-family:var(--font-display);font-size:13px`)} />
+            <label className="field">{t.filter_to}
+              <input type="date" min={this.tMin} max={this.tMax} value={this.state.tTo} onChange={this.setTTo} className="inp" />
             </label>
-            <button onClick={this.resetTrades} style={sx(`height:38px;padding:0 14px;border-radius:4px;border:1px solid var(--border);background:var(--surface-2);color:var(--text-dim);font-size:13px;cursor:pointer;font-weight:500`)}>{t.filter_reset}</button>
-            <button onClick={this.toggleSort} style={sx(`height:38px;padding:0 14px;border-radius:4px;border:1px solid var(--border);background:var(--surface-2);color:var(--text-dim);font-size:13px;cursor:pointer;font-weight:500;font-family:var(--font-display)`)}>⇅ {sortLabel}</button>
+            <button onClick={this.resetTrades} className="btn-ghost">{t.filter_reset}</button>
+            <button onClick={this.toggleSort} className="btn-ghost" style={sx(`font-family:var(--font-display)`)}>⇅ {sortLabel}</button>
             <div style={sx(`margin-inline-start:auto;display:flex;gap:18px;align-items:center;font-size:13px`)}>
               <span style={sx(`color:var(--text-mute);font-family:var(--font-display);font-size:12px`)}>{tb.shown} / {tb.total} {t.trades_word}</span>
               <span style={sx(`color:var(--pos);font-family:var(--font-display);font-size:12px`)}>{tb.win} {t.wins}</span>
@@ -939,28 +931,28 @@ export default class App extends React.Component<Props, State> {
             </div>
           </div>
           <div style={sx(`max-height:540px;overflow:auto`)}>
-            <table style={sx(`width:100%;border-collapse:collapse;min-width:640px`)}>
+            <table className="trades-table" style={sx(`width:100%;border-collapse:collapse;min-width:640px`)}>
               <thead style={sx(`position:sticky;top:0;z-index:2`)}>
                 <tr style={sx(`background:var(--surface-2)`)}>
-                  <th style={sx(`text-align:start;padding:11px 20px;font-family:var(--font-display);font-size:11px;color:var(--text-mute);font-weight:500;text-transform:uppercase;letter-spacing:.5px`)}>{t.th_dir}</th>
-                  <th style={sx(`text-align:start;padding:11px 12px;font-family:var(--font-display);font-size:11px;color:var(--text-mute);font-weight:500;text-transform:uppercase;letter-spacing:.5px`)}>{t.th_start}</th>
-                  <th style={sx(`text-align:end;padding:11px 12px;font-family:var(--font-display);font-size:11px;color:var(--text-mute);font-weight:500;text-transform:uppercase;letter-spacing:.5px`)}>{t.th_entry}</th>
-                  <th style={sx(`text-align:start;padding:11px 12px;font-family:var(--font-display);font-size:11px;color:var(--text-mute);font-weight:500;text-transform:uppercase;letter-spacing:.5px`)}>{t.th_end}</th>
-                  <th style={sx(`text-align:end;padding:11px 12px;font-family:var(--font-display);font-size:11px;color:var(--text-mute);font-weight:500;text-transform:uppercase;letter-spacing:.5px`)}>{t.th_exit}</th>
-                  <th style={sx(`text-align:end;padding:11px 12px;font-family:var(--font-display);font-size:11px;color:var(--text-mute);font-weight:500;text-transform:uppercase;letter-spacing:.5px`)}>{t.th_dur}</th>
-                  <th style={sx(`text-align:end;padding:11px 20px;font-family:var(--font-display);font-size:11px;color:var(--text-mute);font-weight:500;text-transform:uppercase;letter-spacing:.5px`)}>{t.th_pnl}</th>
+                  <th className="th">{t.th_dir}</th>
+                  <th className="th">{t.th_start}</th>
+                  <th className="th num">{t.th_entry}</th>
+                  <th className="th">{t.th_end}</th>
+                  <th className="th num">{t.th_exit}</th>
+                  <th className="th num">{t.th_dur}</th>
+                  <th className="th num">{t.th_pnl}</th>
                 </tr>
               </thead>
               <tbody>
                 {tb.rows.map((r, i) => (
                   <tr key={i} style={sx(`border-top:1px solid var(--border);background:${r.rowBg}`)}>
-                    <td style={sx(`padding:11px 20px`)}><span style={sx(`display:inline-block;padding:3px 9px;border-radius:2px;font-size:11.5px;font-weight:600;font-family:var(--font-display);color:${r.dirColor};background:${r.dirBg}`)}>{r.dir}</span></td>
-                    <td style={sx(`padding:11px 12px;font-family:var(--font-display);font-size:12.5px;color:var(--text-dim)`)}>{r.start}</td>
-                    <td style={sx(`padding:11px 12px;font-family:var(--font-display);font-size:12.5px;color:var(--text);text-align:end`)}>{r.entry}</td>
-                    <td style={sx(`padding:11px 12px;font-family:var(--font-display);font-size:12.5px;color:var(--text-dim)`)}>{r.end}</td>
-                    <td style={sx(`padding:11px 12px;font-family:var(--font-display);font-size:12.5px;color:var(--text);text-align:end`)}>{r.exit}</td>
-                    <td style={sx(`padding:11px 12px;font-family:var(--font-display);font-size:12.5px;color:var(--text-mute);text-align:end`)}>{r.dur}</td>
-                    <td style={sx(`padding:11px 20px;font-family:var(--font-display);font-size:13px;font-weight:600;color:${r.pnlColor};text-align:end`)}>{r.pnl}</td>
+                    <td><span style={sx(`display:inline-block;padding:3px 9px;border-radius:2px;font-size:11.5px;font-weight:600;font-family:var(--font-display);color:${r.dirColor};background:${r.dirBg}`)}>{r.dir}</span></td>
+                    <td>{r.start}</td>
+                    <td className="num hi">{r.entry}</td>
+                    <td>{r.end}</td>
+                    <td className="num hi">{r.exit}</td>
+                    <td className="num mute">{r.dur}</td>
+                    <td className="num" style={sx(`font-size:13px;font-weight:600;color:${r.pnlColor}`)}>{r.pnl}</td>
                   </tr>
                 ))}
               </tbody>
@@ -973,28 +965,27 @@ export default class App extends React.Component<Props, State> {
 
   renderAnalysis() {
     const t = this.t;
-    const selStyle = `height:38px;padding:0 12px;border-radius:4px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-family:var(--font-display);font-size:13px;cursor:pointer;min-width:150px`;
     const perfStartOpts = (this.perfStarts || []).map((d) => ({ value: d, label: this.fmtDate(parseTs(d)) }));
     const perfEndOpts = (this.state.perfStart ? this.endsFor(this.state.perfStart) : []).map((d) => ({ value: d, label: this.fmtDate(parseTs(d)) }));
     const perf = this.buildPerf();
     return (
-      <section id="analysis" style={sx(`padding:56px 0`)}>
-        <div style={sx(`margin-bottom:24px`)}>
-          <div style={sx(`font-family:var(--font-display);font-size:12px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px`)}>{t.an_eyebrow}</div>
-          <h2 style={sx(`font-family:var(--font-display);font-weight:600;font-size:clamp(26px,3.5vw,38px);letter-spacing:-.8px;margin-bottom:10px`)}>{t.an_title}</h2>
-          <p style={sx(`font-size:15px;color:var(--text-dim);max-width:72ch;line-height:1.6`)}>{t.an_sub}</p>
+      <section id="analysis" className="sec">
+        <div className="sec-head">
+          <div className="eyebrow">{t.an_eyebrow}</div>
+          <h2 className="sec-title">{t.an_title}</h2>
+          <p className="sec-sub" style={sx(`max-width:72ch`)}>{t.an_sub}</p>
         </div>
 
         <div className="an-grid" style={sx(`display:grid;grid-template-columns:1.25fr .85fr;gap:18px;align-items:start`)}>
-          <div style={sx(`border:1px solid var(--border);border-radius:6px;background:var(--surface);box-shadow:var(--shadow);overflow:hidden`)}>
-            <div style={sx(`display:flex;gap:14px;flex-wrap:wrap;padding:18px 20px;border-bottom:1px solid var(--border)`)}>
-              <label style={sx(`display:flex;flex-direction:column;gap:5px;font-size:11px;color:var(--text-mute);font-family:var(--font-display);text-transform:uppercase;letter-spacing:.5px`)}>{t.an_from}
-                <select value={this.state.perfStart || ''} onChange={this.setPerfStart} style={sx(selStyle)}>
+          <div className="panel">
+            <div className="panel-bar">
+              <label className="field">{t.an_from}
+                <select value={this.state.perfStart || ''} onChange={this.setPerfStart} className="inp">
                   {perfStartOpts.map((o, i) => <option key={i} value={o.value}>{o.label}</option>)}
                 </select>
               </label>
-              <label style={sx(`display:flex;flex-direction:column;gap:5px;font-size:11px;color:var(--text-mute);font-family:var(--font-display);text-transform:uppercase;letter-spacing:.5px`)}>{t.an_to}
-                <select value={this.state.perfEnd || ''} onChange={this.setPerfEnd} style={sx(selStyle)}>
+              <label className="field">{t.an_to}
+                <select value={this.state.perfEnd || ''} onChange={this.setPerfEnd} className="inp">
                   {perfEndOpts.map((o, i) => <option key={i} value={o.value}>{o.label}</option>)}
                 </select>
               </label>
@@ -1002,46 +993,46 @@ export default class App extends React.Component<Props, State> {
             {this.state.perfLoaded && perf && (
               <div style={sx(`padding:18px 20px`)}>
                 <div style={sx(`display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:18px`)}>
-                  <div style={sx(`padding:14px;border-radius:6px;background:var(--surface-2);border:1px solid var(--border)`)}>
-                    <div style={sx(`font-size:11px;color:var(--text-mute);font-family:var(--font-display);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px`)}>{t.an_roi}</div>
-                    <div style={sx(`font-family:var(--font-display);font-weight:600;font-size:24px;color:${perf.roiColor};line-height:1`)}>{perf.roi}</div>
-                    <div style={sx(`font-size:11px;color:var(--text-mute);font-family:var(--font-display);margin-top:3px`)}>{perf.roiMult}</div>
+                  <div className="stat">
+                    <div className="stat-label">{t.an_roi}</div>
+                    <div className="stat-val" style={sx(`color:${perf.roiColor}`)}>{perf.roi}</div>
+                    <div className="stat-sub">{perf.roiMult}</div>
                   </div>
-                  <div style={sx(`padding:14px;border-radius:6px;background:var(--surface-2);border:1px solid var(--border)`)}>
-                    <div style={sx(`font-size:11px;color:var(--text-mute);font-family:var(--font-display);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px`)}>{t.an_btc}</div>
-                    <div style={sx(`font-family:var(--font-display);font-weight:600;font-size:24px;color:var(--btc);line-height:1`)}>{perf.broi}</div>
-                    <div style={sx(`font-size:11px;color:var(--text-mute);font-family:var(--font-display);margin-top:3px`)}>{perf.broiMult}</div>
+                  <div className="stat">
+                    <div className="stat-label">{t.an_btc}</div>
+                    <div className="stat-val" style={sx(`color:var(--btc)`)}>{perf.broi}</div>
+                    <div className="stat-sub">{perf.broiMult}</div>
                   </div>
-                  <div style={sx(`padding:14px;border-radius:6px;background:var(--surface-2);border:1px solid var(--border)`)}>
-                    <div style={sx(`font-size:11px;color:var(--text-mute);font-family:var(--font-display);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px`)}>{t.an_maxdd}</div>
-                    <div style={sx(`font-family:var(--font-display);font-weight:600;font-size:24px;color:var(--neg);line-height:1`)}>{perf.maxdd}</div>
-                    <div style={sx(`font-size:10.5px;color:var(--text-mute);font-family:var(--font-display);margin-top:3px`)}>{perf.ddRange}</div>
+                  <div className="stat">
+                    <div className="stat-label">{t.an_maxdd}</div>
+                    <div className="stat-val" style={sx(`color:var(--neg)`)}>{perf.maxdd}</div>
+                    <div className="stat-sub" style={sx(`font-size:10.5px`)}>{perf.ddRange}</div>
                   </div>
-                  <div style={sx(`padding:14px;border-radius:6px;background:var(--surface-2);border:1px solid var(--border)`)}>
-                    <div style={sx(`font-size:11px;color:var(--text-mute);font-family:var(--font-display);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px`)}>{t.an_winrate}</div>
-                    <div style={sx(`font-family:var(--font-display);font-weight:600;font-size:24px;color:var(--text);line-height:1`)}>{perf.winrate}</div>
-                    <div style={sx(`font-size:11px;color:var(--text-mute);font-family:var(--font-display);margin-top:3px`)}>{perf.winLose}</div>
+                  <div className="stat">
+                    <div className="stat-label">{t.an_winrate}</div>
+                    <div className="stat-val" style={sx(`color:var(--text)`)}>{perf.winrate}</div>
+                    <div className="stat-sub">{perf.winLose}</div>
                   </div>
                 </div>
                 <div style={sx(`overflow-x:auto;margin:0 -2px`)}>
-                  <table style={sx(`width:100%;min-width:380px;border-collapse:collapse`)}>
+                  <table className="roll-table" style={sx(`width:100%;min-width:380px;border-collapse:collapse`)}>
                     <thead>
                       <tr>
-                        <th style={sx(`text-align:start;padding:9px 10px;font-family:var(--font-display);font-size:11px;color:var(--text-mute);font-weight:500;text-transform:uppercase;letter-spacing:.5px`)}>{t.an_window}</th>
-                        <th style={sx(`text-align:end;padding:9px 10px;font-family:var(--font-display);font-size:11px;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:.5px`)}>{t.an_avg}</th>
-                        <th style={sx(`text-align:end;padding:9px 10px;font-family:var(--font-display);font-size:11px;color:var(--text-mute);font-weight:500;text-transform:uppercase;letter-spacing:.5px`)}>{t.an_min}</th>
-                        <th style={sx(`text-align:end;padding:9px 10px;font-family:var(--font-display);font-size:11px;color:var(--text-mute);font-weight:500;text-transform:uppercase;letter-spacing:.5px`)}>{t.an_max}</th>
+                        <th className="th">{t.an_window}</th>
+                        <th className="th num" style={sx(`color:var(--accent);font-weight:600`)}>{t.an_avg}</th>
+                        <th className="th num">{t.an_min}</th>
+                        <th className="th num">{t.an_max}</th>
                       </tr>
                     </thead>
                     <tbody>
                       {perf.rolling.map((rw, i) => (
                         <tr key={i} style={sx(`border-top:1px solid var(--border);${rw.dim}`)}>
-                          <td style={sx(`padding:11px 10px;font-size:13.5px;font-weight:600;color:var(--text)`)}>{rw.win}</td>
-                          <td style={sx(`padding:11px 10px;text-align:end;font-family:var(--font-display);font-size:13.5px;font-weight:600;color:var(--text)`)}>{rw.avg}</td>
-                          <td style={sx(`padding:11px 10px;text-align:end;font-family:var(--font-display);font-size:13px;color:${rw.minColor}`)}>{rw.min}
-                            {rw.minRange && <div style={sx(`font-size:10.5px;color:var(--text-mute);margin-top:3px`)}>{rw.minRange}</div>}</td>
-                          <td style={sx(`padding:11px 10px;text-align:end;font-family:var(--font-display);font-size:13px;color:var(--pos)`)}>{rw.max}
-                            {rw.maxRange && <div style={sx(`font-size:10.5px;color:var(--text-mute);margin-top:3px`)}>{rw.maxRange}</div>}</td>
+                          <td style={sx(`font-size:13.5px;font-weight:600;color:var(--text)`)}>{rw.win}</td>
+                          <td className="num" style={sx(`font-family:var(--font-display);font-size:13.5px;font-weight:600;color:var(--text)`)}>{rw.avg}</td>
+                          <td className="num" style={sx(`font-family:var(--font-display);font-size:13px;color:${rw.minColor}`)}>{rw.min}
+                            {rw.minRange && <div className="range">{rw.minRange}</div>}</td>
+                          <td className="num" style={sx(`font-family:var(--font-display);font-size:13px;color:var(--pos)`)}>{rw.max}
+                            {rw.maxRange && <div className="range">{rw.maxRange}</div>}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -1055,21 +1046,21 @@ export default class App extends React.Component<Props, State> {
             )}
           </div>
 
-          <div style={sx(`border:1px solid var(--border);border-radius:6px;background:var(--surface);box-shadow:var(--shadow);overflow:hidden`)}>
+          <div className="panel">
             <div style={sx(`padding:16px 20px;border-bottom:1px solid var(--border);font-family:var(--font-display);font-weight:600;font-size:15px`)}>{t.an_explainer}</div>
             <div style={sx(`padding:20px;display:flex;flex-direction:column;gap:16px`)}>
-              <p style={sx(`font-size:13.5px;color:var(--text-dim);line-height:1.62`)}>{t.an_explain_b1}</p>
+              <p className="an-p">{t.an_explain_b1}</p>
               <div style={sx(`display:flex;flex-direction:column;gap:9px;padding:16px;border-radius:6px;background:var(--surface-2);border:1px solid var(--border)`)}>
                 <div style={sx(`display:flex;align-items:center;justify-content:space-between;font-family:var(--font-display);font-size:10px;color:var(--text-mute);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px`)}><span>{t.an_viz_full}</span><span>{t.an_viz_caption}</span></div>
-                <div style={sx(`position:relative;height:13px;border-radius:4px;background:var(--border)`)}><div style={sx(`position:absolute;left:2%;top:0;bottom:0;width:30%;border-radius:4px;background:var(--accent);opacity:.95`)}></div></div>
-                <div style={sx(`position:relative;height:13px;border-radius:4px;background:var(--border)`)}><div style={sx(`position:absolute;left:35%;top:0;bottom:0;width:30%;border-radius:4px;background:var(--accent);opacity:.7`)}></div></div>
-                <div style={sx(`position:relative;height:13px;border-radius:4px;background:var(--border)`)}><div style={sx(`position:absolute;left:68%;top:0;bottom:0;width:30%;border-radius:4px;background:var(--accent);opacity:.5`)}></div></div>
+                <div className="viz-track"><div className="viz-bar" style={sx(`left:2%;opacity:.95`)}></div></div>
+                <div className="viz-track"><div className="viz-bar" style={sx(`left:35%;opacity:.7`)}></div></div>
+                <div className="viz-track"><div className="viz-bar" style={sx(`left:68%;opacity:.5`)}></div></div>
               </div>
-              <p style={sx(`font-size:13.5px;color:var(--text-dim);line-height:1.62`)}>{t.an_explain_b2}</p>
+              <p className="an-p">{t.an_explain_b2}</p>
               <div style={sx(`display:flex;gap:8px`)}>
-                <div style={sx(`flex:1;text-align:center;padding:9px 4px;border-radius:4px;background:color-mix(in srgb,var(--neg) 13%,transparent);font-family:var(--font-display);font-size:10.5px;font-weight:600;color:var(--neg);text-transform:uppercase;letter-spacing:.5px`)}>{t.an_res_min}</div>
-                <div style={sx(`flex:1;text-align:center;padding:9px 4px;border-radius:4px;background:var(--surface-2);font-family:var(--font-display);font-size:10.5px;font-weight:600;color:var(--text);text-transform:uppercase;letter-spacing:.5px`)}>{t.an_res_avg}</div>
-                <div style={sx(`flex:1;text-align:center;padding:9px 4px;border-radius:4px;background:color-mix(in srgb,var(--pos) 13%,transparent);font-family:var(--font-display);font-size:10.5px;font-weight:600;color:var(--pos);text-transform:uppercase;letter-spacing:.5px`)}>{t.an_res_max}</div>
+                <div className="res-chip" style={sx(`background:color-mix(in srgb,var(--neg) 13%,transparent);color:var(--neg)`)}>{t.an_res_min}</div>
+                <div className="res-chip" style={sx(`background:var(--surface-2);color:var(--text)`)}>{t.an_res_avg}</div>
+                <div className="res-chip" style={sx(`background:color-mix(in srgb,var(--pos) 13%,transparent);color:var(--pos)`)}>{t.an_res_max}</div>
               </div>
             </div>
           </div>
@@ -1082,14 +1073,14 @@ export default class App extends React.Component<Props, State> {
     const t = this.t;
     const strategyCards: { t: string; b: string }[] = t.strategy || [];
     return (
-      <section id="strategy" style={sx(`padding:56px 0`)}>
-        <div style={sx(`margin-bottom:24px`)}>
-          <div style={sx(`font-family:var(--font-display);font-size:12px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px`)}>{t.str_eyebrow}</div>
-          <h2 style={sx(`font-family:var(--font-display);font-weight:600;font-size:clamp(26px,3.5vw,38px);letter-spacing:-.8px`)}>{t.str_title}</h2>
+      <section id="strategy" className="sec">
+        <div className="sec-head">
+          <div className="eyebrow">{t.str_eyebrow}</div>
+          <h2 className="sec-title">{t.str_title}</h2>
         </div>
         <div style={sx(`display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px`)}>
           {strategyCards.map((c, i) => (
-            <div key={i} className="lift" style={sx(`padding:22px;border-radius:6px;border:1px solid var(--border);background:var(--surface);box-shadow:var(--shadow)`)}>
+            <div key={i} className="lift tile">
               <div style={sx(`font-family:var(--font-display);font-weight:600;font-size:17px;margin-bottom:9px;letter-spacing:-.3px`)}>{c.t}</div>
               <p style={sx(`font-size:14px;color:var(--text-dim);line-height:1.62`)}>{c.b}</p>
             </div>
@@ -1103,23 +1094,22 @@ export default class App extends React.Component<Props, State> {
     const t = this.t;
     const faqItems: { q: string; a: string }[] = t.faq || [];
     return (
-      <section id="faq" style={sx(`padding:56px 0`)}>
-        <div style={sx(`margin-bottom:24px`)}>
-          <div style={sx(`font-family:var(--font-display);font-size:12px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px`)}>{t.faq_eyebrow}</div>
-          <h2 style={sx(`font-family:var(--font-display);font-weight:600;font-size:clamp(26px,3.5vw,38px);letter-spacing:-.8px`)}>{t.faq_title}</h2>
+      <section id="faq" className="sec">
+        <div className="sec-head">
+          <div className="eyebrow">{t.faq_eyebrow}</div>
+          <h2 className="sec-title">{t.faq_title}</h2>
         </div>
         <div style={sx(`display:flex;flex-direction:column;gap:10px;max-width:880px`)}>
           {faqItems.map((f, i) => {
             const open = this.state.faqOpen === i;
             const icon = open ? '−' : '+';
-            const aStyle = `overflow:hidden;transition:max-height .3s ease,opacity .25s ease,padding .3s ease;` + (open ? `max-height:600px;opacity:1;padding:0 20px 18px` : `max-height:0;opacity:0;padding:0 20px`);
             return (
               <div key={i} style={sx(`border:1px solid var(--border);border-radius:6px;background:var(--surface);overflow:hidden`)}>
                 <button onClick={() => this.setFaq(i)} style={sx(`width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:17px 20px;background:transparent;border:none;cursor:pointer;text-align:start;color:var(--text);font-family:var(--font-display);font-weight:500;font-size:15.5px`)}>
                   <span>{f.q}</span>
                   <span style={sx(`flex:none;width:24px;height:24px;border-radius:4px;background:var(--surface-2);display:grid;place-items:center;color:var(--accent);font-size:16px;font-weight:600`)}>{icon}</span>
                 </button>
-                <div style={sx(aStyle)}>
+                <div className={open ? 'faq-a open' : 'faq-a'}>
                   <p style={sx(`font-size:14px;color:var(--text-dim);line-height:1.65`)}>{f.a}</p>
                 </div>
               </div>
@@ -1140,17 +1130,17 @@ export default class App extends React.Component<Props, State> {
     const stepAlt = (n: number) => `${t.gd_step_alt} ${n}`;
     const nums = [1, 2, 3, 4, 5, 6];
     return (
-      <section id="guide" style={sx(`padding:56px 0`)}>
-        <div style={sx(`margin-bottom:24px`)}>
-          <div style={sx(`font-family:var(--font-display);font-size:12px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px`)}>{t.gd_eyebrow}</div>
-          <h2 style={sx(`font-family:var(--font-display);font-weight:600;font-size:clamp(26px,3.5vw,38px);letter-spacing:-.8px;margin-bottom:10px`)}>{t.gd_title}</h2>
-          <p style={sx(`font-size:15px;color:var(--text-dim);max-width:62ch;line-height:1.6`)}>{t.gd_sub}</p>
+      <section id="guide" className="sec">
+        <div className="sec-head">
+          <div className="eyebrow">{t.gd_eyebrow}</div>
+          <h2 className="sec-title">{t.gd_title}</h2>
+          <p className="sec-sub">{t.gd_sub}</p>
         </div>
         <div style={sx(`display:flex;align-items:baseline;gap:12px;margin-bottom:14px;flex-wrap:wrap`)}>
-          <span style={sx(`font-family:var(--font-display);font-size:12px;color:var(--text-mute);text-transform:uppercase;letter-spacing:.5px`)}>{t.gd_steps}</span>
+          <span className="caps-label">{t.gd_steps}</span>
           <span style={sx(`font-size:12px;color:var(--text-mute)`)}>· {t.gd_zoom_hint}</span>
         </div>
-        <div style={sx(`display:flex;gap:14px;overflow-x:auto;padding:2px 2px 16px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch`)}>
+        <div className="snap-row">
           {nums.map((n) => (
             <div key={n} style={sx(`flex:none;width:184px;scroll-snap-align:start`)}>
               <div onClick={() => this.openImg(n - 1)} className="lift" style={sx(`position:relative;border-radius:6px;overflow:hidden;border:1px solid var(--border);background:#0d0d0d;box-shadow:var(--shadow);cursor:zoom-in`)}>
@@ -1165,8 +1155,8 @@ export default class App extends React.Component<Props, State> {
         </div>
 
         <div style={sx(`margin-top:34px`)}>
-          <div style={sx(`font-family:var(--font-display);font-size:12px;color:var(--text-mute);text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px`)}>{t.gd_videos}</div>
-          <div style={sx(`display:flex;gap:14px;overflow-x:auto;padding:2px 2px 14px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch`)}>
+          <div className="caps-label" style={sx(`margin-bottom:14px`)}>{t.gd_videos}</div>
+          <div className="snap-row" style={sx(`padding-bottom:14px`)}>
             {videos.map((v, i) => (
               <div key={i} onClick={v.open} className="lift" style={sx(`flex:none;width:300px;scroll-snap-align:start;border:1px solid var(--border);border-radius:6px;overflow:hidden;background:var(--surface);box-shadow:var(--shadow);cursor:pointer`)}>
                 <div style={sx(`position:relative;aspect-ratio:16/9;background:color-mix(in srgb,var(--accent) 10%,var(--surface-2));display:grid;place-items:center`)}>
@@ -1232,10 +1222,10 @@ export default class App extends React.Component<Props, State> {
     if (isImage) { lbImg = `/assets/guide/step-${lb.i + 1}-${this.imgLang()}.jpeg`; lbImgWebp = `/assets/guide/step-${lb.i + 1}-${this.imgLang()}.webp`; lbCounter = `${lb.i + 1} / 6`; lbCaption = t.gd_steps || ''; lbAlt = `${t.gd_step_alt} ${lb.i + 1}`; }
     else { const v = (cfg.videos || [])[lb.i] || {}; lbEmbed = v.embed || ''; lbCounter = `${lb.i + 1} / ${(cfg.videos || []).length}`; lbCaption = v.title ? (v.title[lang] ?? v.title.en) : ''; }
     return (
-      <div onClick={this.lbClose} style={sx(`position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.86);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px`)}>
-        <button onClick={this.lbClose} aria-label="close" style={sx(`position:absolute;top:16px;right:16px;width:42px;height:42px;border-radius:6px;border:1px solid rgba(255,255,255,.18);background:rgba(20,24,28,.6);color:#fff;font-size:18px;cursor:pointer;z-index:2`)}>✕</button>
-        <button onClick={this.lbPrev} aria-label="prev" style={sx(`position:absolute;left:12px;top:50%;transform:translateY(-50%);width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:rgba(20,24,28,.6);color:#fff;font-size:22px;cursor:pointer;z-index:2`)}>‹</button>
-        <button onClick={this.lbNext} aria-label="next" style={sx(`position:absolute;right:12px;top:50%;transform:translateY(-50%);width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:rgba(20,24,28,.6);color:#fff;font-size:22px;cursor:pointer;z-index:2`)}>›</button>
+      <div onClick={this.lbClose} className="overlay" style={sx(`z-index:200;background:rgba(0,0,0,.86)`)}>
+        <button onClick={this.lbClose} aria-label="close" className="lb-btn" style={sx(`top:16px;right:16px;width:42px;height:42px;border-radius:6px;font-size:18px`)}>✕</button>
+        <button onClick={this.lbPrev} aria-label="prev" className="lb-btn lb-nav" style={sx(`left:12px`)}>‹</button>
+        <button onClick={this.lbNext} aria-label="next" className="lb-btn lb-nav" style={sx(`right:12px`)}>›</button>
         <div onClick={this.lbStop} style={sx(`display:flex;flex-direction:column;align-items:center;gap:14px;max-width:94vw`)}>
           {isImage && (
             <picture>
@@ -1260,13 +1250,11 @@ export default class App extends React.Component<Props, State> {
   renderReferralModal() {
     const t = this.t;
     if (!this.state.refModal) return null;
-    const refBinanceStyle = `display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:4px;border:2px solid ${this.state.refPlatform === 'binance' ? 'var(--accent)' : 'var(--border)'};background:${this.state.refPlatform === 'binance' ? 'color-mix(in srgb,var(--accent) 12%,transparent)' : 'var(--surface-2)'};color:var(--text);font-weight:600;font-size:14px;cursor:pointer`;
-    const refBybitStyle = `display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:4px;border:2px solid ${this.state.refPlatform === 'bybit' ? 'var(--accent)' : 'var(--border)'};background:${this.state.refPlatform === 'bybit' ? 'color-mix(in srgb,var(--accent) 12%,transparent)' : 'var(--surface-2)'};color:var(--text);font-weight:600;font-size:14px;cursor:pointer`;
     const refSubmitStyle = `width:100%;height:48px;border-radius:6px;border:none;background:${this.state.refSubmitting ? 'var(--border)' : 'var(--accent)'};color:${this.state.refSubmitting ? 'var(--text-mute)' : 'var(--accent-contrast)'};font-weight:600;font-size:15px;cursor:${this.state.refSubmitting ? 'not-allowed' : 'pointer'}`;
     const refSubmitLabel = this.state.refSubmitting ? t.ref_submitting : t.ref_submit;
     const termsContent = this.buildTermsEl();
     return (
-      <div onClick={this.closeRefModal} style={sx(`position:fixed;inset:0;z-index:210;background:rgba(0,0,0,.72);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px`)}>
+      <div onClick={this.closeRefModal} className="overlay" style={sx(`z-index:210;background:rgba(0,0,0,.72)`)}>
         <div onClick={this.stopProp} style={sx(`width:100%;max-width:520px;max-height:90vh;overflow-y:auto;border-radius:6px;background:var(--bg-elev);border:1px solid var(--border);box-shadow:0 24px 64px rgba(0,0,0,.4)`)}>
           <div style={sx(`display:flex;align-items:center;justify-content:space-between;padding:22px 24px 18px;border-bottom:1px solid var(--border)`)}>
             <div style={sx(`display:flex;align-items:center;gap:12px`)}>
@@ -1275,7 +1263,7 @@ export default class App extends React.Component<Props, State> {
               </span>
               <span style={sx(`font-family:var(--font-display);font-weight:600;font-size:17px;letter-spacing:-.3px`)}>{t.ref_modal_title}</span>
             </div>
-            <button onClick={this.closeRefModal} style={sx(`width:34px;height:34px;border-radius:4px;border:1px solid var(--border);background:var(--surface-2);color:var(--text-dim);cursor:pointer;font-size:16px;display:grid;place-items:center`)}>✕</button>
+            <button onClick={this.closeRefModal} className="icon-btn" style={sx(`width:34px;height:34px;background:var(--surface-2);font-size:16px;display:grid;place-items:center`)}>✕</button>
           </div>
 
           {this.state.refDone && (
@@ -1292,34 +1280,34 @@ export default class App extends React.Component<Props, State> {
               <div>
                 <div style={sx(`font-size:12px;color:var(--text-mute);font-family:var(--font-display);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px`)}>{t.ref_platform}</div>
                 <div style={sx(`display:flex;gap:8px`)}>
-                  <button onClick={this.setRefBinance} style={sx(refBinanceStyle)}>
-                    <img src="/assets/logos/binance.png" alt="" style={sx(`width:18px;height:18px;border-radius:2px;object-fit:cover`)} /> Binance
+                  <button onClick={this.setRefBinance} className={`plat-btn${this.state.refPlatform === 'binance' ? ' on' : ''}`}>
+                    <img src="/assets/logos/binance.png" alt="" className="plat-logo" /> Binance
                   </button>
-                  <button onClick={this.setRefBybit} style={sx(refBybitStyle)}>
-                    <img src="/assets/logos/bybit.png" alt="" style={sx(`width:18px;height:18px;border-radius:2px;object-fit:cover`)} /> Bybit
+                  <button onClick={this.setRefBybit} className={`plat-btn${this.state.refPlatform === 'bybit' ? ' on' : ''}`}>
+                    <img src="/assets/logos/bybit.png" alt="" className="plat-logo" /> Bybit
                   </button>
                 </div>
               </div>
 
-              <label style={sx(`display:flex;flex-direction:column;gap:6px`)}>
-                <span style={sx(`font-size:13px;font-weight:600;color:var(--text)`)}>{t.ref_email} <span style={sx(`color:var(--neg)`)}>*</span></span>
-                <input type="email" value={this.state.refEmail} onInput={this.onRefEmail} placeholder={t.ref_email_ph} style={sx(`height:44px;padding:0 14px;border-radius:4px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-size:14px;font-family:var(--font-body)`)} />
+              <label className="ref-field">
+                <span className="ref-label">{t.ref_email} <span className="req">*</span></span>
+                <input type="email" value={this.state.refEmail} onInput={this.onRefEmail} placeholder={t.ref_email_ph} className="ref-input" />
               </label>
 
-              <label style={sx(`display:flex;flex-direction:column;gap:6px`)}>
-                <span style={sx(`font-size:13px;font-weight:600;color:var(--text)`)}>{t.ref_ref_nick} <span style={sx(`color:var(--neg)`)}>*</span></span>
-                <input type="text" value={this.state.refRefNick} onInput={this.onRefRefNick} placeholder={t.ref_ref_nick_ph} style={sx(`height:44px;padding:0 14px;border-radius:4px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-size:14px;font-family:var(--font-body)`)} />
+              <label className="ref-field">
+                <span className="ref-label">{t.ref_ref_nick} <span className="req">*</span></span>
+                <input type="text" value={this.state.refRefNick} onInput={this.onRefRefNick} placeholder={t.ref_ref_nick_ph} className="ref-input" />
               </label>
 
-              <label style={sx(`display:flex;flex-direction:column;gap:6px`)}>
-                <span style={sx(`font-size:13px;font-weight:600;color:var(--text)`)}>{t.ref_ref_id} <span style={sx(`color:var(--neg)`)}>*</span></span>
-                <input type="text" inputMode="numeric" value={this.state.refRefID} onInput={this.onRefRefID} placeholder={t.ref_ref_id_ph} style={sx(`height:44px;padding:0 14px;border-radius:4px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-size:14px;font-family:var(--font-display)`)} />
+              <label className="ref-field">
+                <span className="ref-label">{t.ref_ref_id} <span className="req">*</span></span>
+                <input type="text" inputMode="numeric" value={this.state.refRefID} onInput={this.onRefRefID} placeholder={t.ref_ref_id_ph} className="ref-input" style={sx(`font-family:var(--font-display)`)} />
                 <span style={sx(`font-size:11.5px;color:var(--text-mute);line-height:1.5`)}>{t.ref_uid_hint}</span>
               </label>
 
-              <label style={sx(`display:flex;flex-direction:column;gap:6px`)}>
-                <span style={sx(`font-size:13px;font-weight:600;color:var(--text)`)}>{t.ref_new_nick} <span style={sx(`color:var(--neg)`)}>*</span></span>
-                <input type="text" value={this.state.refNewNick} onInput={this.onRefNewNick} placeholder={t.ref_new_nick_ph} style={sx(`height:44px;padding:0 14px;border-radius:4px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-size:14px;font-family:var(--font-body)`)} />
+              <label className="ref-field">
+                <span className="ref-label">{t.ref_new_nick} <span className="req">*</span></span>
+                <input type="text" value={this.state.refNewNick} onInput={this.onRefNewNick} placeholder={t.ref_new_nick_ph} className="ref-input" />
               </label>
 
               <input ref={(el) => { this.honeypot = el; }} name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" style={sx(`position:absolute;left:-9999px;width:1px;height:1px;opacity:0`)} />

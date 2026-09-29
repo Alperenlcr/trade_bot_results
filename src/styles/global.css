@@ -77,3 +77,82 @@
   .cta-grid { grid-template-columns: 1fr !important }
   .cta-grid > div:last-child { border-inline-start: none !important; border-top: 1px solid var(--border) !important }
 }
+
+/* ---------- Dashboard (App.tsx) bileşen sınıfları ----------
+   Birden çok yerde tekrarlanan stiller; tek seferlik ya da değere göre değişen stiller inline kalır. */
+.app .sec { padding: 56px 0 }
+.app .sec-head { margin-bottom: 24px }
+.app .eyebrow { font-family: var(--font-display); font-size: 12px; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px }
+.app .sec-title { font-family: var(--font-display); font-weight: 600; font-size: clamp(26px,3.5vw,38px); letter-spacing: -.8px }
+.app .sec-sub { margin-top: 10px; font-size: 15px; color: var(--text-dim); max-width: 62ch; line-height: 1.6 }
+.app .caps-label { font-family: var(--font-display); font-size: 12px; color: var(--text-mute); text-transform: uppercase; letter-spacing: .5px }
+
+.app .panel { border: 1px solid var(--border); border-radius: 6px; background: var(--surface); box-shadow: var(--shadow); overflow: hidden }
+.app .panel-bar { display: flex; gap: 14px; flex-wrap: wrap; padding: 18px 20px; border-bottom: 1px solid var(--border) }
+.app .tile { padding: 22px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); box-shadow: var(--shadow) }
+
+/* Segmentli butonlar (zaman aralığı, görünüm, metrik) ve aç/kapa kontrolleri */
+.app .seg { display: inline-flex; padding: 3px; border-radius: 4px; background: var(--surface-2); gap: 2px }
+.app .seg-btn { height: 30px; padding: 0 13px; border-radius: 4px; border: none; cursor: pointer; font-size: 12.5px; font-weight: 600; transition: all .15s; background: transparent; color: var(--text-dim) }
+.app .seg-btn.on { background: var(--accent); color: var(--accent-contrast) }
+.app .seg-btn.tf { font-family: var(--font-display) }
+.app .seg-btn.view { padding: 0 16px; font-family: var(--font-body); font-size: 13px }
+.app .seg-btn.met { height: 28px; border-radius: 2px; transition: none }
+.app .ctrl-btn { height: 32px; padding: 0 12px; border-radius: 4px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text-dim); cursor: pointer; font-size: 12.5px; font-weight: 600; display: inline-flex; align-items: center; gap: 7px; transition: all .15s }
+.app .ctrl-btn.on { border-color: var(--accent); background: color-mix(in srgb,var(--accent) 14%,transparent); color: var(--accent) }
+.app .swatch { width: 9px; height: 9px; border-radius: 2px }
+.app .legend-item { display: inline-flex; align-items: center; gap: 7px }
+.app .legend-line { width: 14px; height: 3px; border-radius: 2px }
+
+/* Form alanları */
+.app .field { display: flex; flex-direction: column; gap: 5px; font-size: 11px; color: var(--text-mute); font-family: var(--font-display); text-transform: uppercase; letter-spacing: .5px }
+.app .inp { height: 38px; padding: 0 10px; border-radius: 4px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); font-family: var(--font-display); font-size: 13px }
+.app .inp.lg { height: 42px; padding: 0 12px; font-size: 15px }
+.app select.inp { padding: 0 12px; cursor: pointer; min-width: 150px }
+.app .btn-ghost { height: 38px; padding: 0 14px; border-radius: 4px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text-dim); font-size: 13px; cursor: pointer; font-weight: 500 }
+
+/* Tablolar */
+.app .th { font-family: var(--font-display); font-size: 11px; color: var(--text-mute); font-weight: 500; text-transform: uppercase; letter-spacing: .5px; text-align: start }
+.app .num { text-align: end }
+.app .trades-table :is(th, td) { padding: 11px 12px }
+.app .trades-table :is(th, td):is(:first-child, :last-child) { padding-inline: 20px }
+.app .trades-table td:not(:first-child) { font-family: var(--font-display); font-size: 12.5px; color: var(--text-dim) }
+.app .trades-table td.hi { color: var(--text) }
+.app .trades-table td.mute { color: var(--text-mute) }
+.app .roll-table :is(th, td) { padding: 11px 10px }
+.app .roll-table th { padding-block: 9px }
+.app .mcell { padding: 7px 4px; text-align: center; font-family: var(--font-display); font-size: 12px; font-weight: 600; border-radius: 2px }
+.app .mcell.empty { font-weight: normal; color: var(--text-mute); background: var(--surface-2); opacity: .4 }
+.app .mcell.total { font-weight: 600; border: 1px solid var(--border) }
+
+/* Hesaplayıcı ve analiz kartları */
+.app .calc-cell { padding: 18px 20px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--border) }
+.app .calc-label { font-size: 12.5px; color: var(--text-dim); margin-bottom: 6px }
+.app .calc-sub { font-size: 13px; color: var(--text-dim); margin-top: 4px }
+.app .stat { padding: 14px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--border) }
+.app .stat-label { font-size: 11px; color: var(--text-mute); font-family: var(--font-display); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 7px }
+.app .stat-val { font-family: var(--font-display); font-weight: 600; font-size: 24px; line-height: 1 }
+.app .stat-sub { font-size: 11px; color: var(--text-mute); font-family: var(--font-display); margin-top: 3px }
+.app .range { font-size: 10.5px; color: var(--text-mute); margin-top: 3px }
+.app .an-p { font-size: 13.5px; color: var(--text-dim); line-height: 1.62 }
+.app .viz-track { position: relative; height: 13px; border-radius: 4px; background: var(--border) }
+.app .viz-bar { position: absolute; top: 0; bottom: 0; width: 30%; border-radius: 4px; background: var(--accent) }
+.app .res-chip { flex: 1; text-align: center; padding: 9px 4px; border-radius: 4px; font-family: var(--font-display); font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px }
+
+/* SSS */
+.app .faq-a { overflow: hidden; transition: max-height .3s ease, opacity .25s ease, padding .3s ease; max-height: 0; opacity: 0; padding: 0 20px }
+.app .faq-a.open { max-height: 600px; opacity: 1; padding: 0 20px 18px }
+
+/* Rehber, lightbox ve referral modal'ı */
+.app .snap-row { display: flex; gap: 14px; overflow-x: auto; padding: 2px 2px 16px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch }
+.app .overlay { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(6px) }
+.app .lb-btn { position: absolute; border: 1px solid rgba(255,255,255,.18); background: rgba(20,24,28,.6); color: #fff; cursor: pointer; z-index: 2 }
+.app .lb-nav { top: 50%; transform: translateY(-50%); width: 46px; height: 46px; border-radius: 50%; font-size: 22px }
+.app .icon-btn { border-radius: 4px; border: 1px solid var(--border); color: var(--text-dim); cursor: pointer }
+.app .plat-btn { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: 4px; border: 2px solid var(--border); background: var(--surface-2); color: var(--text); font-weight: 600; font-size: 14px; cursor: pointer }
+.app .plat-btn.on { border-color: var(--accent); background: color-mix(in srgb,var(--accent) 12%,transparent) }
+.app .plat-logo { width: 18px; height: 18px; border-radius: 2px; object-fit: cover }
+.app .ref-field { display: flex; flex-direction: column; gap: 6px }
+.app .ref-label { font-size: 13px; font-weight: 600; color: var(--text) }
+.app .req { color: var(--neg) }
+.app .ref-input { height: 44px; padding: 0 14px; border-radius: 4px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); font-size: 14px; font-family: var(--font-body) }
