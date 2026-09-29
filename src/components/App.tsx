@@ -59,6 +59,7 @@ export default class App extends React.Component<Props, State> {
   perfStarts: string[] = [];
   _perfStarted = false;
   canvas: HTMLCanvasElement | null = null;
+  honeypot: HTMLInputElement | null = null;
   _ro: ResizeObserver | null = null;
   sel: Selection | null = null;
   hoverI: number | null = null;
@@ -256,6 +257,7 @@ export default class App extends React.Component<Props, State> {
       referrerNickname: refRefNick.trim(),
       referrerID: refRefID.trim(),
       referredNickname: refNewNick.trim(),
+      website: this.honeypot?.value ?? '', // bot tuzağı; google-apps-script.js doluysa satır yazmaz
       submittedAt: new Date().toISOString(),
     };
     if (ep) {
@@ -1323,6 +1325,8 @@ export default class App extends React.Component<Props, State> {
                 <span style={sx(`font-size:13px;font-weight:600;color:var(--text)`)}>{t.ref_new_nick} <span style={sx(`color:var(--neg)`)}>*</span></span>
                 <input type="text" value={this.state.refNewNick} onInput={this.onRefNewNick} placeholder={t.ref_new_nick_ph} style={sx(`height:44px;padding:0 14px;border-radius:4px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-size:14px;font-family:var(--font-body)`)} />
               </label>
+
+              <input ref={(el) => { this.honeypot = el; }} name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" style={sx(`position:absolute;left:-9999px;width:1px;height:1px;opacity:0`)} />
 
               <div style={sx(`padding:14px;border-radius:4px;background:var(--surface-2);border:1px solid var(--border)`)}>
                 {termsContent}

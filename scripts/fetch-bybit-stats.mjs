@@ -33,8 +33,14 @@ try {
   const ws = new WebSocket(tab.webSocketDebuggerUrl);
   await new Promise((r, j) => { ws.onopen = r; ws.onerror = j; });
   let id = 0; const pending = {};
-  ws.onmessage = (e) => { const m = JSON.parse(e.data); pending[m.id]?.(m.result); };
-  const send = (method, params) => new Promise((r) => { pending[++id] = r; ws.send(JSON.stringify({ id, method, params })); });
+  ws.onmessage = (e) => { const m = JSON.parse(e.data); pending[m.id]?.[0](m.result); delete pending[m.id]; };
+  // Chrome çöker/bağlantı koparsa bekleyen istekler sonsuza kadar asılı kalmasın.
+  ws.onclose = () => { for (const k in pending) pending[k][1](new Error('DevTools connection closed')); };
+  const send = (method, params) => new Promise((r, j) => {
+    const n = ++id; pending[n] = [r, j];
+    setTimeout(() => { if (pending[n]) { delete pending[n]; j(new Error(`${method} timed out`)); } }, 30000).unref();
+    ws.send(JSON.stringify({ id: n, method, params }));
+  });
 
   await send('Page.navigate', { url: PAGE });
   let body;
