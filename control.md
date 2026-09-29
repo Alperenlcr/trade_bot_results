@@ -178,3 +178,6 @@ Astro + bot-ui geçişinden kalan, kod dışında yapılması gereken işler.
   GitHub Pages ve yerel önizleme için aynı mantık İngilizce ana sayfanın `<head>`'inde tarayıcı betiği olarak da var
   (`src/layouts/BaseLayout.astro`, `navigator.language`'a bakar). Vercel'de sunucu kuralı önce çalışır, betik yedek kalır. IP'deki ülkeye göre yapılmak istenirse kuraldaki
   `accept-language` yerine `x-vercel-ip-country` başlığı (ör. `"value": "TR"`) kullanılır.
+
+
+

@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { useTranslations, type Lang } from '../i18n/utils';
+import { parseCsv, parseTs } from './csv';
 
 // data/ lives at the repo root (untouched — a daily external automation
 // updates data/tables/*.csv and pushes directly to it). Resolved from the
@@ -23,17 +24,8 @@ export interface SiteInitialData {
   allEnds: [SeriesPoint, SeriesPoint];
 }
 
-function parseCsv(text: string): { head: string[]; rows: string[][] } {
-  const lines = text.trim().split('\n');
-  const head = lines[0].split(',');
-  const rows = new Array(lines.length - 1);
-  for (let i = 1; i < lines.length; i++) rows[i - 1] = lines[i].split(',');
-  return { head, rows };
-}
-
 function readCsv(name: string): { head: string[]; rows: string[][] } {
-  const text = readFileSync(path.join(DATA_DIR, 'tables', name), 'utf-8');
-  return parseCsv(text);
+  return parseCsv(readFileSync(path.join(DATA_DIR, 'tables', name), 'utf-8'));
 }
 
 const DEFAULT_TF = '1y';
@@ -71,8 +63,4 @@ export function loadSiteData(lang: Lang): SiteInitialData {
   const allEnds: [SeriesPoint, SeriesPoint] = [pt(allRows[0]), pt(allRows[allRows.length - 1])];
 
   return { i18n, config, monthly, yearly, trades, defaultTf: DEFAULT_TF, allEnds };
-}
-
-function parseTs(s: string): number {
-  return new Date(s.replace(' ', 'T') + (s.length <= 10 ? 'T00:00:00' : '')).getTime();
 }

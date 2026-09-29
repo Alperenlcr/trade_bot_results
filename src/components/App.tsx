@@ -4,12 +4,18 @@ import type { SiteInitialData, SeriesPoint } from '../lib/loadSiteData';
 import type { Lang } from '../i18n/utils';
 import { contactUrl } from '../data/contact';
 import { exchanges } from '../data/exchanges';
+import { parseCsv, parseTs } from '../lib/csv';
 
 // data/indices/daily.csv sütunları (scripts/fetch-indices.mjs üretir). Renkler global.css › .app.
 const INDICES = [
   { key: 'spx', label: 'S&P 500', color: '--spx' },
   { key: 'ndx', label: 'Nasdaq-100', color: '--ndx' },
 ];
+
+// Referral kartı ve modal başlığındaki ikon.
+const PeopleIcon = ({ size }: { size: number }) => (
+  <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor"><circle cx="9" cy="8" r="3.4" /><circle cx="16.6" cy="9.2" r="2.7" /><path d="M2.5 19.2c0-3.5 2.9-5.5 6.5-5.5s6.5 2 6.5 5.5z" /><path d="M15.2 14c2.9.1 5 1.9 5 4.8h-3.3c0-1.9-.6-3.5-1.7-4.8z" /></svg>
+);
 
 interface Props {
   locale: Lang;
@@ -30,7 +36,6 @@ interface State {
   view: 'chart' | 'monthly';
   metric: 'portfolio' | 'btc';
   selection: Selection | null;
-  ready: boolean;
   tFrom: string; tTo: string; tNewest: boolean;
   faqOpen: number | null;
   calcAmount: string; calcDate: string; calcMonthly: string;
@@ -80,10 +85,8 @@ export default class App extends React.Component<Props, State> {
     this.trades = d.trades;
     this.allEnds = d.allEnds;
     const tradeDates = this.trades.flatMap((x) => x.end ? [x.start.slice(0, 10), x.end.slice(0, 10)] : [x.start.slice(0, 10)]);
-    const now = new Date();
-    const todayStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
     this.tMin = tradeDates.reduce((a, b) => (b < a ? b : a));
-    this.tMax = tradeDates.reduce((a, b) => (b > a ? b : a), todayStr);
+    this.tMax = tradeDates.reduce((a, b) => (b > a ? b : a), this.isoDate(Date.now()));
     this.computeHeroBasic();
 
     this.state = {
@@ -91,7 +94,6 @@ export default class App extends React.Component<Props, State> {
       showBtc: true, showIdx: INDICES.map((x) => x.key), log: false,
       view: 'chart', metric: 'portfolio',
       selection: null,
-      ready: true,
       tFrom: this.tMin, tTo: this.tMax, tNewest: true,
       faqOpen: 0,
       calcAmount: '500', calcMonthly: '0', calcDate: this.isoDate(this.allEnds[1].t - 365 * 864e5),
@@ -139,12 +141,7 @@ export default class App extends React.Component<Props, State> {
   async fetchCsv(name: string, dir = '/data/tables/') {
     const r = await fetch(dir + name);
     if (!r.ok) throw new Error(`${name}: HTTP ${r.status}`); // yoksa 404 sayfası CSV diye okunurdu
-    const txt = await r.text();
-    const lines = txt.trim().split('\n');
-    const head = lines[0].split(',');
-    const rows = new Array(lines.length - 1);
-    for (let i = 1; i < lines.length; i++) rows[i - 1] = lines[i].split(',');
-    return { head, rows };
+    return parseCsv(await r.text());
   }
 
   computeHeroBasic() {
@@ -170,9 +167,9 @@ export default class App extends React.Component<Props, State> {
     const lastEnd = this.perfStarts.reduce((mx, s) => { const es = this.perfByStart.get(s)!; const e = es[es.length - 1][1]; return e > mx ? e : mx; }, '');
     const frFull = this.perfRow(this.perfStarts[0], lastEnd);
     const mw = frFull ? frFull[idx['MIN_ROLLING_1Y']] : null; this.heroWorst1Y = (mw === '' || mw == null) ? null : +mw;
-    const target = this.parseTs(lastEnd) - 5 * 365.25 * 864e5;
+    const target = parseTs(lastEnd) - 5 * 365.25 * 864e5;
     let s5 = this.perfStarts[0], best = Infinity;
-    for (const s of this.perfStarts) { const dd = Math.abs(this.parseTs(s) - target); if (dd < best) { best = dd; s5 = s; } }
+    for (const s of this.perfStarts) { const dd = Math.abs(parseTs(s) - target); if (dd < best) { best = dd; s5 = s; } }
     const ends5 = this.endsFor(s5);
     const defEnd = ends5.includes(lastEnd) ? lastEnd : ends5[ends5.length - 1];
     const fr5 = this.perfRow(s5, defEnd); const a1 = fr5 ? fr5[idx['AVG_ROLLING_1Y']] : null;
@@ -304,9 +301,9 @@ export default class App extends React.Component<Props, State> {
         dir: isLong ? this.t.t_long : this.t.t_short,
         dirColor: isLong ? 'var(--pos)' : 'var(--neg)',
         dirBg: isLong ? 'color-mix(in srgb,var(--pos) 14%,transparent)' : 'color-mix(in srgb,var(--neg) 14%,transparent)',
-        start: this.fmtDate(this.parseTs(x.start)),
+        start: this.fmtDate(parseTs(x.start)),
         entry: '$' + this.fmtNum(x.entry, 0),
-        end: open ? this.t.t_open : this.fmtDate(this.parseTs(x.end)),
+        end: open ? this.t.t_open : this.fmtDate(parseTs(x.end)),
         exit: open ? '-' : ('$' + this.fmtNum(x.exit, 0)),
         dur: x.dur + this.t.t_days,
         pnl: open ? '-' : this.fmtPct(x.pnl, 1), pnlColor,
@@ -338,7 +335,7 @@ export default class App extends React.Component<Props, State> {
         avgColor: 'var(--text)', maxColor: 'var(--pos)', dim: empty ? 'opacity:.35' : '' };
     };
     const rolling = ['1M', '3M', '6M', '1Y', '2Y'].map(mk);
-    const ddR = ddRange.includes('_') ? ddRange.split('_').map((x: string) => this.fmtDate(this.parseTs(x))).join(' → ') : '';
+    const ddR = ddRange.includes('_') ? ddRange.split('_').map((x: string) => this.fmtDate(parseTs(x))).join(' → ') : '';
     return {
       rolling,
       roi: this.fmtPct(roi, 0), roiMult: roi != null ? this.fmtX(1 + roi / 100) : '',
@@ -346,7 +343,7 @@ export default class App extends React.Component<Props, State> {
       broi: this.fmtPct(broi, 1), broiMult: broi != null ? this.fmtX(1 + broi / 100) : '',
       maxdd: dd != null ? this.ltr('-' + Math.abs(dd).toFixed(1) + '%') : '-', ddRange: ddR,
       winrate: wr.toFixed(0) + '%', winLose: wins + ' / ' + losses,
-      startDate: this.fmtDate(this.parseTs(s)), endDate: this.fmtDate(this.parseTs(e)),
+      startDate: this.fmtDate(parseTs(s)), endDate: this.fmtDate(parseTs(e)),
     };
   }
 
@@ -376,9 +373,8 @@ export default class App extends React.Component<Props, State> {
     return '';
   }
 
-  fmtRange(a: string, b: string) { return [a, b].map((x) => this.fmtDate(this.parseTs(x)).replace(/ /g, '\u00a0')).join(' → '); } // dar ekranda yalnızca okta kırılsın
+  fmtRange(a: string, b: string) { return [a, b].map((x) => this.fmtDate(parseTs(x)).replace(/ /g, '\u00a0')).join(' → '); } // dar ekranda yalnızca okta kırılsın
 
-  parseTs(s: string) { return new Date(s.replace(' ', 'T') + (s.length <= 10 ? 'T00:00:00' : '')).getTime(); }
   isoDate(t: number) { const d = new Date(t); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
   setCalcAmount = (e: React.ChangeEvent<HTMLInputElement>) => this.setState({ calcAmount: e.target.value });
   setCalcDate = (e: React.ChangeEvent<HTMLInputElement>) => this.setState({ calcDate: e.target.value });
@@ -395,7 +391,7 @@ export default class App extends React.Component<Props, State> {
     const c = this.cfg.calculator ?? {};
     const share = c.deductProfitShare ? (c.profitSharePct ?? 0) / 100 : 0;
     const eq = (x: number) => 1 + x / 100;
-    const last = d[d.length - 1], starts = this.trades.map((x) => this.parseTs(x.start));
+    const last = d[d.length - 1], starts = this.trades.map((x) => parseTs(x.start));
     const joins: number[] = []; // her eklemenin bota katıldığı an (Infinity: veri sonuna kadar katılamadı)
     const s0 = new Date(t0);
     for (let m = 1; monthly > 0; m++) {
@@ -415,7 +411,7 @@ export default class App extends React.Component<Props, State> {
     return { start: d[i0].t, end: last.t, value: v + pending, fee, dd, sharePct: share * 100, btc: btcU * eq(last.b) + pending,
       invested: amount + joins.length * monthly };
   }
-  toSeries(rows: string[][]): SeriesPoint[] { return rows.map((r) => ({ t: this.parseTs(r[0]), p: +r[1], b: +r[2] })); }
+  toSeries(rows: string[][]): SeriesPoint[] { return rows.map((r) => ({ t: parseTs(r[0]), p: +r[1], b: +r[2] })); }
 
   ensureTf = async (tf: string) => {
     if (this.chartData[tf]) return;
@@ -430,10 +426,10 @@ export default class App extends React.Component<Props, State> {
       this.fetchCsv('daily.csv', '/data/indices/'),
       this.fetchCsv('hourly.csv', '/data/indices/').catch(() => ({ rows: [] as string[][] })),
     ]);
-    const h0 = h.rows.length ? this.parseTs(h.rows[0][0]) : Infinity;
-    const h1 = h.rows.length ? this.parseTs(h.rows[h.rows.length - 1][0]) : -Infinity;
-    const rows = [...d.rows.filter((r) => this.parseTs(r[0]) < h0), ...h.rows, ...d.rows.filter((r) => this.parseTs(r[0]) > h1)];
-    this.idx = { t: rows.map((r) => this.parseTs(r[0])), v: INDICES.map((_, i) => rows.map((r) => +r[i + 1])) };
+    const h0 = h.rows.length ? parseTs(h.rows[0][0]) : Infinity;
+    const h1 = h.rows.length ? parseTs(h.rows[h.rows.length - 1][0]) : -Infinity;
+    const rows = [...d.rows.filter((r) => parseTs(r[0]) < h0), ...h.rows, ...d.rows.filter((r) => parseTs(r[0]) > h1)];
+    this.idx = { t: rows.map((r) => parseTs(r[0])), v: INDICES.map((_, i) => rows.map((r) => +r[i + 1])) };
   }
   toggleIdx = async (key: string) => {
     await this.loadIdx();
@@ -736,7 +732,7 @@ export default class App extends React.Component<Props, State> {
       hasSelection = true; selReturn = this.fmtPct(rp, 1); selBtc = this.fmtPct(rb, 1); selColor = rp >= 0 ? 'var(--pos)' : 'var(--neg)'; selDates = this.fmtDate(a.t) + ' → ' + this.fmtDate(b.t);
     }
     const monthLabels = Array.from({ length: 12 }, (_, m) => new Date(2000, m, 1).toLocaleDateString(this.loc(), { month: 'short' }));
-    const monthlyRows = this.state.ready ? this.buildMonthly() : [];
+    const monthlyRows = this.buildMonthly();
     const isChartView = this.state.view === 'chart', isMonthlyView = this.state.view === 'monthly';
 
     return (
@@ -829,7 +825,7 @@ export default class App extends React.Component<Props, State> {
                     </tr>
                   </thead>
                   <tbody>
-                    {monthlyRows!.map((row, i) => (
+                    {monthlyRows.map((row, i) => (
                       <tr key={i}>
                         <td style={sx(`font-family:var(--font-display);font-size:12.5px;color:var(--text);font-weight:600;padding:4px 8px`)}>{row.year}</td>
                         {row.cells.map((c, j) => (
@@ -851,7 +847,7 @@ export default class App extends React.Component<Props, State> {
   renderCalculator() {
     const t = this.t;
     const amount = Number(this.state.calcAmount), monthly = Number(this.state.calcMonthly || 0);
-    const r = this.chartData.all ? this.calc(amount, this.parseTs(this.state.calcDate), monthly) : null;
+    const r = this.chartData.all ? this.calc(amount, parseTs(this.state.calcDate), monthly) : null;
     const invested = r ? r.invested : amount;
     const usd = (v: number) => (v < 0 ? '-$' : '$') + new Intl.NumberFormat(this.loc(), { maximumFractionDigits: 0 }).format(Math.abs(v));
     const pct = (v: number) => this.fmtPct((v / invested - 1) * 100, 1);
@@ -916,7 +912,7 @@ export default class App extends React.Component<Props, State> {
 
   renderTrades() {
     const t = this.t;
-    const tb = this.state.ready ? this.buildTrades() : { rows: [] as any[], total: 0, shown: 0, win: 0, loss: 0, avg: 0 };
+    const tb = this.buildTrades();
     const sortLabel = this.state.tNewest ? t.sort_new : t.sort_old;
     return (
       <section id="trades" style={sx(`padding:56px 0`)}>
@@ -978,8 +974,8 @@ export default class App extends React.Component<Props, State> {
   renderAnalysis() {
     const t = this.t;
     const selStyle = `height:38px;padding:0 12px;border-radius:4px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-family:var(--font-display);font-size:13px;cursor:pointer;min-width:150px`;
-    const perfStartOpts = (this.perfStarts || []).map((d) => ({ value: d, label: this.fmtDate(this.parseTs(d)) }));
-    const perfEndOpts = (this.state.perfStart ? this.endsFor(this.state.perfStart) : []).map((d) => ({ value: d, label: this.fmtDate(this.parseTs(d)) }));
+    const perfStartOpts = (this.perfStarts || []).map((d) => ({ value: d, label: this.fmtDate(parseTs(d)) }));
+    const perfEndOpts = (this.state.perfStart ? this.endsFor(this.state.perfStart) : []).map((d) => ({ value: d, label: this.fmtDate(parseTs(d)) }));
     const perf = this.buildPerf();
     return (
       <section id="analysis" style={sx(`padding:56px 0`)}>
@@ -1185,7 +1181,7 @@ export default class App extends React.Component<Props, State> {
 
         <button onClick={this.openRefModal} className="lift" style={sx(`display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:30px;padding:24px 26px;border-radius:6px;border:1px solid var(--border);background:color-mix(in srgb,var(--accent) 7%,var(--surface));box-shadow:var(--shadow);cursor:pointer;width:100%;text-align:start`)}>
           <span style={sx(`flex:none;width:54px;height:54px;border-radius:6px;background:color-mix(in srgb,var(--accent) 20%,transparent);display:grid;place-items:center;color:var(--accent)`)}>
-            <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><circle cx="9" cy="8" r="3.4"></circle><circle cx="16.6" cy="9.2" r="2.7"></circle><path d="M2.5 19.2c0-3.5 2.9-5.5 6.5-5.5s6.5 2 6.5 5.5z"></path><path d="M15.2 14c2.9.1 5 1.9 5 4.8h-3.3c0-1.9-.6-3.5-1.7-4.8z"></path></svg>
+            <PeopleIcon size={28} />
           </span>
           <div style={sx(`flex:1;min-width:220px`)}>
             <div style={sx(`font-family:var(--font-display);font-weight:600;font-size:19px;letter-spacing:-.3px;color:var(--text);margin-bottom:5px`)}>{t.ref_title}</div>
@@ -1275,7 +1271,7 @@ export default class App extends React.Component<Props, State> {
           <div style={sx(`display:flex;align-items:center;justify-content:space-between;padding:22px 24px 18px;border-bottom:1px solid var(--border)`)}>
             <div style={sx(`display:flex;align-items:center;gap:12px`)}>
               <span style={sx(`width:36px;height:36px;border-radius:4px;background:color-mix(in srgb,var(--accent) 18%,transparent);display:grid;place-items:center;color:var(--accent)`)}>
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><circle cx="9" cy="8" r="3.4"></circle><circle cx="16.6" cy="9.2" r="2.7"></circle><path d="M2.5 19.2c0-3.5 2.9-5.5 6.5-5.5s6.5 2 6.5 5.5z"></path><path d="M15.2 14c2.9.1 5 1.9 5 4.8h-3.3c0-1.9-.6-3.5-1.7-4.8z"></path></svg>
+                <PeopleIcon size={20} />
               </span>
               <span style={sx(`font-family:var(--font-display);font-weight:600;font-size:17px;letter-spacing:-.3px`)}>{t.ref_modal_title}</span>
             </div>
