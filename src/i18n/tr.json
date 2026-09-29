@@ -231,7 +231,7 @@
         },
         {
           "title": "Zorunlu: tercihin",
-          "body": "Kabul veya ret seçimin, bandın tekrar gösterilmemesi için tarayıcının yerel depolamasında \"executor-trade-consent\" anahtarıyla saklanır. Kişisel veri içermez ve sen silene kadar kalır."
+          "body": "Kabul veya ret seçimin, bandın tekrar gösterilmemesi için tarayıcının yerel depolamasında \"executor-trade-consent\" anahtarıyla saklanır. Kişisel veri içermez ve sen silene kadar kalır. Dil menüsünden bir dil seçersen, ana sayfanın seni tekrar tarayıcı diline yönlendirmemesi için bu seçim \"lang\" çerezinde 1 yıl saklanır; kişisel veri içermez."
         },
         {
           "title": "Analiz (Google Analytics, onayla)",

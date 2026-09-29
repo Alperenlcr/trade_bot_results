@@ -3,7 +3,16 @@
   "trailingSlash": true,
   "redirects": [
     { "source": "/en", "destination": "/", "permanent": true },
-    { "source": "/en/", "destination": "/", "permanent": true }
+    { "source": "/en/", "destination": "/", "permanent": true },
+    { "source": "/", "destination": "/tr/", "permanent": false,
+      "has": [{ "type": "header", "key": "accept-language", "value": { "pre": "tr" } }],
+      "missing": [{ "type": "cookie", "key": "lang" }] },
+    { "source": "/", "destination": "/ar/", "permanent": false,
+      "has": [{ "type": "header", "key": "accept-language", "value": { "pre": "ar" } }],
+      "missing": [{ "type": "cookie", "key": "lang" }] },
+    { "source": "/", "destination": "/zh/", "permanent": false,
+      "has": [{ "type": "header", "key": "accept-language", "value": { "pre": "zh" } }],
+      "missing": [{ "type": "cookie", "key": "lang" }] }
   ],
   "headers": [
     {

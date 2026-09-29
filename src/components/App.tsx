@@ -53,6 +53,8 @@ export default class App extends React.Component<Props, State> {
   heroAnnual: number | null = null;
   heroWorst1Y: number | null = null;
   perfIdx: Record<string, number> = {};
+  eqCurve: { at: string[]; q: number[] } | null = null; // kapanan işlem sınırları ve o anki bileşik getiri
+  dailyEq: { d: string[]; q: number[] } | null = null; // tables/daily.csv: günlük bileşik getiri (en iyi pencere tarihleri için)
   perfByStart: Map<string, string[][]> = new Map();
   perfStarts: string[] = [];
   _perfStarted = false;
@@ -155,7 +157,8 @@ export default class App extends React.Component<Props, State> {
 
   async loadPerf() {
     if (this._perfStarted) return; this._perfStarted = true;
-    const d = await this.fetchCsv('performance.csv');
+    const [d, daily] = await Promise.all([this.fetchCsv('performance.csv'), this.fetchCsv('daily.csv').catch(() => null)]);
+    if (daily) this.dailyEq = { d: daily.rows.map((r) => r[0]), q: daily.rows.map((r) => 1 + +r[1] / 100) };
     const H = d.head; const idx: Record<string, number> = {}; H.forEach((h, i) => idx[h] = i); this.perfIdx = idx;
     this.perfByStart = new Map();
     for (const r of d.rows) {
@@ -326,8 +329,9 @@ export default class App extends React.Component<Props, State> {
     const winLabel = (k: string): string => (({ '1M': t.win_1m, '3M': t.win_3m, '6M': t.win_6m, '1Y': t.win_1y, '2Y': t.win_2y } as Record<string, string>)[k]);
     const mk = (k: string) => {
       const avg = num('AVG_ROLLING_' + k), mn = num('MIN_ROLLING_' + k), mx = num('MAX_ROLLING_' + k);
-      const empty = avg == null;
+      const empty = avg == null, days = ({ '1M': 30, '3M': 90, '6M': 180, '1Y': 365, '2Y': 730 } as Record<string, number>)[k];
       return { win: winLabel(k), avg: this.fmtPct(avg, 1), min: this.fmtPct(mn, 1), max: this.fmtPct(mx, 1),
+        minRange: mn == null ? '' : this.worstRange(s, e, days, mn), maxRange: mx == null ? '' : this.bestRange(s, e, days, mx),
         minColor: mn == null ? 'var(--text-mute)' : (mn >= 0 ? 'var(--pos)' : 'var(--neg)'),
         avgColor: 'var(--text)', maxColor: 'var(--pos)', dim: empty ? 'opacity:.35' : '' };
     };
@@ -343,6 +347,34 @@ export default class App extends React.Component<Props, State> {
       startDate: this.fmtDate(this.parseTs(s)), endDate: this.fmtDate(this.parseTs(e)),
     };
   }
+
+  // performance.csv en kötü pencerenin tarihini vermiyor. Pencere, trades.csv'den aynı getiriyi veren
+  // "işlem sınırı → gün sayısı içindeki son sınır" aralığı olarak bulunur (tüm satırlarda birebir eşleşiyor).
+  worstRange(s: string, e: string, days: number, v: number) {
+    const utc = (x: string) => Date.parse(x.slice(0, 10) + 'T' + (x.slice(11) || '00:00:00') + 'Z');
+    if (!this.eqCurve) {
+      const tr = this.trades.filter((x) => x.pnl != null); let q = 1;
+      this.eqCurve = { at: [tr[0].start, ...tr.map((x) => x.end)], q: [1, ...tr.map((x) => (q *= 1 + x.pnl! / 100))] };
+    }
+    const { at, q } = this.eqCurve, t = at.map(utc), hiT = utc(e) + 864e5;
+    for (let i = t.findIndex((x) => x >= utc(s)), j = i; i >= 0 && t[i] <= hiT; i++) {
+      while (j + 1 < t.length && t[j + 1] <= t[i] + days * 864e5) j++;
+      if (j > i && t[j] <= hiT && Math.abs((q[j] / q[i] - 1) * 100 - v) < 1e-6) return this.fmtRange(at[i], at[j]);
+    }
+    return '';
+  }
+
+  // En iyi değerler ise daily.csv'den (günler kesintisiz) "gün → gün + (pencere - 1)" aralığıyla hesaplanıyor.
+  bestRange(s: string, e: string, days: number, v: number) {
+    if (!this.dailyEq) return '';
+    const { d, q } = this.dailyEq;
+    for (let i = d.findIndex((x) => x >= s), j = i + days - 1; i >= 0 && j < d.length && d[j] <= e; i++, j++) {
+      if (Math.abs((q[j] / q[i] - 1) * 100 - v) < 1e-6) return this.fmtRange(d[i], d[j]);
+    }
+    return '';
+  }
+
+  fmtRange(a: string, b: string) { return [a, b].map((x) => this.fmtDate(this.parseTs(x)).replace(/ /g, '\u00a0')).join(' → '); } // dar ekranda yalnızca okta kırılsın
 
   parseTs(s: string) { return new Date(s.replace(' ', 'T') + (s.length <= 10 ? 'T00:00:00' : '')).getTime(); }
   isoDate(t: number) { const d = new Date(t); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
@@ -988,8 +1020,10 @@ export default class App extends React.Component<Props, State> {
                         <tr key={i} style={sx(`border-top:1px solid var(--border);${rw.dim}`)}>
                           <td style={sx(`padding:11px 10px;font-size:13.5px;font-weight:600;color:var(--text)`)}>{rw.win}</td>
                           <td style={sx(`padding:11px 10px;text-align:end;font-family:var(--font-display);font-size:13.5px;font-weight:600;color:var(--text)`)}>{rw.avg}</td>
-                          <td style={sx(`padding:11px 10px;text-align:end;font-family:var(--font-display);font-size:13px;color:${rw.minColor}`)}>{rw.min}</td>
-                          <td style={sx(`padding:11px 10px;text-align:end;font-family:var(--font-display);font-size:13px;color:var(--pos)`)}>{rw.max}</td>
+                          <td style={sx(`padding:11px 10px;text-align:end;font-family:var(--font-display);font-size:13px;color:${rw.minColor}`)}>{rw.min}
+                            {rw.minRange && <div style={sx(`font-size:10.5px;color:var(--text-mute);margin-top:3px`)}>{rw.minRange}</div>}</td>
+                          <td style={sx(`padding:11px 10px;text-align:end;font-family:var(--font-display);font-size:13px;color:var(--pos)`)}>{rw.max}
+                            {rw.maxRange && <div style={sx(`font-size:10.5px;color:var(--text-mute);margin-top:3px`)}>{rw.maxRange}</div>}</td>
                         </tr>
                       ))}
                     </tbody>

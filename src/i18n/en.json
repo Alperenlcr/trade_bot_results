@@ -231,7 +231,7 @@
         },
         {
           "title": "Essential: your choice",
-          "body": "When you accept or decline, your choice is stored in your browser's local storage under the key \"executor-trade-consent\" so the banner is not shown again. It contains no personal data and stays until you clear it."
+          "body": "When you accept or decline, your choice is stored in your browser's local storage under the key \"executor-trade-consent\" so the banner is not shown again. It contains no personal data and stays until you clear it. If you pick a language from the language menu, that choice is stored in a \"lang\" cookie for 1 year so the home page does not redirect you to your browser language again; it contains no personal data."
         },
         {
           "title": "Analytics (Google Analytics, with consent)",

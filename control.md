@@ -70,6 +70,9 @@ Astro + bot-ui geçişinden kalan, kod dışında yapılması gereken işler.
       workflow'a ~06:30 UTC'lik ikinci bir cron da eklenebilir).
 - [ ] **Yönlendirmeleri doğrula** — `curl -I https://www.executor-bot.com/en/` → `308/301` ve
       `location: /`; `curl -I https://www.executor-bot.com/tr` → `/tr/`'ye yönlenmeli.
+- [ ] **Dil yönlendirmesini doğrula** — `curl -I -H 'Accept-Language: tr-TR,tr;q=0.9' https://www.executor-bot.com/`
+      → `307` ve `location: /tr/` (aynısı `ar-SA` → `/ar/`, `zh-CN` → `/zh/`). `en-US` ile, başlıksız ya da
+      `-H 'Cookie: lang=en'` eklenince → `200` (yönlendirme yok).
 
 ## Takipçi kartı (Binance + Bybit)
 
@@ -163,3 +166,15 @@ Astro + bot-ui geçişinden kalan, kod dışında yapılması gereken işler.
   `HomePage.astro`'da isimli slot (`slot="how"` / `slot="trust"`) olarak React adasına geçiyor.
 - **Sosyal medya (X, TikTok, Threads, YouTube):** hesaplar açılınca adresleri `data/config.json` › `social`'a yaz.
   Footer'da ikon olarak çıkar (boş olanlar gizli) ve Organization şemasındaki `sameAs`'e otomatik girer.
+- **Analiz tablosundaki "en kötü" / "en iyi" tarih aralıkları** `performance.csv`'de yok; tarayıcı aynı getiriyi veren
+  pencereyi bulup gösteriyor (mevcut verinin tamamında birebir eşleşiyor). İki değer farklı kaynaktan hesaplanıyor:
+  en kötü `trades.csv`'deki işlem sınırlarından, en iyi `tables/daily.csv`'den (bu yüzden daily.csv artık siteye
+  kopyalanıyor). Alperen'in hesaplama yöntemi değişirse ve eşleşme bulunamazsa tarih boş kalır, değer yine görünür.
+  Kalıcı çözüm: otomasyona `MIN_ROLLING_{1M..2Y}_RANGE` / `MAX_ROLLING_…_RANGE` sütunlarının (`MAX_DRAWDOWN_RANGE`
+  formatında) eklenmesi. Ayrıca MIN ile MAX'in farklı veriden hesaplanmasının bilerek yapılıp yapılmadığını ona sor.
+- **Otomatik dil:** yalnızca kök adres (`/`) tarayıcı diline (`Accept-Language`'ın ilk dili) göre `/tr/`, `/ar/` ya da `/zh/`'ye
+  geçici (307) yönlenir; diğerleri İngilizce kalır. Alt sayfalar ve paylaşılan linkler yönlenmez. Dil menüsünden seçim
+  yapılınca `lang` çerezi (1 yıl) yazılır ve yönlendirme bir daha çalışmaz. Kurallar `vercel.json`'da (Vercel sunucusu);
+  GitHub Pages ve yerel önizleme için aynı mantık İngilizce ana sayfanın `<head>`'inde tarayıcı betiği olarak da var
+  (`src/layouts/BaseLayout.astro`, `navigator.language`'a bakar). Vercel'de sunucu kuralı önce çalışır, betik yedek kalır. IP'deki ülkeye göre yapılmak istenirse kuraldaki
+  `accept-language` yerine `x-vercel-ip-country` başlığı (ör. `"value": "TR"`) kullanılır.

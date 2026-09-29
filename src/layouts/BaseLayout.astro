@@ -24,6 +24,16 @@ const { lang, route, ...seo } = Astro.props;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {lang === 'en' && route === 'home' && (
+      // vercel.json'daki dil yönlendirmesinin tarayıcı yedeği (GitHub Pages'te sunucu kuralı yok).
+      // Dil menüsünden seçim yapılmışsa (lang çerezi) dokunmaz.
+      <script is:inline>
+        if (!/(^|; )lang=/.test(document.cookie)) {
+          var l = (navigator.language || '').slice(0, 2);
+          if (l === 'tr' || l === 'ar' || l === 'zh') location.replace('/' + l + '/' + location.search + location.hash);
+        }
+      </script>
+    )}
     {lang === 'ar' && <link rel="preload" href={arabicFont} as="font" type="font/woff2" crossorigin />}
     <SEO lang={lang} route={route} {...seo} />
   </head>
