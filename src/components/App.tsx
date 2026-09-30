@@ -1207,7 +1207,7 @@ export default class App extends React.Component<Props, State> {
               <div style={sx(`font-family:var(--font-display);font-size:12px;color:var(--accent);letter-spacing:1px;text-transform:uppercase`)}>{t.cta_eyebrow}</div>
               <h2 style={sx(`font-family:var(--font-display);font-weight:600;font-size:clamp(24px,3vw,34px);letter-spacing:-.6px;line-height:1.12`)}>{t.cta_title}</h2>
               <p style={sx(`font-size:15px;color:var(--text-dim);line-height:1.6`)}>{t.cta_sub}</p>
-              <a href={contactUrl} style={sx(`font-family:var(--font-display);font-size:13px;color:var(--accent);text-decoration:none;margin-top:2px`)}>{t.cta_contact} ↗</a>
+              <a href={contactUrl} style={sx(`font-family:var(--font-display);font-size:13px;color:var(--accent);text-decoration:none;padding:4px 0`)}>{t.cta_contact} ↗</a>
             </div>
             <div style={sx(`padding:clamp(28px,4vw,46px);display:flex;flex-direction:column;gap:12px;justify-content:center;border-inline-start:1px solid var(--border)`)}>
               {exchanges.map((ex) => (
