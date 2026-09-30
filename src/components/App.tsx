@@ -421,15 +421,15 @@ export default class App extends React.Component<Props, State> {
       if (at > last.t) break;
       joins.push(starts.find((x) => x > at) ?? Infinity);
     }
-    let v = amount, hwm = amount, fee = 0, peak = amount, dd = 0, btcU = amount / eq(d[i0].b), j = 0;
+    let v = amount, hwm = amount, peak = amount, dd = 0, btcU = amount / eq(d[i0].b), j = 0;
     for (let k = i0 + 1; k < d.length; k++) {
       v *= eq(d[k].p) / eq(d[k - 1].p);
-      if (v > hwm) { const f = (v - hwm) * share; v -= f; fee += f; hwm = v; }
+      if (v > hwm) { v -= (v - hwm) * share; hwm = v; }
       peak = Math.max(peak, v); dd = Math.min(dd, (v / peak - 1) * 100);
       for (; j < joins.length && joins[j] <= d[k].t; j++) { peak *= (v + monthly) / v; v += monthly; hwm += monthly; btcU += monthly / eq(d[k].b); }
     }
     const pending = (joins.length - j) * monthly;
-    return { start: d[i0].t, end: last.t, value: v + pending, fee, dd, sharePct: share * 100, btc: btcU * eq(last.b) + pending,
+    return { value: v + pending, dd, btc: btcU * eq(last.b) + pending,
       invested: amount + joins.length * monthly };
   }
   toSeries(rows: string[][]): SeriesPoint[] { return rows.map((r) => ({ t: parseTs(r[0]), p: +r[1], b: +r[2] })); }
@@ -908,18 +908,11 @@ export default class App extends React.Component<Props, State> {
                 <div className="calc-sub">{pct(r.btc)}</div>
               </div>
               <div className="calc-cell">
-                <div className="calc-label">{r.sharePct ? t.calc_fee.replace('{pct}', String(r.sharePct)) : t.calc_fee_off}</div>
-                <div style={sx(`font-family:var(--font-display);font-weight:600;font-size:24px;color:var(--text)`)}>{r.sharePct ? usd(r.fee) : '-'}</div>
-              </div>
-              <div className="calc-cell">
                 <div className="calc-label">{t.calc_dd}</div>
                 <div style={sx(`font-family:var(--font-display);font-weight:600;font-size:24px;color:var(--neg)`)}>{this.fmtPct(r.dd, 1)}</div>
               </div>
             </div>
           )}
-          <p style={sx(`margin-top:18px;font-size:12px;color:var(--text-mute);line-height:1.6`)}>
-            {r && <>{this.fmtDate(r.start)} → {this.fmtDate(r.end)} · </>}{t.calc_note}
-          </p>
         </div>
       </section>
     );
