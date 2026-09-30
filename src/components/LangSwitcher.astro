@@ -5,7 +5,7 @@ interface Props { lang: Lang; route: RouteKey }
 const { lang, route } = Astro.props;
 ---
 <details class="relative">
-  <summary class="cursor-pointer list-none whitespace-nowrap py-1 text-text-soft hover:text-text" aria-label={useTranslations(lang).nav.language}>
+  <summary class="cursor-pointer list-none whitespace-nowrap py-1 text-text-soft hover:text-text" aria-label={`${languages[lang].label} – ${useTranslations(lang).nav.language}`}>
     {languages[lang].label}
   </summary>
   <ul class="absolute end-0 z-10 mt-2 min-w-32 rounded-m border border-border bg-surface py-1">

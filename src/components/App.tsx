@@ -1104,7 +1104,7 @@ export default class App extends React.Component<Props, State> {
               </div>
             )}
             {!this.state.perfLoaded && (
-              <div style={sx(`padding:60px 20px;text-align:center;color:var(--text-mute);font-family:var(--font-display);font-size:13px`)}><span style={sx(`animation:pulse 1.4s infinite`)}>{t.an_loading}</span></div>
+              <div style={sx(`padding:60px 20px;text-align:center;color:var(--text-dim);font-family:var(--font-display);font-size:13px`)}>{t.an_loading}</div>
             )}
           </div>
 
@@ -1257,7 +1257,7 @@ export default class App extends React.Component<Props, State> {
               <h2 style={sx(`font-family:var(--font-display);font-weight:600;font-size:clamp(24px,3vw,34px);letter-spacing:-.6px;line-height:1.12`)}>{t.cta_title}</h2>
               <p style={sx(`font-size:15px;color:var(--text-dim);line-height:1.6`)}>{t.cta_sub}</p>
               <div style={sx(`display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px`)}>
-                <span style={sx(`color:var(--text-mute)`)}>{t.cta_contact}:</span>
+                <span style={sx(`color:var(--text-dim)`)}>{t.cta_contact}:</span>
                 <a href={'mailto:' + contactEmail} style={sx(`font-family:var(--font-display);color:var(--accent);text-decoration:none;padding:4px 0`)}>{contactEmail}</a>
                 <button onClick={this.openCtModal} className="lift" style={sx(`height:28px;padding:0 12px;border-radius:4px;border:none;background:var(--accent);color:var(--accent-contrast);font-weight:600;font-size:12px;cursor:pointer`)}>{t.ct_btn}</button>
                 <button onClick={this.copyEmail} aria-live="polite" className="icon-btn" style={sx(`height:28px;padding:0 10px;background:var(--surface-2);font-size:12px`)}>{this.state.copied ? '✓ ' + t.cta_copied : t.cta_copy}</button>
