@@ -142,8 +142,8 @@
         "b": "The strategy includes maker/taker commissions and funding fees. Because trade frequency is low, the total impact of these costs has stayed under ~5% per year in long-term live usage."
       },
       {
-        "t": "Proven track record",
-        "b": "Built on 5+ years of crypto trading and software development experience. Used live on a personal account for 1+ year, then opened to copy trading platforms."
+        "t": "Rule-based, fully automated",
+        "b": "Entries and exits follow fixed rules; there is no emotional or manual intervention. The system makes the same decision every time it sees the same market conditions."
       },
       {
         "t": "Your funds stay yours",
@@ -343,8 +343,8 @@
         "b": "Strateji maker/taker komisyonları ve funding ücretlerini içerir. İşlem sıklığı düşük olduğundan bu maliyetlerin toplam etkisi uzun vadeli canlı kullanımda yıllık ~%5'in altında kalmıştır."
       },
       {
-        "t": "Kanıtlanmış geçmiş",
-        "b": "5+ yıllık kripto trading ve yazılım geliştirme deneyimiyle geliştirildi. 1+ yıl kişisel hesapta canlı kullanıldı, ardından copy trading platformlarına açıldı."
+        "t": "Kuralları belli, tamamen otomatik",
+        "b": "Girişler ve çıkışlar sabit kurallarla verilir; duygusal ya da elle müdahale yok. Sistem aynı piyasa koşulunda her zaman aynı kararı verir."
       },
       {
         "t": "Paranız sizde kalır",
@@ -543,8 +543,8 @@
         "b": "تتضمن الاستراتيجية عمولات الصانع/الآخذ ورسوم التمويل. ولأن وتيرة التداول منخفضة، بقي الأثر الإجمالي لهذه التكاليف دون ~5% سنويًا في الاستخدام المباشر طويل الأمد."
       },
       {
-        "t": "سجل مُثبت",
-        "b": "مبني على أكثر من 5 سنوات من الخبرة في تداول العملات المشفرة وتطوير البرمجيات. استُخدم مباشرةً على حساب شخصي لأكثر من سنة، ثم فُتح لمنصات نسخ التداول."
+        "t": "قائم على قواعد، مؤتمت بالكامل",
+        "b": "تتم عمليات الدخول والخروج وفق قواعد ثابتة، دون أي تدخل عاطفي أو يدوي. يتخذ النظام القرار نفسه في كل مرة يواجه فيها ظروف السوق نفسها."
       },
       {
         "t": "أموالك تبقى لك",
@@ -744,8 +744,8 @@
         "b": "策略已计入挂单/吃单手续费和资金费率。由于交易频率低，在长期实盘中这些成本的总影响每年保持在约 5% 以下。"
       },
       {
-        "t": "经过验证的记录",
-        "b": "基于 5 年以上的加密货币交易与软件开发经验打造。先在个人账户上实盘运行 1 年以上，之后才开放给跟单平台。"
+        "t": "规则明确，全自动运行",
+        "b": "入场和出场均遵循固定规则，没有情绪或人工干预。在相同的市场条件下，系统每次都会做出相同的决策。"
       },
       {
         "t": "资金始终属于您",

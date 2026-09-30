@@ -34,14 +34,6 @@
       }
     ]
   },
-  "trust": {
-    "title": "Fonların senin kontrolünde",
-    "items": [
-      "Fonların kendi borsa hesabında kalır; Executor Trade'e transfer edilmez.",
-      "Kopyalama borsanın kendi copy trading sistemi üzerinden yürür; Executor Trade şifreni veya API anahtarını istemez.",
-      "Yalnızca BTC işlemi ve en fazla 2x kaldıraç gibi ek sınırlar tanımlayabilirsin."
-    ]
-  },
   "faq": {
     "title": "Sıkça sorulan sorular",
     "items": [

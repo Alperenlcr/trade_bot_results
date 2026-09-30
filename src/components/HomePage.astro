@@ -2,7 +2,6 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import App from './App';
 import HowItWorks from './sections/HowItWorks.astro';
-import Trust from './sections/Trust.astro';
 import { loadSiteData } from '../lib/loadSiteData';
 import { getPath, languages, useTranslations, type Lang } from '../i18n/utils';
 
@@ -25,6 +24,5 @@ const schema = [
 <BaseLayout lang={lang} route="home" title={t.meta.title} description={t.meta.description} schema={schema}>
   <App client:load locale={lang} initialData={loadSiteData(lang)}>
     <HowItWorks slot="how" lang={lang} />
-    <Trust slot="trust" lang={lang} />
   </App>
 </BaseLayout>

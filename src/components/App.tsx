@@ -21,9 +21,8 @@ const PeopleIcon = ({ size }: { size: number }) => (
 interface Props {
   locale: Lang;
   initialData: SiteInitialData;
-  // Astro'nun isimli slot'ları (HomePage.astro › slot="how" / "trust"); SSR'da statik HTML olarak gelir.
+  // Astro'nun isimli slot'u (HomePage.astro › slot="how"); SSR'da statik HTML olarak gelir.
   how?: React.ReactNode;
-  trust?: React.ReactNode;
 }
 
 interface Selection { a: number; b: number }
@@ -665,7 +664,6 @@ export default class App extends React.Component<Props, State> {
           {this.renderCalculator()}
         </div>
         {this.props.how}
-        {this.props.trust}
         <div style={wrap}>
           {this.renderStrategy()}
           {this.renderTrades()}

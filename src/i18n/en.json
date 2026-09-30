@@ -34,14 +34,6 @@
       }
     ]
   },
-  "trust": {
-    "title": "Your funds stay under your control",
-    "items": [
-      "Your funds stay in your own exchange account; they are never transferred to Executor Trade.",
-      "Copying runs through the exchange's own copy-trading system; Executor Trade never asks for your password or API key.",
-      "You can set extra limits, such as BTC-only trading and a maximum of 2x leverage."
-    ]
-  },
   "faq": {
     "title": "Frequently asked questions",
     "items": [

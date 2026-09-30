@@ -7,6 +7,9 @@ import CookieConsent from '../components/CookieConsent.astro';
 import { languages, type Lang, type RouteKey } from '../i18n/utils';
 // Arapça metin fontu geç gelince paragraflar yeniden diziliyordu (Lighthouse CLS 0,16); ar sayfalarda önden yüklenir.
 import arabicFont from '@fontsource/ibm-plex-sans-arabic/files/ibm-plex-sans-arabic-arabic-400-normal.woff2?url';
+// Gövde ve başlık fontları CSS'ten sonra keşfedilince yenilemede önce sistem fontu görünüyordu (FOUT).
+import bodyFont from '@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-400-normal.woff2?url';
+import displayFont from '@fontsource/space-mono/files/space-mono-latin-700-normal.woff2?url';
 
 interface Props {
   lang: Lang;
@@ -35,6 +38,8 @@ const { lang, route, ...seo } = Astro.props;
       </script>
     )}
     {lang === 'ar' && <link rel="preload" href={arabicFont} as="font" type="font/woff2" crossorigin />}
+    {lang !== 'ar' && <link rel="preload" href={bodyFont} as="font" type="font/woff2" crossorigin />}
+    {lang !== 'ar' && <link rel="preload" href={displayFont} as="font" type="font/woff2" crossorigin />}
     <SEO lang={lang} route={route} {...seo} />
   </head>
   <body class="flex min-h-dvh flex-col">
