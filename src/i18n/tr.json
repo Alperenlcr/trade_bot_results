@@ -10,8 +10,6 @@
     "language": "Dil"
   },
   "hero": {
-    "title": "Seçkin performansı, algoritmik hassasiyetle takip et.",
-    "subtitle": "Executor Trade, algoritmik stratejisinin işlemlerini gerçek zamanlı ve şeffaf şekilde hesabına yansıtır.",
     "stats": {
       "portfolio": "Takipçilerin toplam bakiyesi",
       "followers": "Takip eden yatırımcı"
@@ -71,33 +69,6 @@
         "a": "Evet. Executor'un performansını geliştiren çalışmalar sürüyor ve belirli aralıklarla yeni sürümler devreye alınıyor. Gelecekte altcoinler ve kripto dışı varlıklar için de stratejiler planlanıyor."
       }
     ]
-  },
-  "guide": {
-    "title": "Rehber",
-    "intro": "Executor Trade'i Binance veya Bybit üzerinde birkaç adımda takip etmeye başla.",
-    "open": "Copy trading sayfasını aç",
-    "steps": [
-      {
-        "title": "Hesap aç",
-        "body": "Binance veya Bybit'te hesap oluştur ve kimlik doğrulamasını tamamla."
-      },
-      {
-        "title": "Bakiye yükle",
-        "body": "Copy trading için kullanacağın USDT'yi hesabına yatır."
-      },
-      {
-        "title": "Executor Trade'i kopyala",
-        "body": "Aşağıdaki bağlantılardan Executor Trade'in copy trading sayfasını aç ve kopyalamayı başlat."
-      },
-      {
-        "title": "Miktar ve kaldıracı ayarla",
-        "body": "Yatırım miktarını belirle, kaldıracı 2x seç (3x üzeri önerilmez) ve onayla. Sonrasında işlemler otomatik yürür."
-      }
-    ],
-    "exchanges": "Desteklenen borsalar"
-  },
-  "finalCta": {
-    "title": "Şeffaf performans. Akıllı takip."
   },
   "footer": {
     "risk": "Kripto varlık işlemleri yüksek risk içerir. Geçmiş performans gelecekteki sonuçların garantisi değildir.",
@@ -170,7 +141,7 @@
         },
         {
           "title": "İşlediğimiz veriler",
-          "body": "Teknik istek verileri: siteyi ziyaret ettiğinizde barındırma sağlayıcımız Vercel, siteyi sunmak ve korumak için IP adresinizi, tarayıcı ve istek bilgilerinizi işler. Ölçüm: yalnızca onay verirseniz Google Analytics ve Microsoft Clarity sitenin nasıl kullanıldığını kaydeder (bkz. Çerez Politikası). Referans formu: formu gönderirseniz, referansı kaydetmek ve komisyon ödemek için e-posta adresinizi, borsa takma adlarını ve yönlendirenin borsa kimliğini (UID) işleriz. İletişim: bize yazarsanız adınızı, iletişim bilgilerinizi ve mesajınızı işleriz."
+          "body": "Teknik istek verileri: siteyi ziyaret ettiğinizde barındırma sağlayıcımız GitHub (GitHub Pages), siteyi sunmak ve korumak için IP adresinizi, tarayıcı ve istek bilgilerinizi işler. Ölçüm: yalnızca onay verirseniz Google Analytics ve Microsoft Clarity sitenin nasıl kullanıldığını kaydeder (bkz. Çerez Politikası). Referans formu: formu gönderirseniz, referansı kaydetmek ve komisyon ödemek için e-posta adresinizi, borsa takma adlarını ve yönlendirenin borsa kimliğini (UID) işleriz. İletişim: bize yazarsanız adınızı, iletişim bilgilerinizi ve mesajınızı işleriz."
         },
         {
           "title": "Amaç ve hukuki sebep",
@@ -182,11 +153,11 @@
         },
         {
           "title": "Hizmet sağlayıcılar ve yurt dışına aktarım",
-          "body": "Vercel (barındırma), Google (onaylı Analytics; referans formu kayıtlarının saklanması) ve Microsoft (onaylı Clarity) hizmetlerini kullanıyoruz. Bu sağlayıcılar verileri ABD dahil ülkeniz dışında işleyebilir; bu aktarımlar sağlayıcıların sunduğu standart sözleşme maddeleri gibi güvencelere dayanır."
+          "body": "GitHub Pages (barındırma), Google (onaylı Analytics; referans formu kayıtlarının saklanması) ve Microsoft (onaylı Clarity) hizmetlerini kullanıyoruz. Bu sağlayıcılar verileri ABD dahil ülkeniz dışında işleyebilir; bu aktarımlar sağlayıcıların sunduğu standart sözleşme maddeleri gibi güvencelere dayanır."
         },
         {
           "title": "Saklama süreleri",
-          "body": "Teknik kayıtlar işletim ve güvenlik için Vercel tarafından kısa süre tutulur. Analytics ve Clarity verileri Google'ın ve Microsoft'un saklama sürelerine göre tutulur. Referans formu verileri referans ve komisyon süresi boyunca ve ödemelerin gerektirdiği kayıtlar için saklanır. İletişim mesajları, yasa aksini gerektirmedikçe yanıt için gereken süre boyunca tutulur ve sonra silinir."
+          "body": "Teknik kayıtlar işletim ve güvenlik için GitHub tarafından kısa süre tutulur. Analytics ve Clarity verileri Google'ın ve Microsoft'un saklama sürelerine göre tutulur. Referans formu verileri referans ve komisyon süresi boyunca ve ödemelerin gerektirdiği kayıtlar için saklanır. İletişim mesajları, yasa aksini gerektirmedikçe yanıt için gereken süre boyunca tutulur ve sonra silinir."
         },
         {
           "title": "Hakların",

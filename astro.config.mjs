@@ -5,6 +5,10 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: 'https://www.executor-bot.com',
   integrations: [react()],
+  // Eski İngilizce adres. GitHub Pages sunucu yönlendirmesi yapamadığı için Astro meta refresh + canonical içeren bir sayfa üretir.
+  redirects: {
+    '/en': '/',
+  },
   i18n: {
     locales: ['en', 'tr', 'ar', 'zh'],
     defaultLocale: 'en',

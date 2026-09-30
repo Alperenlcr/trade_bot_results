@@ -21,7 +21,7 @@ const { lang, route } = Astro.props;
   </ul>
 </details>
 <script>
-  // Elle seçilen dil, kök adresin tarayıcı diline göre yönlendirmesini (vercel.json) kapatır.
+  // Elle seçilen dil, kök adresin tarayıcı diline göre yönlendirmesini (BaseLayout.astro betiği) kapatır.
   document.addEventListener('click', (e) => {
     const l = (e.target as Element).closest<HTMLElement>('[data-lang]')?.dataset.lang;
     if (l) document.cookie = `lang=${l}; path=/; max-age=31536000; samesite=lax`;

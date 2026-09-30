@@ -10,8 +10,6 @@
     "language": "Language"
   },
   "hero": {
-    "title": "Follow elite performance with algorithmic precision.",
-    "subtitle": "Executor Trade mirrors its algorithmic strategy's trades to your account in real time, transparently.",
     "stats": {
       "portfolio": "Total follower capital",
       "followers": "Investors following"
@@ -71,33 +69,6 @@
         "a": "Yes. Work to improve the Executor's performance is ongoing, and new versions are rolled out at regular intervals. Strategies for altcoins and non-crypto assets are also planned."
       }
     ]
-  },
-  "guide": {
-    "title": "Guide",
-    "intro": "Start following Executor Trade on Binance or Bybit in a few steps.",
-    "open": "Open copy-trading page",
-    "steps": [
-      {
-        "title": "Open an account",
-        "body": "Create a Binance or Bybit account and complete identity verification."
-      },
-      {
-        "title": "Fund your account",
-        "body": "Deposit the USDT you plan to use for copy trading."
-      },
-      {
-        "title": "Copy Executor Trade",
-        "body": "Open Executor Trade's copy-trading page from the links below and start copying."
-      },
-      {
-        "title": "Set amount and leverage",
-        "body": "Choose your investment amount, set leverage to 2x (above 3x is not recommended) and confirm. Trades then run automatically."
-      }
-    ],
-    "exchanges": "Supported exchanges"
-  },
-  "finalCta": {
-    "title": "Transparent performance. Smart following."
   },
   "footer": {
     "risk": "Crypto asset trading involves high risk. Past performance is not a guarantee of future results.",
@@ -170,7 +141,7 @@
         },
         {
           "title": "What we process",
-          "body": "Technical request data: when you visit, our hosting provider Vercel processes your IP address, browser and request information to deliver and protect the site. Measurement: only with your consent, Google Analytics and Microsoft Clarity record how the site is used (see the Cookie Policy). Referral form: if you submit it, we process your e-mail address, the exchange nicknames and the referrer's exchange ID (UID) to record the referral and pay commissions. Contact: if you write to us, we process your name, contact details and message."
+          "body": "Technical request data: when you visit, our hosting provider GitHub (GitHub Pages) processes your IP address, browser and request information to deliver and protect the site. Measurement: only with your consent, Google Analytics and Microsoft Clarity record how the site is used (see the Cookie Policy). Referral form: if you submit it, we process your e-mail address, the exchange nicknames and the referrer's exchange ID (UID) to record the referral and pay commissions. Contact: if you write to us, we process your name, contact details and message."
         },
         {
           "title": "Why and on what basis",
@@ -182,11 +153,11 @@
         },
         {
           "title": "Service providers and transfers",
-          "body": "We use Vercel (hosting), Google (Analytics with consent; storage of referral form submissions) and Microsoft (Clarity, with consent). These providers may process data outside your country, including in the United States; such transfers rely on the safeguards the providers offer, such as standard contractual clauses."
+          "body": "We use GitHub Pages (hosting), Google (Analytics with consent; storage of referral form submissions) and Microsoft (Clarity, with consent). These providers may process data outside your country, including in the United States; such transfers rely on the safeguards the providers offer, such as standard contractual clauses."
         },
         {
           "title": "How long we keep it",
-          "body": "Technical logs are kept briefly by Vercel for operation and security. Analytics and Clarity data are kept according to Google's and Microsoft's retention periods. Referral form data is kept while the referral and its commission period last, and for the records the payments require. Contact messages are kept as long as needed to answer you and then deleted, unless the law requires otherwise."
+          "body": "Technical logs are kept briefly by GitHub for operation and security. Analytics and Clarity data are kept according to Google's and Microsoft's retention periods. Referral form data is kept while the referral and its commission period last, and for the records the payments require. Contact messages are kept as long as needed to answer you and then deleted, unless the law requires otherwise."
         },
         {
           "title": "Your rights",

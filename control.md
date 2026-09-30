@@ -5,74 +5,40 @@ Astro + bot-ui geçişinden kalan, kod dışında yapılması gereken işler.
 ## Yayından önce
 
 - [ ] **İletişim adresi** — varsayılan `mailto:hello@executor-bot.com`. Bu adres gerçekten
-      mail alıyor mu kontrol et; farklı bir adres/form kullanılacaksa Vercel › Project ›
-      Settings › Environment Variables'a `PUBLIC_CONTACT_URL` olarak ekle (Production + Preview).
+      mail alıyor mu kontrol et; farklı bir adres/form kullanılacaksa repo › Settings › Secrets and
+      variables › Actions › **Variables**'a `PUBLIC_CONTACT_URL` olarak ekle (`deploy.yml` build'e aktarır).
 - [ ] **Arapça ve Çince metinler** — `data/i18n.json` (dashboard) içindeki ar/zh çevirileri
       makine/yapay zekâ çevirisi; anadili olan birine okut.
 - [ ] **Microsoft Clarity** (ısı haritası) — clarity.microsoft.com'da proje aç, proje ID'sini
-      Vercel › Environment Variables'a `PUBLIC_CLARITY_ID` adıyla ekle, sonra yeniden deploy et
-      (`PUBLIC_` değişkenleri build anında gömülür).
+      repo › Settings › Secrets and variables › Actions › **Variables**'a `PUBLIC_CLARITY_ID` adıyla ekle,
+      sonra Actions › "Deploy to GitHub Pages" › Run workflow (`PUBLIC_` değişkenleri build anında gömülür).
+      AEA/UK/CH ziyaretçileri için Clarity'nin onay API'si gerekebilir; ID eklenirken belgelerine bak.
 
-## Barındırma kararı: GitHub Pages mi, Vercel mi?
+## GitHub Pages yayını
 
-| | GitHub Pages | Vercel |
-|---|---|---|
-| **Maliyet** | Ücretsiz | Ticari kullanım için Pro gerekiyor: kişi başı ~20 $/ay (Hobby ticari kullanıma izin vermiyor) |
-| **Ticari kullanım** | GitHub, Pages'in "online iş/e-ticaret için ücretsiz hosting" olmadığını söylüyor; gri alan | Pro ile net izinli |
-| **Yönlendirme ve başlıklar** | Yok. `/en/` için sayfa içi yönlendirme gerekiyordu, önbellek ayarı yapılamıyor | Gerçek 301 yönlendirme, `/_astro/` için uzun süreli önbellek (`vercel.json`) |
-| **Önizleme** | Yok, her push doğrudan canlıya çıkar | Her branch/PR için ayrı önizleme adresi, tek tıkla geri alma |
-| **Sunucu tarafı kod** | Yok, sadece statik dosya | Var. Örneğin Binance çağrısı Frankfurt'ta (`fra1`) çalışan bir fonksiyona alınabilir, bu da ABD IP engeli riskini tamamen çözer |
-| **Deploy akışı** | Bizim yazdığımız `deploy.yml` | Repo bağlanınca otomatik; ortam değişkenleri panelden |
-| **Otomasyon riski** | Yok; x push'u sorunsuz yayına çıkıyor | Özel repoda takım dışı commit engellenebilir (Deploy Hook ile çözülür) |
-| **Karmaşıklık** | Her şey tek yerde | İkinci bir hesap ve platform; Actions yine GitHub'da kalıyor |
-| **Performans** | İyi (Fastly CDN) | Biraz daha iyi, ama statik bir sitede fark küçük |
+Site GitHub Pages'te barınır. `.github/workflows/deploy.yml` `main`'e her push'ta (x'in günlük CSV push'u dahil)
+ve "Update data" bittikten sonra (`workflow_run`; bot commit'leri push tetiklemediği için) build alıp yayınlar.
 
-**Öneri:**
-- Site tamamen statik olduğu için GitHub Pages teknik olarak yeterli.
-- Pages'te kaybedilenler yalnızca 301 yönlendirmesi, önbellek ayarı ve önizleme; bunların SEO etkisi küçük.
-- Vercel şu durumlarda parasını hak eder:
-  - sitenin ticari olduğu kesinse ve lisans açısından içiniz rahat olsun istiyorsanız,
-  - önizleme ve geri alma istiyorsanız,
-  - Binance ABD IP'lerini engellerse ve çekme işini Frankfurt'taki bir fonksiyona almak gerekirse.
-- Kod şu an Vercel'e göre ayarlı.
-- **Pages'te kalınırsa:** `deploy.yml`, `CNAME` ve `src/pages/en/index.astro` (meta refresh) git
-  geçmişinden geri getirilir, `copy-static.mjs`'e `CNAME` kopyası geri eklenir, gizlilik/çerez
-  metinlerinde (4 dil) "Vercel" → "GitHub (GitHub Pages)" yapılır, `vercel.json` silinir ve
-  aşağıdaki "Vercel'e taşıma" bölümü atlanır.
-
-## Vercel'e taşıma
-
-- [ ] **Vercel projesi** — vercel.com › Add New › Project › GitHub reposunu (`trade_bot_results`)
-      içe aktar. Framework: Astro, Build: `npm run build`, Output: `dist` (otomatik algılanır).
-      Node sürümü `package.json` › `engines` ile 24.x (Vercel'de Node 20 1 Ekim 2026'da kalkıyor).
-- [ ] **Plan** — Hobby planı ticari kullanıma izin vermiyor (affiliate linkler + kâr payı ticari
-      sayılır) → **Pro** plan gerekli.
-- [ ] **x otomasyonu** — Vercel yalnızca repoya erişimi olan GitHub hesabının push'larında
-      build alır; x günlük push'u ve `indices.yml` bot commit'leri de build tetiklemeli (aşağıdaki maddeye bak).
-      İlk sabah (~06:05) Vercel › Deployments'ta yeni build çıktığını kontrol et.
-- [ ] **Domain** — Vercel › Settings › Domains'e `www.executor-bot.com` ve `executor-bot.com` ekle
-      (kök → www yönlendirmesi). DNS sağlayıcısında Vercel'in gösterdiği kayıtları gir
-      (`www` CNAME → `cname.vercel-dns.com`, kök A → Vercel IP'si). Eski GitHub Pages kayıtlarını
-      (185.199.108-111.153, `*.github.io` CNAME) sil.
-- [ ] **GitHub Pages'i kapat** — repo › Settings › Pages › Source: None. (`deploy.yml` ve `CNAME`
-      repodan silindi.) Bunu DNS Vercel'e geçip site açıldıktan **sonra** yap.
-- [ ] **GitHub Actions açık kalmalı** — Site Vercel'e geçse de veri güncelleme GitHub'da çalışır:
-      `.github/workflows/indices.yml` ("Update data") her gün 01:30 UTC'de `fetch-indices.mjs` (S&P /
-      Nasdaq → `data/indices/daily.csv`), `fetch-binance-stats.mjs` ve `fetch-bybit-stats.mjs`
-      (AUM + takipçi → `data/binance.json`, `data/bybit.json`) çalıştırıp commit'ler. Pages'i kapatırken **Actions'ı kapatma**;
-      Settings › Actions › General › "Allow all actions" + Workflow permissions "Read and write".
-- [ ] **Bot/x commit'leri Vercel'de build alıyor mu** — Vercel Pro'da özel (private) repolarda
-      commit yazarı Vercel takımında değilse deploy "blocked" olabilir (x push'u ve
-      `github-actions[bot]` commit'leri). Geçişten sonraki ilk sabah Deployments'ta ikisini de kontrol et.
-      Engelleniyorsa: Vercel › Settings › Git › **Deploy Hooks**'tan bir URL oluştur, GitHub'a
-      `VERCEL_DEPLOY_HOOK` secret'ı olarak ekle ve workflow'un sonuna
-      `curl -fsS -X POST "$VERCEL_DEPLOY_HOOK"` adımı ekle (x push'undan sonrası için
-      workflow'a ~06:30 UTC'lik ikinci bir cron da eklenebilir).
-- [ ] **Yönlendirmeleri doğrula** — `curl -I https://www.executor-bot.com/en/` → `308/301` ve
-      `location: /`; `curl -I https://www.executor-bot.com/tr` → `/tr/`'ye yönlenmeli.
-- [ ] **Dil yönlendirmesini doğrula** — `curl -I -H 'Accept-Language: tr-TR,tr;q=0.9' https://www.executor-bot.com/`
-      → `307` ve `location: /tr/` (aynısı `ar-SA` → `/ar/`, `zh-CN` → `/zh/`). `en-US` ile, başlıksız ya da
-      `-H 'Cookie: lang=en'` eklenince → `200` (yönlendirme yok).
+- [ ] **Pages kaynağı** — repo › Settings › Pages › Source: **GitHub Actions**.
+- [ ] **Domain** — aynı sayfada Custom domain: `www.executor-bot.com`, DNS doğrulanınca **Enforce HTTPS**.
+      (Actions ile yayında `CNAME` dosyası kullanılmaz; alan adı buradan verilir.)
+- [ ] **DNS** — kök (`executor-bot.com`) A kayıtları: `185.199.108.153`, `185.199.109.153`, `185.199.110.153`,
+      `185.199.111.153`; `www` CNAME → `alperenlcr.github.io`. Eski Vercel kayıtları varsa (`cname.vercel-dns.com`,
+      Vercel A kaydı) sil. Alan adı GitHub › Settings (hesap) › Pages › Verified domains'ten doğrulanabilir.
+- [ ] **Repo görünürlüğü** — özel (private) repoda Pages ücretli GitHub planı ister.
+- [ ] **Vercel projesi** — daha önce açıldıysa kapat/sil ki çift yayın ve alan adı çakışması olmasın.
+- [ ] **Actions izinleri** — Settings › Actions › General › "Allow all actions" + Workflow permissions
+      "Read and write" (`indices.yml` commit atıyor). Settings › Environments › `github-pages` ortamının
+      deployment branch kuralı `main`'e izin vermeli (varsayılan).
+- [ ] **İlk yayın** — Actions › "Deploy to GitHub Pages" › Run workflow; yeşil bitmeli, site açılmalı.
+- [ ] **Günlük akış** — ertesi sabah Actions'ta "Update data" (~01:30 UTC) ve x push'undan sonra
+      "Deploy to GitHub Pages" çalıştığını kontrol et.
+- [ ] **Yönlendirmeleri doğrula** — `https://www.executor-bot.com/en/` ana sayfaya geçmeli (meta refresh);
+      `https://www.executor-bot.com/tr` → `/tr/`'ye (Pages'in klasör yönlendirmesi); `executor-bot.com` → `www`.
+- **Sınırlar:** sunucu yönlendirmesi yok (`/en/` 301 değil, meta refresh + canonical; dil yönlendirmesi yalnızca
+  tarayıcı betiğiyle, Türkçe tarayıcıda İngilizce sayfa bir an görünür), önbellek başlığı ayarlanamaz
+  (`/_astro/` dosyaları 10 dk önbellekte), önizleme ortamı yok (her `main` push'u doğrudan canlı).
+  GitHub, Pages'in ticari/online iş sitesi için ücretsiz hosting olmadığını söylüyor; gri alan.
 
 ## Takipçi kartı (Binance + Bybit)
 
@@ -143,7 +109,7 @@ Astro + bot-ui geçişinden kalan, kod dışında yapılması gereken işler.
 - [ ] **`/tr/` için dizine ekleme iste** — Search Console › URL denetimi › `/tr/` ›
       "Dizine eklenmesini iste". Kök adres (`/`) önceden Türkçeydi, artık İngilizce; Google'ın
       Türkçe aramalarda `/tr/`'yi göstermeye geçmesi birkaç hafta sürebilir.
-- [ ] **Eski `/en/` adresi** ana sayfaya kalıcı yönlendirme veriyor (`vercel.json`). Search
+- [ ] **Eski `/en/` adresi** ana sayfaya yönlendiriyor (`astro.config.mjs` › `redirects`; meta refresh + canonical). Search
       Console'da birkaç hafta sonra `/en/`'nin "yönlendirmeli sayfa" olarak düştüğünü kontrol et.
 - [ ] **Paylaşım önizlemesi** — ana sayfa ve `/tr/` linkini bir mesajlaşma uygulamasında ya da
       https://www.opengraph.xyz ile test et (`/og/{dil}.png` görünmeli).
@@ -156,14 +122,14 @@ Astro + bot-ui geçişinden kalan, kod dışında yapılması gereken işler.
 - **SSS artık bot-ui'deki 12 soru.** Eski Türkçe sitedeki Türkiye'ye özel soru kaldırıldı;
   gerekiyorsa `src/i18n/tr.json` › `faq.items`'a geri eklenebilir.
 - **Arapça/Çince rehber ekran görüntüleri** İngilizce görselleri kullanıyor (yalnızca tr/en var).
-- **Gizlilik/çerez metinleri** barındırma sağlayıcısı olarak artık Vercel'i yazıyor (4 dil).
+- **Gizlilik metni** barındırma sağlayıcısı olarak GitHub (GitHub Pages)'i yazıyor (4 dil).
 - **Endeks çizgileri** varsayılan açık (düğmelerle kapatılabilir); görünen aralığın başına göre yeniden bazlanır
   (fiyat endeksi, temettü hariç). Son 2 yıl saatlik, öncesi günlük; borsa kapalıyken (gece, hafta sonu, tatil) son fiyat düz devam eder.
 - **`google-apps-script.js`** referral formunun ayrı backend'i; içindeki e-posta siteye çıkmıyor,
   dokunulmadı.
-- **Ana sayfa sırası:** karşılama → performans → hesaplayıcı → 3 adımda başla → fonların kontrolü → strateji →
-  işlemler → analiz → SSS → rehber → CTA. "Neden Executor Trade?" bölümü (Features) kaldırıldı; HowItWorks ve Trust
-  `HomePage.astro`'da isimli slot (`slot="how"` / `slot="trust"`) olarak React adasına geçiyor.
+- **Ana sayfa sırası:** karşılama → performans → hesaplayıcı → 3 adımda başla → strateji →
+  işlemler → analiz → SSS → rehber → CTA. "Neden Executor Trade?" bölümü (Features) ve "fonların kontrolü" (Trust) kaldırıldı;
+  HowItWorks `HomePage.astro`'da isimli slot (`slot="how"`) olarak React adasına geçiyor.
 - **Sosyal medya (X, TikTok, Threads, YouTube):** hesaplar açılınca adresleri `data/config.json` › `social`'a yaz.
   Footer'da ikon olarak çıkar (boş olanlar gizli) ve Organization şemasındaki `sameAs`'e otomatik girer.
 - **Analiz tablosundaki "en kötü" / "en iyi" tarih aralıkları** `performance.csv`'de yok; tarayıcı aynı getiriyi veren
@@ -172,12 +138,7 @@ Astro + bot-ui geçişinden kalan, kod dışında yapılması gereken işler.
   kopyalanıyor). Alperen'in hesaplama yöntemi değişirse ve eşleşme bulunamazsa tarih boş kalır, değer yine görünür.
   Kalıcı çözüm: otomasyona `MIN_ROLLING_{1M..2Y}_RANGE` / `MAX_ROLLING_…_RANGE` sütunlarının (`MAX_DRAWDOWN_RANGE`
   formatında) eklenmesi. Ayrıca MIN ile MAX'in farklı veriden hesaplanmasının bilerek yapılıp yapılmadığını ona sor.
-- **Otomatik dil:** yalnızca kök adres (`/`) tarayıcı diline (`Accept-Language`'ın ilk dili) göre `/tr/`, `/ar/` ya da `/zh/`'ye
-  geçici (307) yönlenir; diğerleri İngilizce kalır. Alt sayfalar ve paylaşılan linkler yönlenmez. Dil menüsünden seçim
-  yapılınca `lang` çerezi (1 yıl) yazılır ve yönlendirme bir daha çalışmaz. Kurallar `vercel.json`'da (Vercel sunucusu);
-  GitHub Pages ve yerel önizleme için aynı mantık İngilizce ana sayfanın `<head>`'inde tarayıcı betiği olarak da var
-  (`src/layouts/BaseLayout.astro`, `navigator.language`'a bakar). Vercel'de sunucu kuralı önce çalışır, betik yedek kalır. IP'deki ülkeye göre yapılmak istenirse kuraldaki
-  `accept-language` yerine `x-vercel-ip-country` başlığı (ör. `"value": "TR"`) kullanılır.
-
-
-
+- **Otomatik dil:** yalnızca kök adres (`/`) tarayıcı diline (`navigator.language`) göre `/tr/`, `/ar/` ya da `/zh/`'ye
+  geçer; diğerleri İngilizce kalır. Alt sayfalar ve paylaşılan linkler yönlenmez. Dil menüsünden seçim yapılınca
+  `lang` çerezi (1 yıl) yazılır ve yönlendirme bir daha çalışmaz. GitHub Pages'te sunucu kuralı olmadığı için
+  İngilizce ana sayfanın `<head>`'indeki betik yapar (`src/layouts/BaseLayout.astro`).

@@ -46,7 +46,7 @@ const slugOverrides: Partial<Record<Lang, Partial<Record<RouteKey, string>>>> = 
 };
 
 /** getPath('about', 'tr') → '/tr/hakkimizda/', getPath('home', 'en') → '/'
- *  Sondaki '/': Vercel (vercel.json trailingSlash) '/'suz URL'leri '/'lıya yönlendirir. */
+ *  Sondaki '/': GitHub Pages klasör adreslerini '/'suz istekte '/'lıya yönlendirir; linkler baştan '/'lı olsun. */
 export function getPath(route: RouteKey, lang: Lang) {
   const slug = slugOverrides[lang]?.[route] ?? slugs[route];
   const prefix = lang === defaultLang ? '' : `/${lang}`;

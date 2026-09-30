@@ -6,7 +6,7 @@ Bitcoin (BTC) üzerinde çalışan, trend-takip esaslı algoritmik trading botu 
 
 Küçük özet veriler (`i18n.json`, `config.json`, `monthly.csv`, `yearly.csv`, `trades.csv`, varsayılan 1 yıllık seri) build zamanında sayfaya gömülür; büyük/nadiren kullanılan veriler (`performance.csv` ve diğer zaman aralığı CSV'leri) tarayıcıda çalışma anında `fetch` edilir — bu kısımlar `data/` güncellenince, rebuild olmadan bile anında günceldir.
 
-**Önemli:** `assets/` ve `data/` klasörleri repo kökünde durur ve değiştirilmemelidir — günlük otomasyon `data/tables/*.csv` dosyalarını tam olarak bu yoldan güncelleyip push ediyor. Site Vercel'de barınır; her push Vercel'de otomatik build + yayın tetikler (`vercel.json`: trailing slash, `/en/` → `/` 301, `/_astro/` önbellek başlıkları).
+**Önemli:** `assets/` ve `data/` klasörleri repo kökünde durur ve değiştirilmemelidir — günlük otomasyon `data/tables/*.csv` dosyalarını tam olarak bu yoldan güncelleyip push ediyor. Site GitHub Pages'te barınır; `main`'e her push ve günlük "Update data" workflow'u `.github/workflows/deploy.yml` ile build + yayın tetikler (`/en/` → `/` yönlendirmesi `astro.config.mjs` › `redirects`).
 
 ## Geliştirme
 
@@ -34,7 +34,7 @@ npm run preview   # üretilen dist/'i yerel olarak sun
 │   ├── lib/loadSiteData.ts        # build-time veri okuma (data/i18n.json, config.json, küçük CSV'ler)
 │   └── components/
 │       ├── App.tsx                # dashboard adası (grafik, tablolar, SSS, rehber, referral formu)
-│       ├── HomePage.astro         # ana sayfa: App + sections/ (HowItWorks, Features, Trust)
+│       ├── HomePage.astro         # ana sayfa: App + sections/HowItWorks
 │       └── styleUtil.ts           # inline CSS string → React style objesi yardımcı fonksiyonu
 ├── scripts/copy-static.mjs        # build sonrası assets/, robots.txt, sitemap.xml, llms.txt
 │                                   #   ve lazy-fetch edilen büyük CSV'leri dist/'e kopyalar
@@ -42,6 +42,7 @@ npm run preview   # üretilen dist/'i yerel olarak sun
 ├── scripts/fetch-binance-stats.mjs # Binance AUM + takipçi sayısı → data/binance.json (takipçi kartı)
 ├── scripts/fetch-bybit-stats.mjs  # Bybit AUM + takipçi sayısı → data/bybit.json (headless Chrome ile)
 ├── .github/workflows/indices.yml  # üç fetch script'ini her gün 01:30 UTC'de çalıştırıp commit'ler
+├── .github/workflows/deploy.yml   # build + GitHub Pages yayını (main push'u ve Update data sonrası)
 ├── assets/
 │   ├── logos/                     # binance.png, bybit.png, logo.png, favicon.ico
 │   └── guide/                     # step-1..6-tr/en.jpeg (Binance/Bybit kurulum adımları)

@@ -1,0 +1,51 @@
+name: Deploy to GitHub Pages
+
+# main'e her push'ta (x'in günlük data/tables push'u dahil) yayınlanır.
+# indices.yml'in commit'leri GITHUB_TOKEN ile atıldığı için push tetiklemez; workflow_run onu yakalar.
+on:
+  push:
+    branches: [main]
+  workflow_run:
+    workflows: [Update data]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main # workflow_run'da da Update data commit'i dahil en güncel main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          # Repo › Settings › Secrets and variables › Actions › Variables; boşsa koddaki varsayılan kullanılır.
+          PUBLIC_CONTACT_URL: ${{ vars.PUBLIC_CONTACT_URL }}
+          PUBLIC_CLARITY_ID: ${{ vars.PUBLIC_CLARITY_ID }}
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
