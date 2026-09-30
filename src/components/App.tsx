@@ -2,7 +2,7 @@ import React from 'react';
 import { sx } from './styleUtil';
 import type { SiteInitialData, SeriesPoint } from '../lib/loadSiteData';
 import type { Lang } from '../i18n/utils';
-import { contactUrl } from '../data/contact';
+import { contactEmail } from '../data/contact';
 import { exchanges } from '../data/exchanges';
 import { parseCsv, parseTs } from '../lib/csv';
 import { groupPerf } from '../lib/perf';
@@ -44,6 +44,7 @@ interface State {
   refModal: boolean; refPlatform: 'binance' | 'bybit';
   refRefNick: string; refRefID: string; refNewNick: string; refEmail: string;
   refSubmitting: boolean; refDone: boolean; refErr: string;
+  copied: boolean;
 }
 
 export default class App extends React.Component<Props, State> {
@@ -66,6 +67,7 @@ export default class App extends React.Component<Props, State> {
   canvas: HTMLCanvasElement | null = null;
   honeypot: HTMLInputElement | null = null;
   refTimer: ReturnType<typeof setTimeout> | undefined;
+  copyTimer: ReturnType<typeof setTimeout> | undefined;
   _ro: ResizeObserver | null = null;
   _perfIo: IntersectionObserver | null = null;
   sel: Selection | null = null;
@@ -106,6 +108,7 @@ export default class App extends React.Component<Props, State> {
       lb: null,
       refModal: false, refPlatform: 'binance', refRefNick: '', refRefID: '', refNewNick: '', refEmail: '',
       refSubmitting: false, refDone: false, refErr: '',
+      copied: false,
     };
   }
 
@@ -137,6 +140,7 @@ export default class App extends React.Component<Props, State> {
   componentWillUnmount() {
     removeEventListener('keydown', this.onKey);
     clearTimeout(this.refTimer);
+    clearTimeout(this.copyTimer);
     this._ro?.disconnect();
     this._perfIo?.disconnect();
   }
@@ -245,6 +249,11 @@ export default class App extends React.Component<Props, State> {
       })
     );
   }
+
+  copyEmail = () => navigator.clipboard.writeText(contactEmail).then(() => {
+    this.setState({ copied: true });
+    clearTimeout(this.copyTimer); this.copyTimer = setTimeout(() => this.setState({ copied: false }), 2000);
+  }, () => {});
 
   closeRefModal = () => { clearTimeout(this.refTimer); this.setState({ refModal: false }); };
   openRefModal = () => { clearTimeout(this.refTimer); this.setState({ refModal: true, refDone: false, refErr: '', refSubmitting: false, refRefNick: '', refRefID: '', refNewNick: '', refEmail: '' }); };
@@ -1205,7 +1214,11 @@ export default class App extends React.Component<Props, State> {
               <div style={sx(`font-family:var(--font-display);font-size:12px;color:var(--accent);letter-spacing:1px;text-transform:uppercase`)}>{t.cta_eyebrow}</div>
               <h2 style={sx(`font-family:var(--font-display);font-weight:600;font-size:clamp(24px,3vw,34px);letter-spacing:-.6px;line-height:1.12`)}>{t.cta_title}</h2>
               <p style={sx(`font-size:15px;color:var(--text-dim);line-height:1.6`)}>{t.cta_sub}</p>
-              <a href={contactUrl} style={sx(`font-family:var(--font-display);font-size:13px;color:var(--accent);text-decoration:none;padding:4px 0`)}>{t.cta_contact} ↗</a>
+              <div style={sx(`display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px`)}>
+                <span style={sx(`color:var(--text-mute)`)}>{t.cta_contact}:</span>
+                <a href={'mailto:' + contactEmail} style={sx(`font-family:var(--font-display);color:var(--accent);text-decoration:none;padding:4px 0`)}>{contactEmail}</a>
+                <button onClick={this.copyEmail} aria-live="polite" className="icon-btn" style={sx(`height:28px;padding:0 10px;background:var(--surface-2);font-size:12px`)}>{this.state.copied ? '✓ ' + t.cta_copied : t.cta_copy}</button>
+              </div>
             </div>
             <div style={sx(`padding:clamp(28px,4vw,46px);display:flex;flex-direction:column;gap:12px;justify-content:center;border-inline-start:1px solid var(--border)`)}>
               {exchanges.map((ex) => (

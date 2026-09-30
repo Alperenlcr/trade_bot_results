@@ -4,9 +4,9 @@ Astro + bot-ui geçişinden kalan, kod dışında yapılması gereken işler.
 
 ## Yayından önce
 
-- [ ] **İletişim adresi** — varsayılan `mailto:info@executortrading.com`. Bu adres gerçekten
-      mail alıyor mu kontrol et; farklı bir adres/form kullanılacaksa repo › Settings › Secrets and
-      variables › Actions › **Variables**'a `PUBLIC_CONTACT_URL` olarak ekle (`deploy.yml` build'e aktarır).
+- [ ] **İletişim adresi** — `info@executortrading.com` (`src/data/contact.ts`). CTA'da açık yazılı + "Kopyala"
+      düğmesi (mailto işleyicisi olmayan tarayıcılar boş sekme açıyor); header'daki "Contact Us" CTA'ya (`#connect`) kaydırır.
+- [ ] **İletişim formu** — gerekecek; referral formunun Apps Script'ine iletişim türü eklenip `info@`'ya iletilecek.
 - [ ] **Arapça ve Çince metinler** — `data/i18n.json` (dashboard) içindeki ar/zh çevirileri
       makine/yapay zekâ çevirisi; anadili olan birine okut.
 - [ ] **Microsoft Clarity** (ısı haritası) — clarity.microsoft.com'da proje aç, proje ID'sini
@@ -40,11 +40,27 @@ ve "Update data" bittikten sonra (`workflow_run`; bot commit'leri push tetikleme
   (`/_astro/` dosyaları 10 dk önbellekte), önizleme ortamı yok (her `main` push'u doğrudan canlı).
   GitHub, Pages'in ticari/online iş sitesi için ücretsiz hosting olmadığını söylüyor; gri alan.
 
+## Domain ve e-posta (`executortrading.com`, `info@executortrading.com`)
+
+Kodda site adresi (`astro.config.mjs` › `site`, `sitemap.xml.ts`, `robots.txt`, `llms.txt`) ve varsayılan iletişim
+adresi (`src/data/contact.ts`) güncellendi. Canonical, hreflang, OG ve sitemap adresleri build'de buradan üretilir.
+
+- [ ] **E-posta** — `info@executortrading.com`'a dışarıdan test maili at, geldiğini gör. DNS'e Pages kayıtları
+      girilirken MX, SPF (`TXT v=spf1 …`) ve DKIM kayıtlarına dokunulmamalı; kök A kayıtları MX'i etkilemez.
+- [ ] **Search Console** — `executortrading.com` için yeni mülk aç (Alan adı mülkü, DNS TXT ile doğrulanır)
+      ve sitemap'i buradan gönder (aşağıdaki SEO bölümü). Eski adres (`executor-bot.com`) hiç yayına
+      çıkmadıysa başka işlem gerekmez; çıktıysa oradan yeni adrese yönlendirme kur.
+- [ ] **GA4** — Yönetici › Veri akışları › web akışının adresini `https://executortrading.com` yap
+      (ölçüm kimliği `G-FFNNFDNLZQ` aynı kalır, kod değişmez).
+- [ ] **Clarity** — proje açılırken site adresi olarak `https://executortrading.com` gir.
+- [ ] **Borsa profilleri ve sosyal hesaplar** — Binance/Bybit lider profilleri ve açılacak sosyal hesaplardaki
+      site linki `https://executortrading.com` olmalı.
+
 ## Takipçi kartı (Binance + Bybit)
 
 - [ ] **İlk çalışma** — Actions › "Update data" › Run workflow; `fetch-binance-stats` adımı yeşil olmalı.
-      Değerler `data/binance.json`'a yazılır (AUM → toplam takipçi sermayesi, `currentCopyCount` →
-      takip eden yatırımcı). Kaynak: Binance'in lead trader sayfasının kullandığı halka açık
+      Değerler `data/binance.json`'a yazılır (AUM → "Assets under management", `currentCopyCount` →
+      "Current copy traders"). Kaynak: Binance'in lead trader sayfasının kullandığı halka açık
       `bapi/.../lead-portfolio/detail` uç noktası (resmi API değil, habersiz değişebilir).
 - [ ] **ABD IP engeli riski** — Binance ABD'den gelen istekleri engelleyebilir (HTTP 451/403) ve GitHub
       Actions sunucuları ABD'de. Adım kırmızı olursa: `node scripts/fetch-binance-stats.mjs` komutunu
@@ -119,14 +135,14 @@ ve "Update data" bittikten sonra (`workflow_run`; bot commit'leri push tetikleme
 - **GA4 artık çerez onayından sonra yükleniyor.** Onay vermeyen ziyaretçiler sayılmadığı için
   GA'daki ziyaret sayıları geçiş tarihinden itibaren düşük görünecek; bu gerçek bir trafik
   düşüşü değil. Aynısı Clarity ısı haritaları için de geçerli.
-- **SSS artık bot-ui'deki 12 soru.** Eski Türkçe sitedeki Türkiye'ye özel soru kaldırıldı;
+- **SSS 8 soru** (tekrar eden sorular birleştirildi/kaldırıldı). Eski Türkçe sitedeki Türkiye'ye özel soru kaldırıldı;
   gerekiyorsa `src/i18n/tr.json` › `faq.items`'a geri eklenebilir.
 - **Arapça/Çince rehber ekran görüntüleri** İngilizce görselleri kullanıyor (yalnızca tr/en var).
 - **Gizlilik metni** barındırma sağlayıcısı olarak GitHub (GitHub Pages)'i yazıyor (4 dil).
 - **Endeks çizgileri** varsayılan açık (düğmelerle kapatılabilir); görünen aralığın başına göre yeniden bazlanır
   (fiyat endeksi, temettü hariç). Son 2 yıl saatlik, öncesi günlük; borsa kapalıyken (gece, hafta sonu, tatil) son fiyat düz devam eder.
-- **`google-apps-script.js`** referral formunun ayrı backend'i; içindeki e-posta siteye çıkmıyor,
-  dokunulmadı.
+- **`google-apps-script.js`** referral formunun ayrı backend'i; içinde site adresi ya da e-posta yok,
+  domain değişikliğinden etkilenmez.
 - **Ana sayfa sırası:** karşılama → performans → hesaplayıcı → strateji → işlemler → analiz → SSS →
   rehber (3 adımda başla → Binance ekran görüntüleri → videolar → referans) → CTA. "Neden Executor Trade?" bölümü (Features) ve "fonların kontrolü" (Trust) kaldırıldı;
   HowItWorks `HomePage.astro`'da isimli slot (`slot="how"`) olarak React adasına geçiyor, `renderGuide` başlığın altına koyuyor.

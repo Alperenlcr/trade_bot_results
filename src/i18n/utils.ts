@@ -54,4 +54,3 @@ export function getPath(route: RouteKey, lang: Lang) {
 }
 
 export const legalRoutes = ['risk', 'privacy', 'cookies', 'terms'] as const;
-export { contactUrl } from '../data/contact';

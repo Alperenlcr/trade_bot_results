@@ -34,9 +34,13 @@
 @layer base {
   html {
     @apply bg-bg font-body text-text antialiased;
-    scroll-behavior: smooth;
     scroll-padding-top: 5rem;
     color-scheme: dark;
+  }
+  /* Yalnızca sayfa içi tıklamada (link odakta) yumuşak; başka sayfadan /#faq gibi gelince yükleme sırasında
+     başlayan yumuşak kaydırma hidrasyonla kesilip sayfa en üstte kalıyordu. */
+  html:focus-within {
+    scroll-behavior: smooth;
   }
   h1, h2, h3 {
     @apply font-display tracking-[-0.02em];

@@ -29,7 +29,7 @@ npm run preview   # üretilen dist/'i yerel olarak sun
 │   │   ├── 404.astro
 │   │   └── sitemap.xml.ts
 │   ├── i18n/                      # site metinleri (en/tr/ar/zh.json) + getPath / useTranslations
-│   ├── data/                      # contact.ts (PUBLIC_CONTACT_URL), exchanges.ts (affiliate linkleri)
+│   ├── data/                      # contact.ts (iletişim e-postası), exchanges.ts (affiliate linkleri)
 │   ├── styles/global.css          # Tailwind, fontlar, marka token'ları, dashboard CSS değişkenleri
 │   ├── lib/loadSiteData.ts        # build-time veri okuma (data/i18n.json, config.json, küçük CSV'ler)
 │   └── components/
@@ -61,4 +61,4 @@ npm run preview   # üretilen dist/'i yerel olarak sun
 `google-apps-script.js` siteye dahil değildir — `data/config.json`'daki `referral.formEndpoint`'in işaret ettiği, ayrı olarak Google Apps Script'e deploy edilmiş referral-form backend'inin kaynak kodudur.
 
 > **Uyarı:** Bu site finansal tavsiye değildir. Geçmiş performans gelecekteki sonuçları garanti etmez.
-> İletişim: sitedeki iletişim bağlantısı (`PUBLIC_CONTACT_URL`, varsayılan `mailto:info@executortrading.com`).
+> İletişim: `info@executortrading.com` (`src/data/contact.ts`).
