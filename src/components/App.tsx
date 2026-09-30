@@ -1035,9 +1035,9 @@ export default class App extends React.Component<Props, State> {
                     <thead>
                       <tr>
                         <th className="th">{t.an_window}</th>
-                        <th className="th num" style={sx(`color:var(--accent);font-weight:600`)}>{t.an_avg}</th>
-                        <th className="th num">{t.an_min}</th>
-                        <th className="th num">{t.an_max}</th>
+                        <th className="th num" style={sx(`color:var(--text);font-weight:600`)}>{t.an_avg}</th>
+                        <th className="th num" style={sx(`color:var(--neg);font-weight:600`)}>{t.an_min}</th>
+                        <th className="th num" style={sx(`color:var(--pos);font-weight:600`)}>{t.an_max}</th>
                       </tr>
                     </thead>
                     <tbody>
