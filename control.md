@@ -127,9 +127,9 @@ ve "Update data" bittikten sonra (`workflow_run`; bot commit'leri push tetikleme
   (fiyat endeksi, temettü hariç). Son 2 yıl saatlik, öncesi günlük; borsa kapalıyken (gece, hafta sonu, tatil) son fiyat düz devam eder.
 - **`google-apps-script.js`** referral formunun ayrı backend'i; içindeki e-posta siteye çıkmıyor,
   dokunulmadı.
-- **Ana sayfa sırası:** karşılama → performans → hesaplayıcı → 3 adımda başla → strateji →
-  işlemler → analiz → SSS → rehber → CTA. "Neden Executor Trade?" bölümü (Features) ve "fonların kontrolü" (Trust) kaldırıldı;
-  HowItWorks `HomePage.astro`'da isimli slot (`slot="how"`) olarak React adasına geçiyor.
+- **Ana sayfa sırası:** karşılama → performans → hesaplayıcı → strateji → işlemler → analiz → SSS →
+  rehber (3 adımda başla → Binance ekran görüntüleri → videolar → referans) → CTA. "Neden Executor Trade?" bölümü (Features) ve "fonların kontrolü" (Trust) kaldırıldı;
+  HowItWorks `HomePage.astro`'da isimli slot (`slot="how"`) olarak React adasına geçiyor, `renderGuide` başlığın altına koyuyor.
 - **Sosyal medya (X, TikTok, Threads, YouTube):** hesaplar açılınca adresleri `data/config.json` › `social`'a yaz.
   Footer'da ikon olarak çıkar (boş olanlar gizli) ve Organization şemasındaki `sameAs`'e otomatik girer.
 - **Analiz tablosundaki "en kötü" / "en iyi" tarih aralıkları** `performance.csv`'de yok; tarayıcı aynı getiriyi veren

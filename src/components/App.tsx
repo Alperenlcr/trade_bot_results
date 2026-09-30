@@ -662,9 +662,6 @@ export default class App extends React.Component<Props, State> {
           {this.renderHero()}
           {this.renderPerformance()}
           {this.renderCalculator()}
-        </div>
-        {this.props.how}
-        <div style={wrap}>
           {this.renderStrategy()}
           {this.renderTrades()}
           {this.renderAnalysis()}
@@ -1150,6 +1147,7 @@ export default class App extends React.Component<Props, State> {
           <h2 className="sec-title">{t.gd_title}</h2>
           <p className="sec-sub">{t.gd_sub}</p>
         </div>
+        {this.props.how}
         <div style={sx(`display:flex;align-items:baseline;gap:12px;margin-bottom:14px;flex-wrap:wrap`)}>
           <span className="caps-label">{t.gd_steps}</span>
           <span style={sx(`font-size:12px;color:var(--text-mute)`)}>· {t.gd_zoom_hint}</span>

@@ -23,7 +23,7 @@
   --font-display: "Space Mono", "IBM Plex Sans Arabic", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", ui-monospace, monospace;
   --font-body: "IBM Plex Sans", "IBM Plex Sans Arabic", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
 
-  /* max-w-6xl (Header, Footer, HowItWorks) App.tsx'teki wrap genişliğiyle (1200px) hizalı kalsın. */
+  /* max-w-6xl (Header, Footer) App.tsx'teki wrap genişliğiyle (1200px) hizalı kalsın. */
   --container-6xl: 1200px;
 
   --radius-s: 2px;
