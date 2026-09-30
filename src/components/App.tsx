@@ -45,6 +45,7 @@ interface State {
   refRefNick: string; refRefID: string; refNewNick: string; refEmail: string;
   refSubmitting: boolean; refDone: boolean; refErr: string;
   copied: boolean;
+  ctModal: boolean; ctName: string; ctEmail: string; ctMsg: string; ctSubmitting: boolean; ctDone: boolean; ctErr: string;
 }
 
 export default class App extends React.Component<Props, State> {
@@ -66,8 +67,10 @@ export default class App extends React.Component<Props, State> {
   _perfStarted = false;
   canvas: HTMLCanvasElement | null = null;
   honeypot: HTMLInputElement | null = null;
+  ctHoneypot: HTMLInputElement | null = null;
   refTimer: ReturnType<typeof setTimeout> | undefined;
   copyTimer: ReturnType<typeof setTimeout> | undefined;
+  ctTimer: ReturnType<typeof setTimeout> | undefined;
   _ro: ResizeObserver | null = null;
   _perfIo: IntersectionObserver | null = null;
   sel: Selection | null = null;
@@ -109,6 +112,7 @@ export default class App extends React.Component<Props, State> {
       refModal: false, refPlatform: 'binance', refRefNick: '', refRefID: '', refNewNick: '', refEmail: '',
       refSubmitting: false, refDone: false, refErr: '',
       copied: false,
+      ctModal: false, ctName: '', ctEmail: '', ctMsg: '', ctSubmitting: false, ctDone: false, ctErr: '',
     };
   }
 
@@ -119,6 +123,8 @@ export default class App extends React.Component<Props, State> {
 
   async componentDidMount() {
     addEventListener('keydown', this.onKey);
+    addEventListener('hashchange', this.onHash);
+    this.onHash();
     // performance.csv ~7,5 MB ve yalnızca Analiz bölümü kullanıyor: bölüm görünüme yaklaşınca indirilir.
     const an = document.getElementById('analysis');
     if (an) {
@@ -139,14 +145,16 @@ export default class App extends React.Component<Props, State> {
 
   componentWillUnmount() {
     removeEventListener('keydown', this.onKey);
+    removeEventListener('hashchange', this.onHash);
     clearTimeout(this.refTimer);
     clearTimeout(this.copyTimer);
+    clearTimeout(this.ctTimer);
     this._ro?.disconnect();
     this._perfIo?.disconnect();
   }
 
   onKey = (e: KeyboardEvent) => {
-    if (e.key === 'Escape') { if (this.state.lb) this.lbClose(); else if (this.state.refModal) this.closeRefModal(); }
+    if (e.key === 'Escape') { if (this.state.lb) this.lbClose(); else if (this.state.refModal) this.closeRefModal(); else if (this.state.ctModal) this.closeCtModal(); }
     else if (this.state.lb && e.key === 'ArrowLeft') this.lbPrev();
     else if (this.state.lb && e.key === 'ArrowRight') this.lbNext();
   };
@@ -254,6 +262,39 @@ export default class App extends React.Component<Props, State> {
     this.setState({ copied: true });
     clearTimeout(this.copyTimer); this.copyTimer = setTimeout(() => this.setState({ copied: false }), 2000);
   }, () => {});
+
+  // Header'daki "Contact Us" (#contact, Astro tarafında) formu açar; diğer sayfalardan gelince de çalışır.
+  // Hash hemen silinir ki aynı düğmeye tekrar basınca hashchange yine tetiklensin.
+  onHash = () => {
+    if (location.hash !== '#contact') return;
+    history.replaceState(null, '', location.pathname + location.search);
+    this.openCtModal();
+  };
+  // İletişim formu: referans formuyla aynı Apps Script'e (formEndpoint) type: 'contact' ile gider.
+  closeCtModal = () => { clearTimeout(this.ctTimer); this.setState({ ctModal: false }); };
+  openCtModal = () => { clearTimeout(this.ctTimer); this.setState({ ctModal: true, ctDone: false, ctErr: '', ctSubmitting: false }); };
+  onCtName = (e: React.ChangeEvent<HTMLInputElement>) => this.setState({ ctName: e.target.value });
+  onCtEmail = (e: React.ChangeEvent<HTMLInputElement>) => this.setState({ ctEmail: e.target.value });
+  onCtMsg = (e: React.ChangeEvent<HTMLTextAreaElement>) => this.setState({ ctMsg: e.target.value });
+  submitCt = async () => {
+    const { ctName, ctEmail, ctMsg } = this.state;
+    const t = this.t;
+    if (!ctEmail.trim()) { this.setState({ ctErr: t.err_email_empty }); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(ctEmail.trim())) { this.setState({ ctErr: t.err_email_invalid }); return; }
+    if (!ctMsg.trim()) { this.setState({ ctErr: t.err_ct_msg }); return; }
+    this.setState({ ctSubmitting: true, ctErr: '' });
+    const payload = { type: 'contact', name: ctName.trim(), email: ctEmail.trim(), message: ctMsg.trim(), lang: this.lang, website: this.ctHoneypot?.value ?? '' };
+    try {
+      const r = await fetch(this.cfg.referral.formEndpoint, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(payload) });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const json = await r.json().catch(() => ({}));
+      if (json.success === false) throw new Error(json.error || 'Server error');
+      this.setState({ ctSubmitting: false, ctDone: true, ctName: '', ctEmail: '', ctMsg: '' });
+      this.ctTimer = setTimeout(this.closeCtModal, 3000);
+    } catch {
+      this.setState({ ctSubmitting: false, ctErr: t.ref_error });
+    }
+  };
 
   closeRefModal = () => { clearTimeout(this.refTimer); this.setState({ refModal: false }); };
   openRefModal = () => { clearTimeout(this.refTimer); this.setState({ refModal: true, refDone: false, refErr: '', refSubmitting: false, refRefNick: '', refRefID: '', refNewNick: '', refEmail: '' }); };
@@ -680,6 +721,7 @@ export default class App extends React.Component<Props, State> {
         </div>
         {this.renderLightbox()}
         {this.renderReferralModal()}
+        {this.renderContactModal()}
       </div>
     );
   }
@@ -1217,6 +1259,7 @@ export default class App extends React.Component<Props, State> {
               <div style={sx(`display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px`)}>
                 <span style={sx(`color:var(--text-mute)`)}>{t.cta_contact}:</span>
                 <a href={'mailto:' + contactEmail} style={sx(`font-family:var(--font-display);color:var(--accent);text-decoration:none;padding:4px 0`)}>{contactEmail}</a>
+                <button onClick={this.openCtModal} className="lift" style={sx(`height:28px;padding:0 12px;border-radius:4px;border:none;background:var(--accent);color:var(--accent-contrast);font-weight:600;font-size:12px;cursor:pointer`)}>{t.ct_btn}</button>
                 <button onClick={this.copyEmail} aria-live="polite" className="icon-btn" style={sx(`height:28px;padding:0 10px;background:var(--surface-2);font-size:12px`)}>{this.state.copied ? '✓ ' + t.cta_copied : t.cta_copy}</button>
               </div>
             </div>
@@ -1346,6 +1389,53 @@ export default class App extends React.Component<Props, State> {
               )}
 
               <button onClick={this.submitRef} disabled={this.state.refSubmitting} style={sx(refSubmitStyle)}>{refSubmitLabel}</button>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  renderContactModal() {
+    const t = this.t;
+    if (!this.state.ctModal) return null;
+    const busy = this.state.ctSubmitting;
+    return (
+      <div onClick={this.closeCtModal} className="overlay" style={sx(`z-index:210;background:rgba(0,0,0,.72)`)}>
+        <div onClick={this.stopProp} role="dialog" aria-modal="true" aria-labelledby="ct-modal-title" style={sx(`width:100%;max-width:520px;max-height:90vh;overflow-y:auto;border-radius:6px;background:var(--bg-elev);border:1px solid var(--border);box-shadow:0 24px 64px rgba(0,0,0,.4)`)}>
+          <div style={sx(`display:flex;align-items:center;justify-content:space-between;padding:22px 24px 18px;border-bottom:1px solid var(--border)`)}>
+            <span id="ct-modal-title" style={sx(`font-family:var(--font-display);font-weight:600;font-size:17px;letter-spacing:-.3px`)}>{t.ct_title}</span>
+            <button onClick={this.closeCtModal} autoFocus aria-label={t.lb_close} className="icon-btn" style={sx(`width:34px;height:34px;background:var(--surface-2);font-size:16px;display:grid;place-items:center`)}>✕</button>
+          </div>
+
+          {this.state.ctDone ? (
+            <div style={sx(`padding:40px 24px;text-align:center`)}>
+              <div style={sx(`width:64px;height:64px;border-radius:6px;background:color-mix(in srgb,var(--pos) 15%,transparent);display:grid;place-items:center;margin:0 auto 18px;font-size:30px;color:var(--pos)`)}>✓</div>
+              <div style={sx(`font-family:var(--font-display);font-weight:600;font-size:22px;color:var(--pos);margin-bottom:10px`)}>{t.ct_success_title}</div>
+              <div style={sx(`font-size:12px;color:var(--text-mute);font-family:var(--font-display)`)}>{t.ref_success_hint}</div>
+            </div>
+          ) : (
+            <div style={sx(`padding:22px 24px;display:flex;flex-direction:column;gap:18px`)}>
+              <label className="ref-field">
+                <span className="ref-label">{t.ct_name}</span>
+                <input type="text" autoComplete="name" value={this.state.ctName} onChange={this.onCtName} className="ref-input" />
+              </label>
+              <label className="ref-field">
+                <span className="ref-label">{t.ref_email} <span className="req">*</span></span>
+                <input type="email" autoComplete="email" value={this.state.ctEmail} onChange={this.onCtEmail} placeholder={t.ref_email_ph} className="ref-input" />
+              </label>
+              <label className="ref-field">
+                <span className="ref-label">{t.ct_msg} <span className="req">*</span></span>
+                <textarea value={this.state.ctMsg} onChange={this.onCtMsg} placeholder={t.ct_msg_ph} rows={6} maxLength={5000} className="ref-input" style={sx(`height:auto;padding:12px 14px;resize:vertical;line-height:1.5`)} />
+              </label>
+
+              <input ref={(el) => { this.ctHoneypot = el; }} name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" style={sx(`position:absolute;left:-9999px;width:1px;height:1px;opacity:0`)} />
+
+              {!!this.state.ctErr && (
+                <div style={sx(`padding:11px 14px;border-radius:4px;background:color-mix(in srgb,var(--neg) 12%,transparent);border:1px solid var(--neg);font-size:13px;color:var(--neg)`)}>{this.state.ctErr}</div>
+              )}
+
+              <button onClick={this.submitCt} disabled={busy} style={sx(`width:100%;height:48px;border-radius:6px;border:none;background:${busy ? 'var(--border)' : 'var(--accent)'};color:${busy ? 'var(--text-mute)' : 'var(--accent-contrast)'};font-weight:600;font-size:15px;cursor:${busy ? 'not-allowed' : 'pointer'}`)}>{busy ? t.ref_submitting : t.ct_submit}</button>
             </div>
           )}
         </div>

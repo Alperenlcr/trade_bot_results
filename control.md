@@ -5,8 +5,14 @@ Astro + bot-ui geçişinden kalan, kod dışında yapılması gereken işler.
 ## Yayından önce
 
 - [ ] **İletişim adresi** — `info@executortrading.com` (`src/data/contact.ts`). CTA'da açık yazılı + "Kopyala"
-      düğmesi (mailto işleyicisi olmayan tarayıcılar boş sekme açıyor); header'daki "Contact Us" CTA'ya (`#connect`) kaydırır.
-- [ ] **İletişim formu** — gerekecek; referral formunun Apps Script'ine iletişim türü eklenip `info@`'ya iletilecek.
+      düğmesi (mailto işleyicisi olmayan tarayıcılar boş sekme açıyor); header'daki "Contact Us" iletişim formunu açar (`#contact`).
+- [ ] **İletişim formu (Apps Script güncellemesi — Alperen)** — CTA'daki "Mesaj gönder" formu referans formuyla aynı
+      uç noktaya (`data/config.json` › `referral.formEndpoint`) `type: 'contact'` ile gidiyor. Script güncellenmeden
+      canlıya çıkarsa mesajlar referans tablosuna yanlış satır olarak düşer, bu yüzden **önce**: Sheet › Extensions ›
+      Apps Script › kodu `google-apps-script.js` ile değiştir → Deploy › Manage deployments › mevcut dağıtım › Edit ›
+      Version: **New version** (URL aynı kalır) → Gmail ile gönderme iznini onayla. Test: formdan mesaj gönder →
+      `info@executortrading.com`'a mail gelmeli (Yanıtla ziyaretçiye gider), tabloda "İletişim" sayfasında satır olmalı.
+      Mail, script'in sahibi olan Google hesabından gönderilir; günlük sınır ~100.
 - [ ] **Arapça ve Çince metinler** — `data/i18n.json` (dashboard) içindeki ar/zh çevirileri
       makine/yapay zekâ çevirisi; anadili olan birine okut.
 - [ ] **Microsoft Clarity** (ısı haritası) — clarity.microsoft.com'da proje aç, proje ID'sini
