@@ -26,7 +26,7 @@ interface Props {
 }
 
 interface Selection { a: number; b: number }
-interface LightboxState { kind: 'image' | 'video'; i: number }
+interface LightboxState { i: number }
 
 interface State {
   tf: string;
@@ -222,7 +222,7 @@ export default class App extends React.Component<Props, State> {
   resetTrades = () => this.setState({ tFrom: this.tMin, tTo: this.tMax });
   toggleSort = () => this.setState({ tNewest: !this.state.tNewest });
   setFaq = (i: number) => this.setState({ faqOpen: this.state.faqOpen === i ? null : i });
-  openImg = (i: number) => this.setState({ lb: { kind: 'image', i } });
+  openImg = (i: number) => this.setState({ lb: { i } });
 
   // Kurulum ekran görüntüleri yalnızca TR ve EN için var.
   imgLang() { return this.lang === 'tr' ? 'tr' : 'en'; }
@@ -343,18 +343,17 @@ export default class App extends React.Component<Props, State> {
     }
   };
 
-  openVid = (i: number) => this.setState({ lb: { kind: 'video', i } });
   lbClose = () => this.setState({ lb: null });
   lbStop = (e: React.SyntheticEvent) => { e.stopPropagation(); };
   lbPrev = (e?: React.SyntheticEvent) => {
     e && e.stopPropagation(); const lb = this.state.lb; if (!lb) return;
-    const n = lb.kind === 'image' ? ((this.cfg && this.cfg.guideSteps) || 6) : ((this.cfg && this.cfg.videos) || []).length;
-    this.setState({ lb: { kind: lb.kind, i: (lb.i + n - 1) % n } });
+    const n = (this.cfg && this.cfg.guideSteps) || 6;
+    this.setState({ lb: { i: (lb.i + n - 1) % n } });
   };
   lbNext = (e?: React.SyntheticEvent) => {
     e && e.stopPropagation(); const lb = this.state.lb; if (!lb) return;
-    const n = lb.kind === 'image' ? ((this.cfg && this.cfg.guideSteps) || 6) : ((this.cfg && this.cfg.videos) || []).length;
-    this.setState({ lb: { kind: lb.kind, i: (lb.i + 1) % n } });
+    const n = (this.cfg && this.cfg.guideSteps) || 6;
+    this.setState({ lb: { i: (lb.i + 1) % n } });
   };
 
   buildTrades() {
@@ -1185,9 +1184,6 @@ export default class App extends React.Component<Props, State> {
 
   renderGuide() {
     const t = this.t;
-    const lang = this.lang;
-    const cfg = this.cfg || { videos: [], referral: {} };
-    const videos: { title: string; provider: string; open: () => void }[] = (cfg.videos || []).map((v: any, i: number) => ({ title: v.title[lang] ?? v.title.en, provider: v.provider, open: () => this.openVid(i) }));
     const step = (n: number) => `/assets/guide/step-${n}-${this.imgLang()}.jpeg`;
     const stepWebp = (n: number) => `/assets/guide/step-${n}-${this.imgLang()}.webp`;
     const stepAlt = (n: number) => `${t.gd_step_alt} ${n}`;
@@ -1216,21 +1212,6 @@ export default class App extends React.Component<Props, State> {
               </div>
             </div>
           ))}
-        </div>
-
-        <div style={sx(`margin-top:34px`)}>
-          <div className="caps-label" style={sx(`margin-bottom:14px`)}>{t.gd_videos}</div>
-          <div className="snap-row" style={sx(`padding-bottom:14px`)}>
-            {videos.map((v, i) => (
-              <div key={i} role="button" tabIndex={0} onClick={v.open} onKeyDown={this.onActivate(v.open)} className="lift" style={sx(`flex:none;width:300px;scroll-snap-align:start;border:1px solid var(--border);border-radius:6px;overflow:hidden;background:var(--surface);box-shadow:var(--shadow);cursor:pointer`)}>
-                <div style={sx(`position:relative;aspect-ratio:16/9;background:color-mix(in srgb,var(--accent) 10%,var(--surface-2));display:grid;place-items:center`)}>
-                  <span style={sx(`width:54px;height:54px;border-radius:50%;background:var(--accent);display:grid;place-items:center;color:var(--accent-contrast);font-size:20px;padding-left:4px;box-shadow:0 4px 16px rgba(0,0,0,.25)`)}>▶</span>
-                  <span style={sx(`position:absolute;top:11px;inset-inline-start:13px;font-family:var(--font-display);font-size:10.5px;font-weight:600;color:var(--text-dim);letter-spacing:.5px;text-transform:uppercase`)}>{v.provider}</span>
-                </div>
-                <div style={sx(`padding:13px 15px;font-size:14px;font-weight:600;color:var(--text)`)}>{v.title}</div>
-              </div>
-            ))}
-          </div>
         </div>
 
         <button onClick={this.openRefModal} className="lift" style={sx(`display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:30px;padding:24px 26px;border-radius:6px;border:1px solid var(--border);background:color-mix(in srgb,var(--accent) 7%,var(--surface));box-shadow:var(--shadow);cursor:pointer;width:100%;text-align:start`)}>
@@ -1281,32 +1262,21 @@ export default class App extends React.Component<Props, State> {
 
   renderLightbox() {
     const t = this.t;
-    const lang = this.lang;
     const lb = this.state.lb;
     if (!lb) return null;
-    const cfg = this.cfg || { videos: [] };
-    let lbImg = '', lbImgWebp = '', lbEmbed = '', lbCaption = '', lbCounter = '';
-    const isImage = lb.kind === 'image', isVideo = lb.kind === 'video';
-    let lbAlt = '';
-    if (isImage) { lbImg = `/assets/guide/step-${lb.i + 1}-${this.imgLang()}.jpeg`; lbImgWebp = `/assets/guide/step-${lb.i + 1}-${this.imgLang()}.webp`; lbCounter = `${lb.i + 1} / ${cfg.guideSteps || 6}`; lbCaption = t.gd_steps || ''; lbAlt = `${t.gd_step_alt} ${lb.i + 1}`; }
-    else { const v = (cfg.videos || [])[lb.i] || {}; lbEmbed = v.embed || ''; lbCounter = `${lb.i + 1} / ${(cfg.videos || []).length}`; lbCaption = v.title ? (v.title[lang] ?? v.title.en) : ''; }
+    const cfg = this.cfg || {};
+    const lbImg = `/assets/guide/step-${lb.i + 1}-${this.imgLang()}.jpeg`, lbImgWebp = `/assets/guide/step-${lb.i + 1}-${this.imgLang()}.webp`;
+    const lbCounter = `${lb.i + 1} / ${cfg.guideSteps || 6}`, lbCaption = t.gd_steps || '', lbAlt = `${t.gd_step_alt} ${lb.i + 1}`;
     return (
       <div onClick={this.lbClose} role="dialog" aria-modal="true" aria-label={lbCaption} className="overlay" style={sx(`z-index:200;background:rgba(0,0,0,.86)`)}>
         <button onClick={this.lbClose} autoFocus aria-label={t.lb_close} className="lb-btn" style={sx(`top:16px;right:16px;width:42px;height:42px;border-radius:6px;font-size:18px`)}>✕</button>
         <button onClick={this.lbPrev} aria-label={t.lb_prev} className="lb-btn lb-nav" style={sx(`left:12px`)}>‹</button>
         <button onClick={this.lbNext} aria-label={t.lb_next} className="lb-btn lb-nav" style={sx(`right:12px`)}>›</button>
         <div onClick={this.lbStop} style={sx(`display:flex;flex-direction:column;align-items:center;gap:14px;max-width:94vw`)}>
-          {isImage && (
-            <picture>
-              <source srcSet={lbImgWebp} type="image/webp" />
-              <img src={lbImg} alt={lbAlt} width={922} height={2049} style={sx(`max-height:80vh;max-width:min(90vw,440px);width:auto;height:auto;border-radius:6px;box-shadow:0 24px 60px rgba(0,0,0,.5);display:block`)} />
-            </picture>
-          )}
-          {isVideo && (
-            <div style={sx(`width:min(92vw,920px);aspect-ratio:16/9;border-radius:6px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.5);background:#000`)}>
-              <iframe src={lbEmbed} title="video" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowFullScreen style={sx(`width:100%;height:100%;border:0;display:block`)}></iframe>
-            </div>
-          )}
+          <picture>
+            <source srcSet={lbImgWebp} type="image/webp" />
+            <img src={lbImg} alt={lbAlt} width={922} height={2049} style={sx(`max-height:80vh;max-width:min(90vw,440px);width:auto;height:auto;border-radius:6px;box-shadow:0 24px 60px rgba(0,0,0,.5);display:block`)} />
+          </picture>
           <div style={sx(`display:flex;align-items:center;gap:12px;color:rgba(255,255,255,.85);font-family:var(--font-display);font-size:13px`)}>
             <span style={sx(`font-weight:600`)}>{lbCaption}</span>
             <span style={sx(`color:rgba(255,255,255,.5)`)}>{lbCounter}</span>

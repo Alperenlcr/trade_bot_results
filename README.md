@@ -48,7 +48,7 @@ npm run preview   # üretilen dist/'i yerel olarak sun
 │   └── guide/                     # step-1..6-tr/en.jpeg (Binance/Bybit kurulum adımları)
 └── data/
     ├── i18n.json                  # Dashboard metinleri (en / tr / ar / zh)
-    ├── config.json                # Platform linkleri, referans linki, videolar
+    ├── config.json                # Platform linkleri, referans linki
     ├── binance.json, bybit.json   # Borsa başına AUM + takipçi; sitede toplamları (indices.yml günceller)
     ├── indices/daily.csv, hourly.csv # S&P 500 / Nasdaq-100 (indices.yml günceller; grafikte karşılaştırma)
     └── tables/                    # Tüm sayısal veri (CSV) — otomasyon burayı günceller
