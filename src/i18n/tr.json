@@ -76,23 +76,27 @@
   "pages": {
     "about": {
       "title": "Hakkımızda",
-      "description": "ExecutorBTC, Binance ve Bybit'te takip edilen algoritmik bir BTC copy-trading botudur. Yaklaşımımız, şeffaflık ve yol haritası.",
+      "description": "Executor Trading, Binance ve Bybit'te takip edilebilen algoritmik trading stratejileri geliştirir. Biz kimiz, yaklaşımımız ve yol haritamız.",
       "sections": [
         {
-          "title": "ExecutorBTC nedir?",
-          "body": "ExecutorBTC, BTC işlemi yapan tek bir algoritmik stratejidir. Binance veya Bybit'in copy trading sistemi üzerinden takip edilir: fonların kendi borsa hesabında kalır, senden şifre veya API anahtarı istemeyiz."
+          "title": "Executor Trading nedir?",
+          "body": "Executor Trading, algoritmik trading stratejileri geliştirip bunları büyük borsaların copy trading sistemleri üzerinden erişilebilir kılar. Amacımız; sürekli ekran başında olmayı ya da duygusal kararlar vermeyi gerektirmeyen, kurala ve veriye dayalı stratejileri herkesin takip edebileceği hâle getirmek."
         },
         {
           "title": "Yaklaşımımız",
-          "body": "Strateji yalnızca BTC işlemi yapar, 2x kaldıraç kullanır ve işlem sıklığını düşük tutar; kısa vadeli kazanç kovalamak yerine büyük hareketleri yakalamayı hedefler. Geçmiş veriyle geliştirildi, farklı piyasa koşullarında test edildi ve bugün canlıda çalışıyor. Takipçiler farklı zamanlarda katıldığı için her takipçinin sonucu farklıdır."
+          "body": "Her strateji canlıya alınmadan önce geçmiş veriyle geliştirilir ve farklı piyasa koşullarında test edilir. Kısa vadeli kazanç yerine risk kontrolüne ve istikrara odaklanırız; stratejilerimizi sade, sistematik ve ölçülebilir tutarız."
+        },
+        {
+          "title": "Stratejilerimiz",
+          "body": "Şu an aktif olan stratejimiz ExecutorBTC'dir: yalnızca BTC işlemi yapar, 2x kaldıraç kullanır ve işlem sıklığını düşük tutarak büyük hareketleri yakalamayı hedefler."
         },
         {
           "title": "Şeffaflık",
-          "body": "Stratejinin işlem geçmişi borsanın copy trading sayfasında herkese açıktır. Kâr payı yalnızca kârlı dönemlerde, borsanın standart oranıyla alınır; kâr olmayan dönemde kesinti yapılmaz."
+          "body": "Stratejilerimizin işlem geçmişi borsaların copy trading sayfalarında herkese açıktır. Kâr payı yalnızca kârlı dönemlerde, borsanın standart oranıyla alınır; kâr olmayan dönemde kesinti yapılmaz."
         },
         {
           "title": "Sırada ne var?",
-          "body": "Executor'u geliştirme çalışmaları sürüyor ve belirli aralıklarla yeni sürümler devreye alınıyor. Altcoinler ve kripto dışı varlıklar için de stratejiler planlanıyor."
+          "body": "Mevcut stratejilerimizi geliştirmeye devam ediyor ve belirli aralıklarla yeni sürümler yayınlıyoruz. Altcoinler ve kripto dışı varlıklar için de yeni stratejiler planlanıyor."
         }
       ]
     },

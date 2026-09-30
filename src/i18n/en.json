@@ -76,23 +76,27 @@
   "pages": {
     "about": {
       "title": "About",
-      "description": "ExecutorBTC is an algorithmic BTC copy-trading bot followed on Binance and Bybit. Our approach, transparency and roadmap.",
+      "description": "Executor Trading develops algorithmic trading strategies you can follow on Binance and Bybit. Who we are, our approach and our roadmap.",
       "sections": [
         {
-          "title": "What is ExecutorBTC?",
-          "body": "ExecutorBTC is a single algorithmic strategy that trades BTC. You follow it through the copy-trading system of Binance or Bybit: your funds stay in your own exchange account, and we never ask for your password or API key."
+          "title": "What is Executor Trading?",
+          "body": "Executor Trading develops algorithmic trading strategies and makes them available through the copy-trading systems of major exchanges. Our goal is to offer rule-based, data-driven strategies that anyone can follow, without the need for constant screen time or emotional decisions."
         },
         {
           "title": "Our approach",
-          "body": "The strategy trades BTC only, uses 2x leverage and keeps trade frequency low, aiming to catch large moves rather than chase short-term gains. It was developed on historical data, tested under different market conditions and runs live today. Because followers join at different times, each follower's result is different."
+          "body": "Every strategy is developed on historical data and tested under different market conditions before it goes live. We focus on risk control and consistency rather than short-term gains, and we keep our strategies simple, systematic and measurable."
+        },
+        {
+          "title": "Our strategies",
+          "body": "Our currently active strategy is ExecutorBTC: it trades BTC only, uses 2x leverage and keeps trade frequency low, aiming to catch large moves."
         },
         {
           "title": "Transparency",
-          "body": "The strategy's trade history is publicly visible on the exchange's copy-trading page. Profit share is taken only in profitable periods, at the exchange's standard rate; nothing is deducted when there is no profit."
+          "body": "The trade history of our strategies is publicly visible on the exchanges' copy-trading pages. Profit share is taken only in profitable periods, at the exchange's standard rate; nothing is deducted when there is no profit."
         },
         {
           "title": "What's next",
-          "body": "Work on improving the executor continues and new versions are released at regular intervals. Strategies for altcoins and non-crypto assets are planned."
+          "body": "We keep improving our existing strategies and release new versions at regular intervals. Strategies for altcoins and non-crypto assets are planned."
         }
       ]
     },
