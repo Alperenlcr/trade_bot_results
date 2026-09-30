@@ -457,7 +457,7 @@ export default class App extends React.Component<Props, State> {
   calc(amount: number, t0: number, monthly = 0) {
     const d = this.chartData.all;
     const i0 = d ? d.findIndex((x) => x.t >= t0) : -1;
-    if (!d || i0 < 0 || i0 >= d.length - 1 || !(amount > 0) || !(monthly >= 0)) return null;
+    if (!d || i0 < 0 || i0 >= d.length - 1 || !(amount >= 0) || !(monthly >= 0)) return null;
     const c = this.cfg.calculator ?? {};
     const share = c.deductProfitShare ? (c.profitSharePct ?? 0) / 100 : 0;
     const eq = (x: number) => 1 + x / 100;
@@ -474,10 +474,11 @@ export default class App extends React.Component<Props, State> {
     for (let k = i0 + 1; k < d.length; k++) {
       v *= eq(d[k].p) / eq(d[k - 1].p);
       if (v > hwm) { v -= (v - hwm) * share; hwm = v; }
-      peak = Math.max(peak, v); dd = Math.min(dd, (v / peak - 1) * 100);
-      for (; j < joins.length && joins[j] <= d[k].t; j++) { peak *= (v + monthly) / v; v += monthly; hwm += monthly; btcU += monthly / eq(d[k].b); }
+      peak = Math.max(peak, v); if (peak > 0) dd = Math.min(dd, (v / peak - 1) * 100);
+      for (; j < joins.length && joins[j] <= d[k].t; j++) { peak = v > 0 ? peak * (v + monthly) / v : monthly; v += monthly; hwm += monthly; btcU += monthly / eq(d[k].b); }
     }
     const pending = (joins.length - j) * monthly;
+    if (amount + joins.length * monthly <= 0) return null;
     return { value: v + pending, dd, btc: btcU * eq(last.b) + pending,
       invested: amount + joins.length * monthly };
   }
@@ -927,7 +928,7 @@ export default class App extends React.Component<Props, State> {
         <div style={sx(`border:1px solid var(--border);border-top:2px solid var(--accent);border-radius:6px;background:var(--surface);box-shadow:var(--shadow);padding:24px`)}>
           <div style={sx(`display:flex;gap:16px;flex-wrap:wrap;margin-bottom:24px`)}>
             <label className="field">{t.calc_amount}
-              <input type="number" inputMode="decimal" min="1" step="any" value={this.state.calcAmount} onChange={this.setCalcAmount} className="inp lg" style={sx(`width:180px`)} />
+              <input type="number" inputMode="decimal" min="0" step="any" value={this.state.calcAmount} onChange={this.setCalcAmount} className="inp lg" style={sx(`width:180px`)} />
             </label>
             <label className="field">{t.calc_date}
               <input type="date" min={this.isoDate(this.allEnds[0].t)} max={this.isoDate(this.allEnds[1].t - 864e5)} value={this.state.calcDate} onChange={this.setCalcDate} className="inp lg" />
