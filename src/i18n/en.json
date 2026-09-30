@@ -43,35 +43,19 @@
       },
       {
         "q": "Who shouldn't invest?",
-        "a": "It may not suit investors looking for short-term gains. Because the strategy aims to catch large moves, some positions stay open for a long time and the number of trades can be low; the expected performance may not show over a few weeks or months. Historical analyses show more stable results over longer periods."
-      },
-      {
-        "q": "How should I invest?",
-        "a": "Returns become more stable the longer you stay invested. So rather than a large lump sum, adding capital at regular intervals (for example, monthly) with a long-term view is more suitable."
-      },
-      {
-        "q": "I want to invest, but how?",
-        "a": "The Guide section below has links to the platforms and setup steps. If you run into problems, reach us via the \"Contact Us\" button."
+        "a": "It may not suit investors looking for short-term gains. Because the strategy aims to catch large moves, some positions stay open for a long time and the number of trades can be low; the expected performance may not show over a few weeks or months. Returns have historically been more stable over longer periods, so adding capital at regular intervals (for example, monthly) with a long-term view suits better than investing a large lump sum at once."
       },
       {
         "q": "What are the risks?",
-        "a": "Every algorithmic strategy carries risk. The strategy was developed on historical data and runs live today. In backtests using rolling one-year windows, none of the periods examined showed an annual loss; however, a backtest is a simulation, not the result of real trades. Market dynamics can change and past performance does not guarantee future results. Review the charts, trades and analyses to make your own assessment."
+        "a": "The strategy was developed on historical data and runs live today. In backtests using rolling one-year windows, none of the periods examined showed an annual loss; however, a backtest is a simulation, not the result of real trades. Market dynamics can change. Review the charts, trades and analyses to make your own assessment."
       },
       {
         "q": "Is my money safe?",
         "a": "In copy trading, your assets are held in your own account and only you have access. The system only copies opened and closed trades. You can set additional limits, such as allowing BTC trades only and a maximum of 2x leverage."
       },
       {
-        "q": "Can I withdraw my money later?",
-        "a": "Yes. You can leave the system at any time and withdraw all or part of your balance."
-      },
-      {
         "q": "How is it different from other copy-trading leads?",
-        "a": "This strategy trades BTC only, uses 2x leverage and keeps trade frequency low. When evaluating a portfolio, we recommend reviewing past performance, leverage, traded assets and maximum drawdown. The goal is a controlled, long-term approach rather than high-risk short-term trading."
-      },
-      {
-        "q": "Do I have to open trades manually?",
-        "a": "No. Once the copy-trading connection is set up, trades run fully automatically; opening, closing and managing positions is handled by the system."
+        "a": "When evaluating a portfolio, we recommend reviewing past performance, leverage, traded assets and maximum drawdown. The goal is a controlled, long-term approach rather than high-risk short-term trading."
       },
       {
         "q": "Can I set my own leverage?",

@@ -43,35 +43,19 @@
       },
       {
         "q": "Kimler yatırım yapmamalı?",
-        "a": "Kısa vadeli kazanç hedefleyen yatırımcılar için uygun olmayabilir. Strateji büyük hareketleri yakaladığından bazı pozisyonlar uzun süre açık kalır ve işlem sayısı düşük olabilir; birkaç haftalık/aylık sürelerde beklenen performans görülmeyebilir. Tarihsel analizler daha uzun sürelerde daha istikrarlı sonuç gösterir."
-      },
-      {
-        "q": "Nasıl yatırım yapmalı?",
-        "a": "Yatırım süresi uzadıkça getiriler daha istikrarlı hale gelir. Bu nedenle tek seferde büyük miktar yerine düzenli aralıklarla (örneğin her ay) sermaye eklemek ve uzun vadeli yaklaşmak daha uygundur."
-      },
-      {
-        "q": "Yatırım yapmak istiyorum ama nasıl?",
-        "a": "Aşağıdaki Rehber bölümünde platformlara ve kurulum adımlarına yönelik bağlantılar var. Sorun yaşarsanız \"İletişime Geç\" butonundan bize ulaşabilirsiniz."
+        "a": "Kısa vadeli kazanç hedefleyen yatırımcılar için uygun olmayabilir. Strateji büyük hareketleri yakaladığından bazı pozisyonlar uzun süre açık kalır ve işlem sayısı düşük olabilir; birkaç haftalık/aylık sürelerde beklenen performans görülmeyebilir. Tarihsel olarak getiriler uzun sürelerde daha istikrarlıdır; bu nedenle tek seferde büyük miktar yerine düzenli aralıklarla (örneğin her ay) sermaye eklemek ve uzun vadeli yaklaşmak daha uygundur."
       },
       {
         "q": "Riski nedir?",
-        "a": "Her algoritmik strateji risk içerir. Strateji geçmiş veriyle geliştirildi ve bugün canlıda çalışıyor. Yıllık kayan pencerelerle yapılan geriye dönük testlerde (backtest) incelenen dönemlerin hiçbirinde yıllık zarar görülmedi; ancak backtest bir simülasyondur, gerçek işlem sonucu değildir. Piyasa dinamikleri değişebilir ve geçmiş performans geleceği garanti etmez. Grafikleri, işlemleri ve analizleri inceleyerek kendi değerlendirmenizi yapın."
+        "a": "Strateji geçmiş veriyle geliştirildi ve bugün canlıda çalışıyor. Yıllık kayan pencerelerle yapılan geriye dönük testlerde (backtest) incelenen dönemlerin hiçbirinde yıllık zarar görülmedi; ancak backtest bir simülasyondur, gerçek işlem sonucu değildir. Piyasa dinamikleri değişebilir. Grafikleri, işlemleri ve analizleri inceleyerek kendi değerlendirmenizi yapın."
       },
       {
         "q": "Param güvende mi?",
         "a": "Copy trading'de varlıklarınız kendi hesabınızda tutulur ve erişim yalnızca sizindir. Sistem yalnızca açılan/kapatılan işlemleri kopyalar. Yalnızca BTC işlemine izin vermek ve maksimum 2x kaldıraç gibi ek sınırlar tanımlayabilirsiniz."
       },
       {
-        "q": "Paramı sonradan çekebilir miyim?",
-        "a": "Evet. İstediğiniz zaman sistemden çıkabilir, bakiyenizin tamamını veya bir kısmını çekebilirsiniz."
-      },
-      {
         "q": "Diğer copy trade liderlerinden farkı nedir?",
-        "a": "Bu strateji yalnızca BTC işlemi yapar, 2x kaldıraç kullanır ve işlem sıklığını düşük tutar. Bir portföyü değerlendirirken geçmiş performans, kaldıraç, işlem yapılan varlıklar ve maksimum düşüş oranlarını incelemeniz önerilir. Amaç, yüksek riskli kısa vadeli işlemler yerine kontrollü ve uzun vadeli bir yaklaşımdır."
-      },
-      {
-        "q": "İşlemleri manuel mi açacağım?",
-        "a": "Hayır. Copy trading bağlantısı kurulduktan sonra işlemler tamamen otomatik gerçekleşir; pozisyon açma, kapatma ve yönetim sistem tarafından yürütülür."
+        "a": "Bir portföyü değerlendirirken geçmiş performans, kaldıraç, işlem yapılan varlıklar ve maksimum düşüş oranlarını incelemeniz önerilir. Amaç, yüksek riskli kısa vadeli işlemler yerine kontrollü ve uzun vadeli bir yaklaşımdır."
       },
       {
         "q": "Kendi kaldıraç oranımı belirleyebilir miyim?",

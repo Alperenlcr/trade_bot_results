@@ -131,23 +131,15 @@
     "strategy": [
       {
         "t": "Trend-following system",
-        "b": "Executor Trade is a trend-following bot trading BTC. It aims to capture major market moves while keeping losses small. Trade frequency is low; some positions stay open for a long time."
+        "b": "Executor Trade is a trend-following bot trading BTC. It aims to capture major market moves while keeping losses small. Trade frequency is low and some positions stay open for a long time, so maker/taker commissions and funding fees have stayed under ~5% per year in long-term live usage."
       },
       {
         "t": "2x leverage, BTC only",
         "b": "The system only trades BTC/USDT futures and typically uses 2x leverage. Backtests assume 100% capital usage; live usage typically uses ~85% capital to leave an extra safety margin."
       },
       {
-        "t": "Low cost",
-        "b": "The strategy includes maker/taker commissions and funding fees. Because trade frequency is low, the total impact of these costs has stayed under ~5% per year in long-term live usage."
-      },
-      {
         "t": "Rule-based, fully automated",
         "b": "Entries and exits follow fixed rules; there is no emotional or manual intervention. The system makes the same decision every time it sees the same market conditions."
-      },
-      {
-        "t": "Your funds stay yours",
-        "b": "In copy trading your assets remain in your own account and only you have access. The system only copies the trades the manager opens and closes."
       },
       {
         "t": "Honest about risk",
@@ -332,23 +324,15 @@
     "strategy": [
       {
         "t": "Trend-takip sistemi",
-        "b": "Executor Trade, BTC üzerinde çalışan bir trend-takip botudur. Büyük piyasa hareketlerini yakalamayı hedeflerken kayıpları küçük tutar. İşlem sıklığı düşüktür; bazı pozisyonlar uzun süre açık kalır."
+        "b": "Executor Trade, BTC üzerinde çalışan bir trend-takip botudur. Büyük piyasa hareketlerini yakalamayı hedeflerken kayıpları küçük tutar. İşlem sıklığı düşüktür ve bazı pozisyonlar uzun süre açık kalır; bu sayede maker/taker komisyonları ve funding ücretlerinin toplam etkisi uzun vadeli canlı kullanımda yıllık ~%5'in altında kalmıştır."
       },
       {
         "t": "2x kaldıraç, yalnızca BTC",
         "b": "Sistem sadece BTC/USDT futures işlemi yapar ve genellikle 2x kaldıraç kullanır. Backtestler %100 sermaye kullanımını varsayar; canlıda ek güvenlik payı için genellikle ~%85 sermaye kullanılır."
       },
       {
-        "t": "Düşük maliyet",
-        "b": "Strateji maker/taker komisyonları ve funding ücretlerini içerir. İşlem sıklığı düşük olduğundan bu maliyetlerin toplam etkisi uzun vadeli canlı kullanımda yıllık ~%5'in altında kalmıştır."
-      },
-      {
         "t": "Kuralları belli, tamamen otomatik",
         "b": "Girişler ve çıkışlar sabit kurallarla verilir; duygusal ya da elle müdahale yok. Sistem aynı piyasa koşulunda her zaman aynı kararı verir."
-      },
-      {
-        "t": "Paranız sizde kalır",
-        "b": "Copy trading'de varlıklarınız kendi hesabınızda durur ve erişim yalnızca sizdedir. Sistem yalnızca yöneticinin açtığı/kapattığı işlemleri otomatik kopyalar."
       },
       {
         "t": "Dürüst risk",
@@ -532,23 +516,15 @@
     "strategy": [
       {
         "t": "نظام لتتبّع الاتجاه",
-        "b": "Executor Trade بوت لتتبّع الاتجاه يتداول BTC. يهدف إلى التقاط تحركات السوق الكبيرة مع إبقاء الخسائر صغيرة. وتيرة التداول منخفضة؛ وتبقى بعض المراكز مفتوحة لفترة طويلة."
+        "b": "Executor Trade بوت لتتبّع الاتجاه يتداول BTC. يهدف إلى التقاط تحركات السوق الكبيرة مع إبقاء الخسائر صغيرة. وتيرة التداول منخفضة وتبقى بعض المراكز مفتوحة لفترة طويلة، لذلك بقي الأثر الإجمالي لعمولات الصانع/الآخذ ورسوم التمويل دون ~5% سنويًا في الاستخدام المباشر طويل الأمد."
       },
       {
         "t": "رافعة 2x، BTC فقط",
         "b": "يتداول النظام عقود BTC/USDT الآجلة فقط ويستخدم عادةً رافعة 2x. تفترض الاختبارات الرجعية استخدام 100% من رأس المال؛ أما الاستخدام المباشر فيستخدم عادةً نحو 85% لترك هامش أمان إضافي."
       },
       {
-        "t": "تكلفة منخفضة",
-        "b": "تتضمن الاستراتيجية عمولات الصانع/الآخذ ورسوم التمويل. ولأن وتيرة التداول منخفضة، بقي الأثر الإجمالي لهذه التكاليف دون ~5% سنويًا في الاستخدام المباشر طويل الأمد."
-      },
-      {
         "t": "قائم على قواعد، مؤتمت بالكامل",
         "b": "تتم عمليات الدخول والخروج وفق قواعد ثابتة، دون أي تدخل عاطفي أو يدوي. يتخذ النظام القرار نفسه في كل مرة يواجه فيها ظروف السوق نفسها."
-      },
-      {
-        "t": "أموالك تبقى لك",
-        "b": "في نسخ التداول تبقى أصولك في حسابك الخاص ولا يصل إليها سواك. ينسخ النظام فقط الصفقات التي يفتحها المدير ويغلقها."
       },
       {
         "t": "صريح بشأن المخاطر",
@@ -733,23 +709,15 @@
     "strategy": [
       {
         "t": "趋势跟踪系统",
-        "b": "Executor Trade 是一款交易 BTC 的趋势跟踪机器人，旨在捕捉市场大行情并控制亏损。交易频率较低，部分仓位会持有较长时间。"
+        "b": "Executor Trade 是一款交易 BTC 的趋势跟踪机器人，旨在捕捉市场大行情并控制亏损。交易频率较低，部分仓位会持有较长时间，因此在长期实盘中，挂单/吃单手续费和资金费率的总影响每年保持在约 5% 以下。"
       },
       {
         "t": "2 倍杠杆，仅交易 BTC",
         "b": "系统只交易 BTC/USDT 合约，通常使用 2 倍杠杆。回测假设使用 100% 资金；实盘通常使用约 85% 资金，以留出额外的安全边际。"
       },
       {
-        "t": "低成本",
-        "b": "策略已计入挂单/吃单手续费和资金费率。由于交易频率低，在长期实盘中这些成本的总影响每年保持在约 5% 以下。"
-      },
-      {
         "t": "规则明确，全自动运行",
         "b": "入场和出场均遵循固定规则，没有情绪或人工干预。在相同的市场条件下，系统每次都会做出相同的决策。"
-      },
-      {
-        "t": "资金始终属于您",
-        "b": "跟单时您的资产留在您自己的账户中，只有您能访问。系统只复制交易员开仓和平仓的操作。"
       },
       {
         "t": "坦诚面对风险",

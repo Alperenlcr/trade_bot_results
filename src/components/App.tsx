@@ -1092,7 +1092,7 @@ export default class App extends React.Component<Props, State> {
           <div className="eyebrow">{t.str_eyebrow}</div>
           <h2 className="sec-title">{t.str_title}</h2>
         </div>
-        <div style={sx(`display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px`)}>
+        <div style={sx(`display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:14px`)}>
           {strategyCards.map((c, i) => (
             <div key={i} className="lift tile">
               <div style={sx(`font-family:var(--font-display);font-weight:600;font-size:17px;margin-bottom:9px;letter-spacing:-.3px`)}>{c.t}</div>
