@@ -11,8 +11,8 @@
   },
   "hero": {
     "stats": {
-      "portfolio": "Takipçilerin toplam bakiyesi",
-      "followers": "Takip eden yatırımcı"
+      "portfolio": "Yönetilen toplam varlık",
+      "followers": "Şu an kopyalayan yatırımcı"
     }
   },
   "how": {

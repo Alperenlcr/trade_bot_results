@@ -11,8 +11,8 @@
   },
   "hero": {
     "stats": {
-      "portfolio": "跟单者总资金",
-      "followers": "跟单投资者"
+      "portfolio": "管理资产总额",
+      "followers": "当前跟单人数"
     }
   },
   "how": {

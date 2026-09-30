@@ -11,8 +11,8 @@
   },
   "hero": {
     "stats": {
-      "portfolio": "Total follower capital",
-      "followers": "Investors following"
+      "portfolio": "Assets under management",
+      "followers": "Current copy traders"
     }
   },
   "how": {
