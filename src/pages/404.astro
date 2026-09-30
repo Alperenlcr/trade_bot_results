@@ -10,7 +10,7 @@ import Footer from '../components/Footer.astro';
 import CookieConsent from '../components/CookieConsent.astro';
 import { defaultLang, getPath, langs, languages, useTranslations } from '../i18n/utils';
 
-const title = (lang: typeof defaultLang) => `${useTranslations(lang).pages.notFound.title} — Executor Trade`;
+const title = (lang: typeof defaultLang) => `${useTranslations(lang).pages.notFound.title} — Executor Trading`;
 const t = useTranslations(defaultLang).pages.notFound;
 ---
 <!doctype html>

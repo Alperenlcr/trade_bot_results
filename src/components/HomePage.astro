@@ -10,11 +10,11 @@ const t = useTranslations(lang);
 const url = new URL(getPath('home', lang), Astro.site).href;
 
 const schema = [
-  { '@context': 'https://schema.org', '@type': 'WebSite', name: 'Executor Trade', url, inLanguage: languages[lang].hreflang },
+  { '@context': 'https://schema.org', '@type': 'WebSite', name: 'Executor Trading', url, inLanguage: languages[lang].hreflang },
   {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
-    name: 'Executor Trade',
+    name: 'Executor Trading',
     applicationCategory: 'FinanceApplication',
     operatingSystem: 'Web',
     description: t.meta.description,

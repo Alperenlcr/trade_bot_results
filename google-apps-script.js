@@ -48,7 +48,7 @@ function saveContact(data) {
   MailApp.sendEmail({
     to: CONTACT_TO,
     replyTo: String(data.email || '').slice(0, 200),
-    subject: 'Executor Trade iletişim: ' + (String(data.name || '').slice(0, 100) || data.email),
+    subject: 'Executor Trading iletişim: ' + (String(data.name || '').slice(0, 100) || data.email),
     body: String(data.message || '').slice(0, 5000) + '\n\n— ' + String(data.name || '') + ' <' + String(data.email || '') + '> (' + String(data.lang || '') + ')',
   });
 }

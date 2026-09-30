@@ -17,7 +17,7 @@ const sectionBase = Astro.props.route === 'home' ? '' : getPath('home', lang); /
 ---
 <header class="sticky top-0 z-40 border-b border-border bg-bg/90 backdrop-blur">
   <nav class="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-4 sm:px-6">
-    <a href={getPath('home', lang)} aria-label="Executor Trade"><Logo /></a>
+    <a href={getPath('home', lang)} aria-label="Executor Trading"><Logo /></a>
     <div class="hidden items-center gap-5 text-sm lg:flex">
       {sections.map(([id, label]) => <a href={`${sectionBase}#${id}`} class="text-text-soft hover:text-text">{label}</a>)}
     </div>

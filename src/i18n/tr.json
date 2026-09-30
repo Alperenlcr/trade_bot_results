@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Executor Trade — Şeffaf performans. Akıllı takip.",
-    "description": "Executor Trade, algoritmik BTC stratejisinin işlemlerini gerçek zamanlı ve şeffaf şekilde Binance veya Bybit hesabına yansıtan copy-trading botudur."
+    "title": "Executor Trading — Şeffaf performans. Akıllı takip.",
+    "description": "Executor Trading, algoritmik BTC stratejisinin işlemlerini gerçek zamanlı ve şeffaf şekilde Binance veya Bybit hesabına yansıtan copy-trading botudur."
   },
   "nav": {
     "home": "Ana Sayfa",
@@ -20,7 +20,7 @@
     "steps": [
       {
         "title": "Borsanda takip et",
-        "body": "Binance veya Bybit'in copy trading sayfasından Executor Trade'i takip etmeye başla. Ek uygulama veya API anahtarı gerekmez."
+        "body": "Binance veya Bybit'in copy trading sayfasından Executor Trading'i takip etmeye başla. Ek uygulama veya API anahtarı gerekmez."
       },
       {
         "title": "İşlemler otomatik kopyalanır",
@@ -76,11 +76,11 @@
   "pages": {
     "about": {
       "title": "Hakkımızda",
-      "description": "Executor Trade, Binance ve Bybit'te takip edilen algoritmik bir BTC copy-trading botudur. Yaklaşımımız, şeffaflık ve yol haritası.",
+      "description": "Executor Trading, Binance ve Bybit'te takip edilen algoritmik bir BTC copy-trading botudur. Yaklaşımımız, şeffaflık ve yol haritası.",
       "sections": [
         {
-          "title": "Executor Trade nedir?",
-          "body": "Executor Trade, BTC işlemi yapan tek bir algoritmik stratejidir. Binance veya Bybit'in copy trading sistemi üzerinden takip edilir: fonların kendi borsa hesabında kalır, senden şifre veya API anahtarı istemeyiz."
+          "title": "Executor Trading nedir?",
+          "body": "Executor Trading, BTC işlemi yapan tek bir algoritmik stratejidir. Binance veya Bybit'in copy trading sistemi üzerinden takip edilir: fonların kendi borsa hesabında kalır, senden şifre veya API anahtarı istemeyiz."
         },
         {
           "title": "Yaklaşımımız",
@@ -98,11 +98,11 @@
     },
     "risk": {
       "title": "Risk Bildirimi",
-      "description": "Executor Trade'i takip etmenin riskleri: kripto volatilitesi, kaldıraç ve likidasyon, strateji, borsa ve teknik riskler. Yatırım öncesi okuyun.",
+      "description": "Executor Trading'i takip etmenin riskleri: kripto volatilitesi, kaldıraç ve likidasyon, strateji, borsa ve teknik riskler. Yatırım öncesi okuyun.",
       "sections": [
         {
           "title": "Yatırım tavsiyesi değildir",
-          "body": "Bu sitedeki bilgiler genel bilgilendirme amaçlıdır; yatırım, finans veya vergi tavsiyesi değildir. Executor Trade'i takip etme kararı tamamen sana aittir; gerekirse bağımsız danışmanlık al."
+          "body": "Bu sitedeki bilgiler genel bilgilendirme amaçlıdır; yatırım, finans veya vergi tavsiyesi değildir. Executor Trading'i takip etme kararı tamamen sana aittir; gerekirse bağımsız danışmanlık al."
         },
         {
           "title": "Piyasa riski",
@@ -114,7 +114,7 @@
         },
         {
           "title": "Strateji riski",
-          "body": "Executor Trade, geçmiş veriyle geliştirilip test edilmiş algoritmik bir stratejidir. Piyasa koşulları değişebilir; geçmişte işe yarayan bir strateji gelecekte düşük performans gösterebilir veya zarar edebilir. Geçmiş performans gelecekteki sonuçların garantisi değildir."
+          "body": "Executor Trading, geçmiş veriyle geliştirilip test edilmiş algoritmik bir stratejidir. Piyasa koşulları değişebilir; geçmişte işe yarayan bir strateji gelecekte düşük performans gösterebilir veya zarar edebilir. Geçmiş performans gelecekteki sonuçların garantisi değildir."
         },
         {
           "title": "Senin sonucun farklı olabilir",
@@ -122,7 +122,7 @@
         },
         {
           "title": "Borsa ve teknik riskler",
-          "body": "Kopyalama Binance veya Bybit üzerinde yürür. Borsa kesintileri, bakım, kural değişiklikleri veya hesap kısıtlamaları işlemlerin zamanında kopyalanmasını ya da kapatılmasını engelleyebilir. Executor Trade borsaların işleyişinden sorumlu değildir."
+          "body": "Kopyalama Binance veya Bybit üzerinde yürür. Borsa kesintileri, bakım, kural değişiklikleri veya hesap kısıtlamaları işlemlerin zamanında kopyalanmasını ya da kapatılmasını engelleyebilir. Executor Trading borsaların işleyişinden sorumlu değildir."
         },
         {
           "title": "Yasal ve vergisel yükümlülükler",
@@ -132,11 +132,11 @@
     },
     "privacy": {
       "title": "Gizlilik Politikası",
-      "description": "Executor Trade web sitesinin hangi kişisel verileri, neden ve ne süreyle işlediği, kimlerle paylaştığı ve KVKK/GDPR kapsamındaki hakların.",
+      "description": "Executor Trading web sitesinin hangi kişisel verileri, neden ve ne süreyle işlediği, kimlerle paylaştığı ve KVKK/GDPR kapsamındaki hakların.",
       "sections": [
         {
           "title": "Kapsam ve veri sorumlusu",
-          "body": "Bu politika Executor Trade web sitesini kapsar. Veri sorumlusu Executor Trade'dir; her sayfadaki \"İletişime Geç\" düğmesiyle bize ulaşabilirsiniz. Sitede üyelik, hesap veya ödeme yoktur; tek form isteğe bağlı referans formudur."
+          "body": "Bu politika Executor Trading web sitesini kapsar. Veri sorumlusu Executor Trading'dir; her sayfadaki \"İletişime Geç\" düğmesiyle bize ulaşabilirsiniz. Sitede üyelik, hesap veya ödeme yoktur; tek form isteğe bağlı referans formudur."
         },
         {
           "title": "İşlediğimiz veriler",
@@ -148,7 +148,7 @@
         },
         {
           "title": "Borsa hesabın",
-          "body": "Kopyalama Binance veya Bybit üzerinde yürür ve hesap verilerin borsa tarafından kendi gizlilik politikasına göre işlenir. Executor Trade şifreni veya API anahtarını istemez ve fonlarına erişemez. Yalnızca borsanın lider trader'a gösterdiği sınırlı bilgiyi görebiliriz ve bunu sadece stratejiyi yürütmek ve takipçi sayısı gibi toplu rakamları yayımlamak için kullanırız."
+          "body": "Kopyalama Binance veya Bybit üzerinde yürür ve hesap verilerin borsa tarafından kendi gizlilik politikasına göre işlenir. Executor Trading şifreni veya API anahtarını istemez ve fonlarına erişemez. Yalnızca borsanın lider trader'a gösterdiği sınırlı bilgiyi görebiliriz ve bunu sadece stratejiyi yürütmek ve takipçi sayısı gibi toplu rakamları yayımlamak için kullanırız."
         },
         {
           "title": "Hizmet sağlayıcılar ve yurt dışına aktarım",
@@ -170,7 +170,7 @@
     },
     "cookies": {
       "title": "Çerez Politikası",
-      "description": "Executor Trade'in hangi çerezleri ve benzeri teknolojileri neden, ne süreyle kullandığı ve tercihini nasıl değiştirebileceğin.",
+      "description": "Executor Trading'in hangi çerezleri ve benzeri teknolojileri neden, ne süreyle kullandığı ve tercihini nasıl değiştirebileceğin.",
       "sections": [
         {
           "title": "Kısaca",
@@ -200,15 +200,15 @@
     },
     "terms": {
       "title": "Kullanım Şartları",
-      "description": "Executor Trade web sitesi kullanım şartları: hizmetin niteliği, sorumlulukların, referans bağlantıları, sorumluluk sınırı ve değişiklikler.",
+      "description": "Executor Trading web sitesi kullanım şartları: hizmetin niteliği, sorumlulukların, referans bağlantıları, sorumluluk sınırı ve değişiklikler.",
       "sections": [
         {
           "title": "Kabul",
-          "body": "Executor Trade web sitesini kullanarak bu şartları kabul etmiş olursun. Site tanıtım ve bilgilendirme amaçlıdır; şartları kabul etmiyorsan lütfen kullanma."
+          "body": "Executor Trading web sitesini kullanarak bu şartları kabul etmiş olursun. Site tanıtım ve bilgilendirme amaçlıdır; şartları kabul etmiyorsan lütfen kullanma."
         },
         {
-          "title": "Executor Trade nedir, ne değildir",
-          "body": "Executor Trade, Binance ve Bybit'in copy trading sistemleri üzerinden takip edebileceğin algoritmik bir stratejidir. Executor Trade bir borsa, aracı kurum, portföy yöneticisi veya yatırım danışmanı değildir; fonlarını tutmaz ve yönetmez. Copy trading hizmetini borsa sunar ve borsayla ilişkin borsanın kendi şartlarına tabidir."
+          "title": "Executor Trading nedir, ne değildir",
+          "body": "Executor Trading, Binance ve Bybit'in copy trading sistemleri üzerinden takip edebileceğin algoritmik bir stratejidir. Executor Trading bir borsa, aracı kurum, portföy yöneticisi veya yatırım danışmanı değildir; fonlarını tutmaz ve yönetmez. Copy trading hizmetini borsa sunar ve borsayla ilişkin borsanın kendi şartlarına tabidir."
         },
         {
           "title": "Yatırım tavsiyesi değildir",
@@ -224,7 +224,7 @@
         },
         {
           "title": "Ücretler ve referans bağlantıları",
-          "body": "Siteyi kullanmak ücretsizdir. Kâr payı borsa tarafından, borsanın kurallarına göre ve yalnızca kârlı dönemlerde alınır. Binance ve Bybit bağlantıları referans bağlantılarıdır; bunları kullandığında Executor Trade borsadan komisyon alabilir, bu sana ek bir maliyet getirmez."
+          "body": "Siteyi kullanmak ücretsizdir. Kâr payı borsa tarafından, borsanın kurallarına göre ve yalnızca kârlı dönemlerde alınır. Binance ve Bybit bağlantıları referans bağlantılarıdır; bunları kullandığında Executor Trading borsadan komisyon alabilir, bu sana ek bir maliyet getirmez."
         },
         {
           "title": "Stratejideki değişiklikler",
@@ -232,11 +232,11 @@
         },
         {
           "title": "Fikri mülkiyet",
-          "body": "Executor Trade adı, logosu, bu sitedeki metinler ve tasarımlar Executor Trade'e aittir; izinsiz kopyalanamaz veya kullanılamaz."
+          "body": "Executor Trading adı, logosu, bu sitedeki metinler ve tasarımlar Executor Trading'e aittir; izinsiz kopyalanamaz veya kullanılamaz."
         },
         {
           "title": "Sorumluluğun sınırı",
-          "body": "Yasaların izin verdiği ölçüde Executor Trade; işlem kayıplarından, kaçırılan veya geciken işlemlerden, borsa kesintilerinden ya da bu sitedeki bilgilere dayanarak verilen kararlardan sorumlu değildir. Bu şartlar, yasa gereği sınırlandırılamayan sorumluluğu sınırlamaz."
+          "body": "Yasaların izin verdiği ölçüde Executor Trading; işlem kayıplarından, kaçırılan veya geciken işlemlerden, borsa kesintilerinden ya da bu sitedeki bilgilere dayanarak verilen kararlardan sorumlu değildir. Bu şartlar, yasa gereği sınırlandırılamayan sorumluluğu sınırlamaz."
         },
         {
           "title": "Değişiklikler ve iletişim",

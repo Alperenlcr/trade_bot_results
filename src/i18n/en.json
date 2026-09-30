@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Executor Trade — Transparent performance. Smart following.",
-    "description": "Executor Trade is a copy-trading bot that mirrors the trades of its algorithmic BTC strategy to your Binance or Bybit account in real time, transparently."
+    "title": "Executor Trading — Transparent performance. Smart following.",
+    "description": "Executor Trading is a copy-trading bot that mirrors the trades of its algorithmic BTC strategy to your Binance or Bybit account in real time, transparently."
   },
   "nav": {
     "home": "Home",
@@ -20,7 +20,7 @@
     "steps": [
       {
         "title": "Follow on your exchange",
-        "body": "Start following Executor Trade from the copy-trading page of Binance or Bybit. No extra app, no API key."
+        "body": "Start following Executor Trading from the copy-trading page of Binance or Bybit. No extra app, no API key."
       },
       {
         "title": "Trades are copied automatically",
@@ -76,11 +76,11 @@
   "pages": {
     "about": {
       "title": "About",
-      "description": "Executor Trade is an algorithmic BTC copy-trading bot followed on Binance and Bybit. Our approach, transparency and roadmap.",
+      "description": "Executor Trading is an algorithmic BTC copy-trading bot followed on Binance and Bybit. Our approach, transparency and roadmap.",
       "sections": [
         {
-          "title": "What is Executor Trade?",
-          "body": "Executor Trade is a single algorithmic strategy that trades BTC. You follow it through the copy-trading system of Binance or Bybit: your funds stay in your own exchange account, and we never ask for your password or API key."
+          "title": "What is Executor Trading?",
+          "body": "Executor Trading is a single algorithmic strategy that trades BTC. You follow it through the copy-trading system of Binance or Bybit: your funds stay in your own exchange account, and we never ask for your password or API key."
         },
         {
           "title": "Our approach",
@@ -98,11 +98,11 @@
     },
     "risk": {
       "title": "Risk Disclosure",
-      "description": "Risks of following Executor Trade: crypto volatility, leverage and liquidation, strategy, exchange and technical risks. Please read before investing.",
+      "description": "Risks of following Executor Trading: crypto volatility, leverage and liquidation, strategy, exchange and technical risks. Please read before investing.",
       "sections": [
         {
           "title": "Not investment advice",
-          "body": "Information on this site is for general purposes only and is not investment, financial or tax advice. Every decision to follow Executor Trade is yours; seek independent advice if needed."
+          "body": "Information on this site is for general purposes only and is not investment, financial or tax advice. Every decision to follow Executor Trading is yours; seek independent advice if needed."
         },
         {
           "title": "Market risk",
@@ -114,7 +114,7 @@
         },
         {
           "title": "Strategy risk",
-          "body": "Executor Trade is an algorithmic strategy developed and tested on historical data. Market conditions can change, and a strategy that worked in the past may underperform or lose money in the future. Past performance is not a guarantee of future results."
+          "body": "Executor Trading is an algorithmic strategy developed and tested on historical data. Market conditions can change, and a strategy that worked in the past may underperform or lose money in the future. Past performance is not a guarantee of future results."
         },
         {
           "title": "Your result may differ",
@@ -122,7 +122,7 @@
         },
         {
           "title": "Exchange and technical risk",
-          "body": "Copying runs on Binance or Bybit. Exchange outages, maintenance, rule changes or account restrictions may prevent trades from being copied or closed on time. Executor Trade is not responsible for the operation of the exchanges."
+          "body": "Copying runs on Binance or Bybit. Exchange outages, maintenance, rule changes or account restrictions may prevent trades from being copied or closed on time. Executor Trading is not responsible for the operation of the exchanges."
         },
         {
           "title": "Legal and tax",
@@ -132,11 +132,11 @@
     },
     "privacy": {
       "title": "Privacy Policy",
-      "description": "What personal data the Executor Trade website processes, why, for how long, who it is shared with and your rights under GDPR and KVKK.",
+      "description": "What personal data the Executor Trading website processes, why, for how long, who it is shared with and your rights under GDPR and KVKK.",
       "sections": [
         {
           "title": "Scope and controller",
-          "body": "This policy covers the Executor Trade website. The controller is Executor Trade; you can reach us with the \"Contact Us\" button on every page. The site has no sign-up, account or payment; the only form is the optional referral form."
+          "body": "This policy covers the Executor Trading website. The controller is Executor Trading; you can reach us with the \"Contact Us\" button on every page. The site has no sign-up, account or payment; the only form is the optional referral form."
         },
         {
           "title": "What we process",
@@ -148,7 +148,7 @@
         },
         {
           "title": "Your exchange account",
-          "body": "Copying runs on Binance or Bybit, and your account data is processed by the exchange under its own privacy policy. Executor Trade never asks for your password or API key and cannot access your funds. We may see only the limited information the exchange shows to a lead trader, and we use it only to run the strategy and to publish aggregated figures such as the number of followers."
+          "body": "Copying runs on Binance or Bybit, and your account data is processed by the exchange under its own privacy policy. Executor Trading never asks for your password or API key and cannot access your funds. We may see only the limited information the exchange shows to a lead trader, and we use it only to run the strategy and to publish aggregated figures such as the number of followers."
         },
         {
           "title": "Service providers and transfers",
@@ -170,7 +170,7 @@
     },
     "cookies": {
       "title": "Cookie Policy",
-      "description": "Which cookies and similar technologies Executor Trade uses, why, for how long, and how to change your choice at any time.",
+      "description": "Which cookies and similar technologies Executor Trading uses, why, for how long, and how to change your choice at any time.",
       "sections": [
         {
           "title": "In short",
@@ -200,15 +200,15 @@
     },
     "terms": {
       "title": "Terms of Use",
-      "description": "Terms of use for the Executor Trade website: the nature of the service, your responsibilities, referral links, liability and changes.",
+      "description": "Terms of use for the Executor Trading website: the nature of the service, your responsibilities, referral links, liability and changes.",
       "sections": [
         {
           "title": "Acceptance",
-          "body": "By using the Executor Trade website you accept these terms. The site is for introduction and information; if you do not accept the terms, please do not use it."
+          "body": "By using the Executor Trading website you accept these terms. The site is for introduction and information; if you do not accept the terms, please do not use it."
         },
         {
-          "title": "What Executor Trade is (and is not)",
-          "body": "Executor Trade is an algorithmic strategy that you can follow through the copy-trading systems of Binance and Bybit. Executor Trade is not an exchange, broker, portfolio manager or investment adviser, and it does not hold or manage your funds. Copy trading is provided by the exchange, and your relationship with it is governed by the exchange's own terms."
+          "title": "What Executor Trading is (and is not)",
+          "body": "Executor Trading is an algorithmic strategy that you can follow through the copy-trading systems of Binance and Bybit. Executor Trading is not an exchange, broker, portfolio manager or investment adviser, and it does not hold or manage your funds. Copy trading is provided by the exchange, and your relationship with it is governed by the exchange's own terms."
         },
         {
           "title": "Not investment advice",
@@ -224,7 +224,7 @@
         },
         {
           "title": "Fees and referral links",
-          "body": "The website is free to use. Profit share is charged by the exchange under its rules, only in profitable periods. Links to Binance and Bybit are referral links; Executor Trade may receive a commission from the exchange when you use them, at no extra cost to you."
+          "body": "The website is free to use. Profit share is charged by the exchange under its rules, only in profitable periods. Links to Binance and Bybit are referral links; Executor Trading may receive a commission from the exchange when you use them, at no extra cost to you."
         },
         {
           "title": "Changes to the strategy",
@@ -232,11 +232,11 @@
         },
         {
           "title": "Intellectual property",
-          "body": "The Executor Trade name, logo, texts and designs on this site belong to Executor Trade and may not be copied or used without permission."
+          "body": "The Executor Trading name, logo, texts and designs on this site belong to Executor Trading and may not be copied or used without permission."
         },
         {
           "title": "Limitation of liability",
-          "body": "To the extent permitted by law, Executor Trade is not liable for trading losses, missed or delayed trades, exchange outages or decisions made based on information on this site. Nothing in these terms limits liability that cannot be limited by law."
+          "body": "To the extent permitted by law, Executor Trading is not liable for trading losses, missed or delayed trades, exchange outages or decisions made based on information on this site. Nothing in these terms limits liability that cannot be limited by law."
         },
         {
           "title": "Changes and contact",

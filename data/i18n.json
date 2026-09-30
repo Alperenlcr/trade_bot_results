@@ -9,7 +9,7 @@
     "nav_guide": "Guide",
     "hero_badge": "Live · BTC futures · 2x leverage",
     "hero_title": "An algorithmic strategy that watches the BTC market for you, 24/7.",
-    "hero_sub": "Executor Trade is a trend-following system built to capture major moves while keeping losses small. Every chart, trade and analysis below is based on real historical data - verify it yourself.",
+    "hero_sub": "Executor Trading is a trend-following system built to capture major moves while keeping losses small. Every chart, trade and analysis below is based on real historical data - verify it yourself.",
     "hero_cta_primary": "Start Copy Trading",
     "st_annual": "Avg. annual return",
     "st_annual_sub": "5-year average",
@@ -93,7 +93,7 @@
     "an_res_avg": "Average",
     "an_res_max": "Best",
     "str_eyebrow": "Strategy",
-    "str_title": "How Executor Trade works",
+    "str_title": "How Executor Trading works",
     "faq_eyebrow": "FAQ",
     "faq_title": "Frequently asked questions",
     "gd_eyebrow": "GUIDE",
@@ -106,10 +106,10 @@
     "lb_prev": "Previous",
     "lb_next": "Next",
     "cta_eyebrow": "Connect",
-    "cta_title": "Diversify your portfolio with Executor Trade",
+    "cta_title": "Diversify your portfolio with Executor Trading",
     "cta_sub": "When you connect via copy trade your funds stay in your own account; the bot only copies trades automatically for you.",
     "ref_title": "Invite a Friend & Earn",
-    "ref_body": "Refer a new user to Executor Trade and earn 50% of that user's profit-share revenue for 12 months.",
+    "ref_body": "Refer a new user to Executor Trading and earn 50% of that user's profit-share revenue for 12 months.",
     "ref_btn": "Invite Now",
     "ref_modal_title": "Referral Form",
     "ref_platform": "Platform",
@@ -131,7 +131,7 @@
     "strategy": [
       {
         "t": "Trend-following system",
-        "b": "Executor Trade is a trend-following bot trading BTC. It aims to capture major market moves while keeping losses small. Trade frequency is low and some positions stay open for a long time, so maker/taker commissions and funding fees have stayed under ~5% per year in long-term live usage."
+        "b": "Executor Trading is a trend-following bot trading BTC. It aims to capture major market moves while keeping losses small. Trade frequency is low and some positions stay open for a long time, so maker/taker commissions and funding fees have stayed under ~5% per year in long-term live usage."
       },
       {
         "t": "2x leverage, BTC only",
@@ -175,9 +175,9 @@
     "err_new_nick": "Please enter the referred user's nickname.",
     "ref_terms_sections": [
       {
-        "title": "Executor Trade Referral Program:",
+        "title": "Executor Trading Referral Program:",
         "intro": [
-          "Refer a new user to Executor Trade and earn **50% of the profit-sharing revenue generated from that user for 12 months**. By submitting this form, you agree to below terms."
+          "Refer a new user to Executor Trading and earn **50% of the profit-sharing revenue generated from that user for 12 months**. By submitting this form, you agree to below terms."
         ],
         "items": []
       },
@@ -185,7 +185,7 @@
         "title": "Terms:",
         "intro": [],
         "items": [
-          "Commission: **50% of Executor Trade's profit-sharing earnings** from the referred user.",
+          "Commission: **50% of Executor Trading's profit-sharing earnings** from the referred user.",
           "Payouts are made on the **1st of each month** and are paid via USDT transfer on Binance.",
           "Commissions are paid for **12 months**.",
           "No commissions are paid if no profit-sharing revenue is generated."
@@ -212,7 +212,7 @@
     "nav_guide": "Rehber",
     "hero_badge": "Canlı · BTC futures · 2x kaldıraç",
     "hero_title": "BTC piyasasını sizin için 7/24 takip eden algoritmik bir strateji.",
-    "hero_sub": "Executor Trade, büyük trendleri yakalamayı ve kayıpları küçük tutmayı hedefleyen bir trend-takip sistemidir. Aşağıdaki tüm grafikler, işlemler ve analizler gerçek tarihsel veriye dayanır - kendiniz inceleyin.",
+    "hero_sub": "Executor Trading, büyük trendleri yakalamayı ve kayıpları küçük tutmayı hedefleyen bir trend-takip sistemidir. Aşağıdaki tüm grafikler, işlemler ve analizler gerçek tarihsel veriye dayanır - kendiniz inceleyin.",
     "hero_cta_primary": "Copy Trading'e Başla",
     "st_annual": "Yıllık ortalama getiri",
     "st_annual_sub": "Son 5 yıl ortalaması",
@@ -296,7 +296,7 @@
     "an_res_avg": "Ortalama",
     "an_res_max": "En iyi",
     "str_eyebrow": "Strateji",
-    "str_title": "Executor Trade nasıl çalışır?",
+    "str_title": "Executor Trading nasıl çalışır?",
     "faq_eyebrow": "SSS",
     "faq_title": "Sıkça sorulan sorular",
     "gd_eyebrow": "Rehber",
@@ -309,10 +309,10 @@
     "lb_prev": "Önceki",
     "lb_next": "Sonraki",
     "cta_eyebrow": "Bağlan",
-    "cta_title": "Executor Trade ile portföyünüzü çeşitlendirin",
+    "cta_title": "Executor Trading ile portföyünüzü çeşitlendirin",
     "cta_sub": "Copy trade ile bağlandığınızda paranız kendi hesabınızda kalır; bot yalnızca işlemleri sizin için otomatik kopyalar.",
     "ref_title": "Arkadaşını Davet Et & Kazan",
-    "ref_body": "Executor Trade'e yeni bir kullanıcı yönlendirerek, o kullanıcının oluşturduğu kâr paylaşımı gelirinin 12 ay boyunca %50'sini kazanabilirsiniz.",
+    "ref_body": "Executor Trading'e yeni bir kullanıcı yönlendirerek, o kullanıcının oluşturduğu kâr paylaşımı gelirinin 12 ay boyunca %50'sini kazanabilirsiniz.",
     "ref_btn": "Şimdi Davet Et",
     "ref_modal_title": "Referans Formu",
     "ref_platform": "Platform",
@@ -334,7 +334,7 @@
     "strategy": [
       {
         "t": "Trend-takip sistemi",
-        "b": "Executor Trade, BTC üzerinde çalışan bir trend-takip botudur. Büyük piyasa hareketlerini yakalamayı hedeflerken kayıpları küçük tutar. İşlem sıklığı düşüktür ve bazı pozisyonlar uzun süre açık kalır; bu sayede maker/taker komisyonları ve funding ücretlerinin toplam etkisi uzun vadeli canlı kullanımda yıllık ~%5'in altında kalmıştır."
+        "b": "Executor Trading, BTC üzerinde çalışan bir trend-takip botudur. Büyük piyasa hareketlerini yakalamayı hedeflerken kayıpları küçük tutar. İşlem sıklığı düşüktür ve bazı pozisyonlar uzun süre açık kalır; bu sayede maker/taker komisyonları ve funding ücretlerinin toplam etkisi uzun vadeli canlı kullanımda yıllık ~%5'in altında kalmıştır."
       },
       {
         "t": "2x kaldıraç, yalnızca BTC",
@@ -378,9 +378,9 @@
     "err_new_nick": "Yönlendirilen kullanıcının takma adını girin.",
     "ref_terms_sections": [
       {
-        "title": "Executor Trade Referans Programı:",
+        "title": "Executor Trading Referans Programı:",
         "intro": [
-          "Executor Trade'e yeni bir kullanıcı yönlendirerek, o kullanıcının oluşturduğu **kâr paylaşımı gelirinin 12 ay boyunca %50'sini kazanabilirsiniz**. Bu formu göndererek aşağıdaki şartları kabul etmiş olursunuz."
+          "Executor Trading'e yeni bir kullanıcı yönlendirerek, o kullanıcının oluşturduğu **kâr paylaşımı gelirinin 12 ay boyunca %50'sini kazanabilirsiniz**. Bu formu göndererek aşağıdaki şartları kabul etmiş olursunuz."
         ],
         "items": []
       },
@@ -388,7 +388,7 @@
         "title": "Şartlar:",
         "intro": [],
         "items": [
-          "Komisyon: Yönlendirilen kullanıcıdan elde edilen **Executor Trade kâr paylaşım gelirinin %50'si**.",
+          "Komisyon: Yönlendirilen kullanıcıdan elde edilen **Executor Trading kâr paylaşım gelirinin %50'si**.",
           "Ödemeler **her ayın 1'inde** binance USDT transfer ile yapılır.",
           "Komisyon ödemeleri **12 ay boyunca** geçerlidir.",
           "Kâr oluşmazsa ödeme yapılmaz."
@@ -415,7 +415,7 @@
     "nav_guide": "الدليل",
     "hero_badge": "مباشر · عقود BTC الآجلة · رافعة 2x",
     "hero_title": "استراتيجية خوارزمية تراقب سوق BTC نيابةً عنك على مدار الساعة.",
-    "hero_sub": "Executor Trade نظام لتتبّع الاتجاه صُمّم لالتقاط التحركات الكبيرة مع إبقاء الخسائر صغيرة. كل الرسوم البيانية والصفقات والتحليلات أدناه مبنية على بيانات تاريخية حقيقية - تحقّق منها بنفسك.",
+    "hero_sub": "Executor Trading نظام لتتبّع الاتجاه صُمّم لالتقاط التحركات الكبيرة مع إبقاء الخسائر صغيرة. كل الرسوم البيانية والصفقات والتحليلات أدناه مبنية على بيانات تاريخية حقيقية - تحقّق منها بنفسك.",
     "hero_cta_primary": "ابدأ نسخ التداول",
     "st_annual": "متوسط العائد السنوي",
     "st_annual_sub": "متوسط آخر 5 سنوات",
@@ -499,7 +499,7 @@
     "an_res_avg": "المتوسط",
     "an_res_max": "الأفضل",
     "str_eyebrow": "الاستراتيجية",
-    "str_title": "كيف يعمل Executor Trade",
+    "str_title": "كيف يعمل Executor Trading",
     "faq_eyebrow": "الأسئلة الشائعة",
     "faq_title": "الأسئلة المتكررة",
     "gd_eyebrow": "الدليل",
@@ -512,10 +512,10 @@
     "lb_prev": "السابق",
     "lb_next": "التالي",
     "cta_eyebrow": "اتصل",
-    "cta_title": "نوّع محفظتك مع Executor Trade",
+    "cta_title": "نوّع محفظتك مع Executor Trading",
     "cta_sub": "عند الاتصال عبر نسخ التداول تبقى أموالك في حسابك الخاص؛ ينسخ البوت الصفقات تلقائيًا فقط.",
     "ref_title": "ادعُ صديقًا واربح",
-    "ref_body": "أحِل مستخدمًا جديدًا إلى Executor Trade واربح 50% من إيراد مشاركة الأرباح لهذا المستخدم لمدة 12 شهرًا.",
+    "ref_body": "أحِل مستخدمًا جديدًا إلى Executor Trading واربح 50% من إيراد مشاركة الأرباح لهذا المستخدم لمدة 12 شهرًا.",
     "ref_btn": "ادعُ الآن",
     "ref_modal_title": "نموذج الإحالة",
     "ref_platform": "المنصة",
@@ -536,7 +536,7 @@
     "strategy": [
       {
         "t": "نظام لتتبّع الاتجاه",
-        "b": "Executor Trade بوت لتتبّع الاتجاه يتداول BTC. يهدف إلى التقاط تحركات السوق الكبيرة مع إبقاء الخسائر صغيرة. وتيرة التداول منخفضة وتبقى بعض المراكز مفتوحة لفترة طويلة، لذلك بقي الأثر الإجمالي لعمولات الصانع/الآخذ ورسوم التمويل دون ~5% سنويًا في الاستخدام المباشر طويل الأمد."
+        "b": "Executor Trading بوت لتتبّع الاتجاه يتداول BTC. يهدف إلى التقاط تحركات السوق الكبيرة مع إبقاء الخسائر صغيرة. وتيرة التداول منخفضة وتبقى بعض المراكز مفتوحة لفترة طويلة، لذلك بقي الأثر الإجمالي لعمولات الصانع/الآخذ ورسوم التمويل دون ~5% سنويًا في الاستخدام المباشر طويل الأمد."
       },
       {
         "t": "رافعة 2x، BTC فقط",
@@ -581,9 +581,9 @@
     "ref_error": "حدث خطأ. يرجى المحاولة مرة أخرى.",
     "ref_terms_sections": [
       {
-        "title": "برنامج إحالة Executor Trade:",
+        "title": "برنامج إحالة Executor Trading:",
         "intro": [
-          "أحِل مستخدمًا جديدًا إلى Executor Trade واربح **50% من إيراد مشاركة الأرباح الناتج عن هذا المستخدم لمدة 12 شهرًا**. بإرسال هذا النموذج فإنك توافق على الشروط أدناه."
+          "أحِل مستخدمًا جديدًا إلى Executor Trading واربح **50% من إيراد مشاركة الأرباح الناتج عن هذا المستخدم لمدة 12 شهرًا**. بإرسال هذا النموذج فإنك توافق على الشروط أدناه."
         ],
         "items": []
       },
@@ -591,7 +591,7 @@
         "title": "الشروط:",
         "intro": [],
         "items": [
-          "العمولة: **50% من إيراد مشاركة الأرباح لـ Executor Trade** من المستخدم المُحال.",
+          "العمولة: **50% من إيراد مشاركة الأرباح لـ Executor Trading** من المستخدم المُحال.",
           "تُدفع المستحقات في **اليوم الأول من كل شهر** عبر تحويل USDT على Binance.",
           "تُدفع العمولات لمدة **12 شهرًا**.",
           "لا تُدفع عمولة إذا لم يتحقق إيراد من مشاركة الأرباح."
@@ -618,7 +618,7 @@
     "nav_guide": "指南",
     "hero_badge": "实盘 · BTC 合约 · 2 倍杠杆",
     "hero_title": "一套全天候为您盯住 BTC 市场的算法策略。",
-    "hero_sub": "Executor Trade 是一套趋势跟踪系统，旨在捕捉大行情并控制亏损。下方所有图表、交易和分析均基于真实历史数据——欢迎自行核验。",
+    "hero_sub": "Executor Trading 是一套趋势跟踪系统，旨在捕捉大行情并控制亏损。下方所有图表、交易和分析均基于真实历史数据——欢迎自行核验。",
     "hero_cta_primary": "开始跟单",
     "st_annual": "平均年化收益",
     "st_annual_sub": "近 5 年平均",
@@ -702,7 +702,7 @@
     "an_res_avg": "平均",
     "an_res_max": "最佳",
     "str_eyebrow": "策略",
-    "str_title": "Executor Trade 如何运作",
+    "str_title": "Executor Trading 如何运作",
     "faq_eyebrow": "常见问题",
     "faq_title": "常见问题解答",
     "gd_eyebrow": "指南",
@@ -715,10 +715,10 @@
     "lb_prev": "上一个",
     "lb_next": "下一个",
     "cta_eyebrow": "连接",
-    "cta_title": "用 Executor Trade 分散您的投资组合",
+    "cta_title": "用 Executor Trading 分散您的投资组合",
     "cta_sub": "通过跟单连接后，资金始终留在您自己的账户中；机器人只会自动为您复制交易。",
     "ref_title": "邀请好友赚取收益",
-    "ref_body": "推荐新用户使用 Executor Trade，即可在 12 个月内获得该用户利润分成收入的 50%。",
+    "ref_body": "推荐新用户使用 Executor Trading，即可在 12 个月内获得该用户利润分成收入的 50%。",
     "ref_btn": "立即邀请",
     "ref_modal_title": "推荐表单",
     "ref_platform": "平台",
@@ -739,7 +739,7 @@
     "strategy": [
       {
         "t": "趋势跟踪系统",
-        "b": "Executor Trade 是一款交易 BTC 的趋势跟踪机器人，旨在捕捉市场大行情并控制亏损。交易频率较低，部分仓位会持有较长时间，因此在长期实盘中，挂单/吃单手续费和资金费率的总影响每年保持在约 5% 以下。"
+        "b": "Executor Trading 是一款交易 BTC 的趋势跟踪机器人，旨在捕捉市场大行情并控制亏损。交易频率较低，部分仓位会持有较长时间，因此在长期实盘中，挂单/吃单手续费和资金费率的总影响每年保持在约 5% 以下。"
       },
       {
         "t": "2 倍杠杆，仅交易 BTC",
@@ -784,9 +784,9 @@
     "ref_error": "发生错误，请重试。",
     "ref_terms_sections": [
       {
-        "title": "Executor Trade 推荐计划：",
+        "title": "Executor Trading 推荐计划：",
         "intro": [
-          "推荐新用户使用 Executor Trade，即可**在 12 个月内获得该用户产生的利润分成收入的 50%**。提交本表单即表示您同意以下条款。"
+          "推荐新用户使用 Executor Trading，即可**在 12 个月内获得该用户产生的利润分成收入的 50%**。提交本表单即表示您同意以下条款。"
         ],
         "items": []
       },
@@ -794,7 +794,7 @@
         "title": "条款：",
         "intro": [],
         "items": [
-          "佣金：被推荐用户带来的 **Executor Trade 利润分成收入的 50%**。",
+          "佣金：被推荐用户带来的 **Executor Trading 利润分成收入的 50%**。",
           "佣金于**每月 1 日**通过 Binance 的 USDT 转账发放。",
           "佣金发放期限为 **12 个月**。",
           "若未产生利润分成收入，则不发放佣金。"

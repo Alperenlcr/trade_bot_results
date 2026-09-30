@@ -10,7 +10,7 @@ const t = useTranslations(lang);
 const page = t.pages[route];
 const sections = 'sections' in page ? page.sections : null;
 ---
-<BaseLayout lang={lang} route={route} title={`${page.title} — Executor Trade`} description={page.description}>
+<BaseLayout lang={lang} route={route} title={`${page.title} — Executor Trading`} description={page.description}>
   <article class="mx-auto max-w-3xl px-6 py-20">
     <h1 class="text-4xl font-bold">{page.title}</h1>
     {sections ? (

@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Executor Trade — 透明业绩，智能跟单。",
-    "description": "Executor Trade 是一个跟单交易机器人，将其 BTC 算法策略的交易实时、透明地同步到您的 Binance 或 Bybit 账户。"
+    "title": "Executor Trading — 透明业绩，智能跟单。",
+    "description": "Executor Trading 是一个跟单交易机器人，将其 BTC 算法策略的交易实时、透明地同步到您的 Binance 或 Bybit 账户。"
   },
   "nav": {
     "home": "首页",
@@ -20,7 +20,7 @@
     "steps": [
       {
         "title": "在交易所跟单",
-        "body": "在 Binance 或 Bybit 的跟单页面开始跟单 Executor Trade，无需额外应用，也无需 API 密钥。"
+        "body": "在 Binance 或 Bybit 的跟单页面开始跟单 Executor Trading，无需额外应用，也无需 API 密钥。"
       },
       {
         "title": "交易自动复制",
@@ -76,11 +76,11 @@
   "pages": {
     "about": {
       "title": "关于我们",
-      "description": "Executor Trade 是一个在 Binance 和 Bybit 上跟单的 BTC 算法交易机器人。了解我们的方法、透明度与发展规划。",
+      "description": "Executor Trading 是一个在 Binance 和 Bybit 上跟单的 BTC 算法交易机器人。了解我们的方法、透明度与发展规划。",
       "sections": [
         {
-          "title": "Executor Trade 是什么？",
-          "body": "Executor Trade 是一个交易 BTC 的单一算法策略。您通过 Binance 或 Bybit 的跟单系统进行跟随：资金始终保留在您自己的交易所账户中，我们不会索要您的密码或 API 密钥。"
+          "title": "Executor Trading 是什么？",
+          "body": "Executor Trading 是一个交易 BTC 的单一算法策略。您通过 Binance 或 Bybit 的跟单系统进行跟随：资金始终保留在您自己的交易所账户中，我们不会索要您的密码或 API 密钥。"
         },
         {
           "title": "我们的方法",
@@ -98,11 +98,11 @@
     },
     "risk": {
       "title": "风险披露",
-      "description": "跟随 Executor Trade 的风险：加密资产波动、杠杆与强平、策略风险、交易所及技术风险。投资前请仔细阅读。",
+      "description": "跟随 Executor Trading 的风险：加密资产波动、杠杆与强平、策略风险、交易所及技术风险。投资前请仔细阅读。",
       "sections": [
         {
           "title": "不构成投资建议",
-          "body": "本网站信息仅供一般参考，不构成投资、财务或税务建议。是否跟随 Executor Trade 完全由您自行决定；如有需要，请寻求独立的专业意见。"
+          "body": "本网站信息仅供一般参考，不构成投资、财务或税务建议。是否跟随 Executor Trading 完全由您自行决定；如有需要，请寻求独立的专业意见。"
         },
         {
           "title": "市场风险",
@@ -114,7 +114,7 @@
         },
         {
           "title": "策略风险",
-          "body": "Executor Trade 是基于历史数据开发并测试的算法策略。市场环境可能发生变化，过去有效的策略未来可能表现不佳甚至亏损。过往业绩不代表未来表现。"
+          "body": "Executor Trading 是基于历史数据开发并测试的算法策略。市场环境可能发生变化，过去有效的策略未来可能表现不佳甚至亏损。过往业绩不代表未来表现。"
         },
         {
           "title": "您的结果可能不同",
@@ -122,7 +122,7 @@
         },
         {
           "title": "交易所与技术风险",
-          "body": "跟单在 Binance 或 Bybit 上进行。交易所故障、维护、规则变更或账户限制可能导致交易无法及时复制或平仓。Executor Trade 不对交易所的运营负责。"
+          "body": "跟单在 Binance 或 Bybit 上进行。交易所故障、维护、规则变更或账户限制可能导致交易无法及时复制或平仓。Executor Trading 不对交易所的运营负责。"
         },
         {
           "title": "法律与税务",
@@ -132,11 +132,11 @@
     },
     "privacy": {
       "title": "隐私政策",
-      "description": "了解 Executor Trade 网站处理哪些个人数据、处理目的与保存期限、与谁共享，以及您依据 GDPR 和 KVKK 享有的权利。",
+      "description": "了解 Executor Trading 网站处理哪些个人数据、处理目的与保存期限、与谁共享，以及您依据 GDPR 和 KVKK 享有的权利。",
       "sections": [
         {
           "title": "适用范围与数据控制者",
-          "body": "本政策适用于 Executor Trade 网站。数据控制者为 Executor Trade；您可以通过每个页面上的\"联系我们\"按钮与我们联系。本网站没有注册、账户或付款功能；唯一的表单是可选的推荐表单。"
+          "body": "本政策适用于 Executor Trading 网站。数据控制者为 Executor Trading；您可以通过每个页面上的\"联系我们\"按钮与我们联系。本网站没有注册、账户或付款功能；唯一的表单是可选的推荐表单。"
         },
         {
           "title": "我们处理的数据",
@@ -148,7 +148,7 @@
         },
         {
           "title": "您的交易所账户",
-          "body": "跟单在 Binance 或 Bybit 上进行，您的账户数据由交易所依其隐私政策处理。Executor Trade 不会索要您的密码或 API 密钥，也无法访问您的资金。我们只能看到交易所向带单交易员展示的有限信息，且仅用于运行策略和发布跟单人数等汇总数据。"
+          "body": "跟单在 Binance 或 Bybit 上进行，您的账户数据由交易所依其隐私政策处理。Executor Trading 不会索要您的密码或 API 密钥，也无法访问您的资金。我们只能看到交易所向带单交易员展示的有限信息，且仅用于运行策略和发布跟单人数等汇总数据。"
         },
         {
           "title": "服务提供商与跨境传输",
@@ -170,7 +170,7 @@
     },
     "cookies": {
       "title": "Cookie 政策",
-      "description": "了解 Executor Trade 使用哪些 Cookie 及类似技术、各自的用途与保存期限，以及如何随时更改或撤回您的选择。",
+      "description": "了解 Executor Trading 使用哪些 Cookie 及类似技术、各自的用途与保存期限，以及如何随时更改或撤回您的选择。",
       "sections": [
         {
           "title": "简要说明",
@@ -200,15 +200,15 @@
     },
     "terms": {
       "title": "使用条款",
-      "description": "Executor Trade 网站使用条款：说明服务性质、您的责任、推荐链接与佣金披露、责任限制以及条款变更等内容，使用前请仔细阅读。",
+      "description": "Executor Trading 网站使用条款：说明服务性质、您的责任、推荐链接与佣金披露、责任限制以及条款变更等内容，使用前请仔细阅读。",
       "sections": [
         {
           "title": "接受条款",
-          "body": "使用 Executor Trade 网站即表示您接受本条款。本网站仅用于介绍和提供信息；如您不接受本条款，请勿使用。"
+          "body": "使用 Executor Trading 网站即表示您接受本条款。本网站仅用于介绍和提供信息；如您不接受本条款，请勿使用。"
         },
         {
-          "title": "Executor Trade 是什么、不是什么",
-          "body": "Executor Trade 是一个可通过 Binance 和 Bybit 跟单系统跟随的算法策略。Executor Trade 不是交易所、经纪商、投资组合管理人或投资顾问，不持有也不管理您的资金。跟单服务由交易所提供，您与交易所之间的关系受交易所自身条款约束。"
+          "title": "Executor Trading 是什么、不是什么",
+          "body": "Executor Trading 是一个可通过 Binance 和 Bybit 跟单系统跟随的算法策略。Executor Trading 不是交易所、经纪商、投资组合管理人或投资顾问，不持有也不管理您的资金。跟单服务由交易所提供，您与交易所之间的关系受交易所自身条款约束。"
         },
         {
           "title": "不构成投资建议",
@@ -224,7 +224,7 @@
         },
         {
           "title": "费用与推荐链接",
-          "body": "本网站免费使用。利润分成由交易所按其规则收取，且仅在盈利期间收取。Binance 和 Bybit 的链接为推荐链接；您使用这些链接时，Executor Trade 可能从交易所获得佣金，不会给您带来额外费用。"
+          "body": "本网站免费使用。利润分成由交易所按其规则收取，且仅在盈利期间收取。Binance 和 Bybit 的链接为推荐链接；您使用这些链接时，Executor Trading 可能从交易所获得佣金，不会给您带来额外费用。"
         },
         {
           "title": "策略变更",
@@ -232,11 +232,11 @@
         },
         {
           "title": "知识产权",
-          "body": "Executor Trade 名称、标志以及本网站上的文字和设计归 Executor Trade 所有，未经许可不得复制或使用。"
+          "body": "Executor Trading 名称、标志以及本网站上的文字和设计归 Executor Trading 所有，未经许可不得复制或使用。"
         },
         {
           "title": "责任限制",
-          "body": "在法律允许的范围内，Executor Trade 不对交易亏损、错过或延迟的交易、交易所故障，或基于本网站信息作出的决定承担责任。本条款不限制依法不得限制的责任。"
+          "body": "在法律允许的范围内，Executor Trading 不对交易亏损、错过或延迟的交易、交易所故障，或基于本网站信息作出的决定承担责任。本条款不限制依法不得限制的责任。"
         },
         {
           "title": "变更与联系",
