@@ -106,7 +106,7 @@ export default class App extends React.Component<Props, State> {
       selection: null,
       tFrom: this.tMin, tTo: this.tMax, tNewest: true,
       faqOpen: 0,
-      calcAmount: '500', calcMonthly: '0', calcDate: this.isoDate(this.allEnds[1].t - 365 * 864e5),
+      calcAmount: '500', calcMonthly: '0', calcDate: this.isoDate(this.allEnds[1].t - 5 * 365 * 864e5),
       perfLoaded: false, perfStart: null, perfEnd: null,
       lb: null,
       refModal: false, refPlatform: 'binance', refRefNick: '', refRefID: '', refNewNick: '', refEmail: '',
