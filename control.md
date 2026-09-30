@@ -4,7 +4,7 @@ Astro + bot-ui geçişinden kalan, kod dışında yapılması gereken işler.
 
 ## Yayından önce
 
-- [ ] **İletişim adresi** — varsayılan `mailto:hello@executor-bot.com`. Bu adres gerçekten
+- [ ] **İletişim adresi** — varsayılan `mailto:info@executortrading.com`. Bu adres gerçekten
       mail alıyor mu kontrol et; farklı bir adres/form kullanılacaksa repo › Settings › Secrets and
       variables › Actions › **Variables**'a `PUBLIC_CONTACT_URL` olarak ekle (`deploy.yml` build'e aktarır).
 - [ ] **Arapça ve Çince metinler** — `data/i18n.json` (dashboard) içindeki ar/zh çevirileri
@@ -20,9 +20,9 @@ Site GitHub Pages'te barınır. `.github/workflows/deploy.yml` `main`'e her push
 ve "Update data" bittikten sonra (`workflow_run`; bot commit'leri push tetiklemediği için) build alıp yayınlar.
 
 - [ ] **Pages kaynağı** — repo › Settings › Pages › Source: **GitHub Actions**.
-- [ ] **Domain** — aynı sayfada Custom domain: `www.executor-bot.com`, DNS doğrulanınca **Enforce HTTPS**.
+- [ ] **Domain** — aynı sayfada Custom domain: `executortrading.com`, DNS doğrulanınca **Enforce HTTPS**.
       (Actions ile yayında `CNAME` dosyası kullanılmaz; alan adı buradan verilir.)
-- [ ] **DNS** — kök (`executor-bot.com`) A kayıtları: `185.199.108.153`, `185.199.109.153`, `185.199.110.153`,
+- [ ] **DNS** — kök (`executortrading.com`) A kayıtları: `185.199.108.153`, `185.199.109.153`, `185.199.110.153`,
       `185.199.111.153`; `www` CNAME → `alperenlcr.github.io`. Eski Vercel kayıtları varsa (`cname.vercel-dns.com`,
       Vercel A kaydı) sil. Alan adı GitHub › Settings (hesap) › Pages › Verified domains'ten doğrulanabilir.
 - [ ] **Repo görünürlüğü** — özel (private) repoda Pages ücretli GitHub planı ister.
@@ -33,8 +33,8 @@ ve "Update data" bittikten sonra (`workflow_run`; bot commit'leri push tetikleme
 - [ ] **İlk yayın** — Actions › "Deploy to GitHub Pages" › Run workflow; yeşil bitmeli, site açılmalı.
 - [ ] **Günlük akış** — ertesi sabah Actions'ta "Update data" (~01:30 UTC) ve x push'undan sonra
       "Deploy to GitHub Pages" çalıştığını kontrol et.
-- [ ] **Yönlendirmeleri doğrula** — `https://www.executor-bot.com/en/` ana sayfaya geçmeli (meta refresh);
-      `https://www.executor-bot.com/tr` → `/tr/`'ye (Pages'in klasör yönlendirmesi); `executor-bot.com` → `www`.
+- [ ] **Yönlendirmeleri doğrula** — `https://executortrading.com/en/` ana sayfaya geçmeli (meta refresh);
+      `https://executortrading.com/tr` → `/tr/`'ye (Pages'in klasör yönlendirmesi); `www.executortrading.com` → kök adres.
 - **Sınırlar:** sunucu yönlendirmesi yok (`/en/` 301 değil, meta refresh + canonical; dil yönlendirmesi yalnızca
   tarayıcı betiğiyle, Türkçe tarayıcıda İngilizce sayfa bir an görünür), önbellek başlığı ayarlanamaz
   (`/_astro/` dosyaları 10 dk önbellekte), önizleme ortamı yok (her `main` push'u doğrudan canlı).
@@ -62,7 +62,7 @@ ve "Update data" bittikten sonra (`workflow_run`; bot commit'leri push tetikleme
       sermayesini gösterdiği doğrulanamadı. İlk takipçi geldiğinde sitedeki toplamı Bybit sayfasındaki
       değerle karşılaştır; yanlışsa script'te alan adını değiştir.
 - [ ] **Bybit profil açıklaması** — Bybit lider profilindeki tanıtım yazısında hâlâ eski adres
-      `xlcr.github.io/trade_bot_results/` geçiyor; `www.executor-bot.com` ile güncelle.
+      `xlcr.github.io/trade_bot_results/` geçiyor; `executortrading.com` ile güncelle.
       Profilde "Inactive" etiketi de görünüyor.
 - **Not:** AUM USDT cinsinden, sitede `$` olarak gösteriliyor (USDT ≈ USD).
 
@@ -104,7 +104,7 @@ ve "Update data" bittikten sonra (`workflow_run`; bot commit'leri push tetikleme
 
 ## Yayından sonra (SEO)
 
-- [ ] **Search Console'a yeni sitemap'i gönder:** `https://www.executor-bot.com/sitemap.xml`
+- [ ] **Search Console'a yeni sitemap'i gönder:** `https://executortrading.com/sitemap.xml`
       (24 adres, 4 dil × 6 sayfa).
 - [ ] **`/tr/` için dizine ekleme iste** — Search Console › URL denetimi › `/tr/` ›
       "Dizine eklenmesini iste". Kök adres (`/`) önceden Türkçeydi, artık İngilizce; Google'ın

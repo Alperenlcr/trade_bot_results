@@ -1,4 +1,4 @@
-A single-page dashboard that visualizes the backtest and live-style performance of the Executor BTC Trend-Following Bot (v5), a professional cryptocurrency algorithmic trading system. View the dashboard at [https://www.executor-bot.com](https://www.executor-bot.com) (English, also /tr/, /ar/, /zh/).
+A single-page dashboard that visualizes the backtest and live-style performance of the Executor BTC Trend-Following Bot (v5), a professional cryptocurrency algorithmic trading system. View the dashboard at [https://executortrading.com](https://executortrading.com) (English, also /tr/, /ar/, /zh/).
 
 # Executor Trade — Website
 
@@ -61,4 +61,4 @@ npm run preview   # üretilen dist/'i yerel olarak sun
 `google-apps-script.js` siteye dahil değildir — `data/config.json`'daki `referral.formEndpoint`'in işaret ettiği, ayrı olarak Google Apps Script'e deploy edilmiş referral-form backend'inin kaynak kodudur.
 
 > **Uyarı:** Bu site finansal tavsiye değildir. Geçmiş performans gelecekteki sonuçları garanti etmez.
-> İletişim: sitedeki iletişim bağlantısı (`PUBLIC_CONTACT_URL`, varsayılan `mailto:hello@executor-bot.com`).
+> İletişim: sitedeki iletişim bağlantısı (`PUBLIC_CONTACT_URL`, varsayılan `mailto:info@executortrading.com`).

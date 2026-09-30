@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 import { getPath, langs, languages, routeKeys } from '../i18n/utils';
 
-const SITE = 'https://www.executor-bot.com';
+const SITE = 'https://executortrading.com';
 
 // Generated at build time (not a static file) so <lastmod> reflects the
 // actual build date — meaningful here because the daily data-update

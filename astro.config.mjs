@@ -3,7 +3,7 @@ import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  site: 'https://www.executor-bot.com',
+  site: 'https://executortrading.com',
   integrations: [react()],
   // Eski İngilizce adres. GitHub Pages sunucu yönlendirmesi yapamadığı için Astro meta refresh + canonical içeren bir sayfa üretir.
   redirects: {
