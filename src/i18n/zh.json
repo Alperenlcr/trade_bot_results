@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Executor Trading — 透明业绩，智能跟单。",
-    "description": "Executor Trading 是一个跟单交易机器人，将其 BTC 算法策略的交易实时、透明地同步到您的 Binance 或 Bybit 账户。"
+    "description": "ExecutorBTC 是一个跟单交易机器人，将其 BTC 算法策略的交易实时、透明地同步到您的 Binance 或 Bybit 账户。"
   },
   "nav": {
     "home": "首页",
@@ -20,7 +20,7 @@
     "steps": [
       {
         "title": "在交易所跟单",
-        "body": "在 Binance 或 Bybit 的跟单页面开始跟单 Executor Trading，无需额外应用，也无需 API 密钥。"
+        "body": "在 Binance 或 Bybit 的跟单页面开始跟单 ExecutorBTC，无需额外应用，也无需 API 密钥。"
       },
       {
         "title": "交易自动复制",
@@ -65,7 +65,7 @@
       },
       {
         "q": "未来会推出针对其他资产的新机器人吗？",
-        "a": "会。提升 Executor 性能的工作仍在进行，新版本会定期上线。未来还计划推出针对山寨币及非加密资产的策略。"
+        "a": "会。提升 ExecutorBTC 性能的工作仍在进行，新版本会定期上线。未来还计划推出针对山寨币及非加密资产的策略。"
       }
     ]
   },
@@ -76,11 +76,11 @@
   "pages": {
     "about": {
       "title": "关于我们",
-      "description": "Executor Trading 是一个在 Binance 和 Bybit 上跟单的 BTC 算法交易机器人。了解我们的方法、透明度与发展规划。",
+      "description": "ExecutorBTC 是一个在 Binance 和 Bybit 上跟单的 BTC 算法交易机器人。了解我们的方法、透明度与发展规划。",
       "sections": [
         {
-          "title": "Executor Trading 是什么？",
-          "body": "Executor Trading 是一个交易 BTC 的单一算法策略。您通过 Binance 或 Bybit 的跟单系统进行跟随：资金始终保留在您自己的交易所账户中，我们不会索要您的密码或 API 密钥。"
+          "title": "ExecutorBTC 是什么？",
+          "body": "ExecutorBTC 是一个交易 BTC 的单一算法策略。您通过 Binance 或 Bybit 的跟单系统进行跟随：资金始终保留在您自己的交易所账户中，我们不会索要您的密码或 API 密钥。"
         },
         {
           "title": "我们的方法",
@@ -98,11 +98,11 @@
     },
     "risk": {
       "title": "风险披露",
-      "description": "跟随 Executor Trading 的风险：加密资产波动、杠杆与强平、策略风险、交易所及技术风险。投资前请仔细阅读。",
+      "description": "跟随 ExecutorBTC 的风险：加密资产波动、杠杆与强平、策略风险、交易所及技术风险。投资前请仔细阅读。",
       "sections": [
         {
           "title": "不构成投资建议",
-          "body": "本网站信息仅供一般参考，不构成投资、财务或税务建议。是否跟随 Executor Trading 完全由您自行决定；如有需要，请寻求独立的专业意见。"
+          "body": "本网站信息仅供一般参考，不构成投资、财务或税务建议。是否跟随 ExecutorBTC 完全由您自行决定；如有需要，请寻求独立的专业意见。"
         },
         {
           "title": "市场风险",
@@ -114,7 +114,7 @@
         },
         {
           "title": "策略风险",
-          "body": "Executor Trading 是基于历史数据开发并测试的算法策略。市场环境可能发生变化，过去有效的策略未来可能表现不佳甚至亏损。过往业绩不代表未来表现。"
+          "body": "ExecutorBTC 是基于历史数据开发并测试的算法策略。市场环境可能发生变化，过去有效的策略未来可能表现不佳甚至亏损。过往业绩不代表未来表现。"
         },
         {
           "title": "您的结果可能不同",
@@ -208,7 +208,7 @@
         },
         {
           "title": "Executor Trading 是什么、不是什么",
-          "body": "Executor Trading 是一个可通过 Binance 和 Bybit 跟单系统跟随的算法策略。Executor Trading 不是交易所、经纪商、投资组合管理人或投资顾问，不持有也不管理您的资金。跟单服务由交易所提供，您与交易所之间的关系受交易所自身条款约束。"
+          "body": "ExecutorBTC 是一个可通过 Binance 和 Bybit 跟单系统跟随的算法策略。Executor Trading 不是交易所、经纪商、投资组合管理人或投资顾问，不持有也不管理您的资金。跟单服务由交易所提供，您与交易所之间的关系受交易所自身条款约束。"
         },
         {
           "title": "不构成投资建议",

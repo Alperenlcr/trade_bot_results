@@ -17,5 +17,5 @@
     }
   ],
   "calculator": { "deductProfitShare": true, "profitSharePct": 10 },
-  "social": { "x": "1", "tiktok": "2", "threads": "3", "youtube": "4" }
+  "social": { "x": "", "tiktok": "", "threads": "", "youtube": "" }
 }

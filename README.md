@@ -1,8 +1,8 @@
-A single-page dashboard that visualizes the backtest and live-style performance of the Executor BTC Trend-Following Bot (v5), a professional cryptocurrency algorithmic trading system. View the dashboard at [https://executortrading.com](https://executortrading.com) (English, also /tr/, /ar/, /zh/).
+A single-page dashboard that visualizes the backtest and live-style performance of the ExecutorBTC Trend-Following Bot (v5), a professional cryptocurrency algorithmic trading system. View the dashboard at [https://executortrading.com](https://executortrading.com) (English, also /tr/, /ar/, /zh/).
 
 # Executor Trading — Website
 
-Bitcoin (BTC) üzerinde çalışan, trend-takip esaslı algoritmik trading botu **Executor Trading**'in tanıtım ve performans sitesi. [Astro](https://astro.build) + Tailwind ile derlenir. 4 dil: `/` İngilizce (varsayılan), `/tr/`, `/ar/` (RTL), `/zh/`. Tek (koyu) tema. Hakkımızda + 4 yasal sayfa, çerez onayı (GA4 ve Clarity yalnızca onayla yüklenir).
+Bitcoin (BTC) üzerinde çalışan, trend-takip esaslı algoritmik trading botu **ExecutorBTC**'nin tanıtım ve performans sitesi. [Astro](https://astro.build) + Tailwind ile derlenir. 4 dil: `/` İngilizce (varsayılan), `/tr/`, `/ar/` (RTL), `/zh/`. Tek (koyu) tema. Hakkımızda + 4 yasal sayfa, çerez onayı (GA4 ve Clarity yalnızca onayla yüklenir).
 
 Küçük özet veriler (`i18n.json`, `config.json`, `monthly.csv`, `yearly.csv`, `trades.csv`, varsayılan 1 yıllık seri) build zamanında sayfaya gömülür; büyük/nadiren kullanılan veriler (`performance.csv` ve diğer zaman aralığı CSV'leri) tarayıcıda çalışma anında `fetch` edilir — bu kısımlar `data/` güncellenince, rebuild olmadan bile anında günceldir.
 

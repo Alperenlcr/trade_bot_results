@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Executor Trading — Şeffaf performans. Akıllı takip.",
-    "description": "Executor Trading, algoritmik BTC stratejisinin işlemlerini gerçek zamanlı ve şeffaf şekilde Binance veya Bybit hesabına yansıtan copy-trading botudur."
+    "description": "ExecutorBTC, algoritmik BTC stratejisinin işlemlerini gerçek zamanlı ve şeffaf şekilde Binance veya Bybit hesabına yansıtan copy-trading botudur."
   },
   "nav": {
     "home": "Ana Sayfa",
@@ -20,7 +20,7 @@
     "steps": [
       {
         "title": "Borsanda takip et",
-        "body": "Binance veya Bybit'in copy trading sayfasından Executor Trading'i takip etmeye başla. Ek uygulama veya API anahtarı gerekmez."
+        "body": "Binance veya Bybit'in copy trading sayfasından ExecutorBTC'yi takip etmeye başla. Ek uygulama veya API anahtarı gerekmez."
       },
       {
         "title": "İşlemler otomatik kopyalanır",
@@ -65,7 +65,7 @@
       },
       {
         "q": "Farklı varlıklarda yeni botlar gelecek mi?",
-        "a": "Evet. Executor'un performansını geliştiren çalışmalar sürüyor ve belirli aralıklarla yeni sürümler devreye alınıyor. Gelecekte altcoinler ve kripto dışı varlıklar için de stratejiler planlanıyor."
+        "a": "Evet. ExecutorBTC'nin performansını geliştiren çalışmalar sürüyor ve belirli aralıklarla yeni sürümler devreye alınıyor. Gelecekte altcoinler ve kripto dışı varlıklar için de stratejiler planlanıyor."
       }
     ]
   },
@@ -76,11 +76,11 @@
   "pages": {
     "about": {
       "title": "Hakkımızda",
-      "description": "Executor Trading, Binance ve Bybit'te takip edilen algoritmik bir BTC copy-trading botudur. Yaklaşımımız, şeffaflık ve yol haritası.",
+      "description": "ExecutorBTC, Binance ve Bybit'te takip edilen algoritmik bir BTC copy-trading botudur. Yaklaşımımız, şeffaflık ve yol haritası.",
       "sections": [
         {
-          "title": "Executor Trading nedir?",
-          "body": "Executor Trading, BTC işlemi yapan tek bir algoritmik stratejidir. Binance veya Bybit'in copy trading sistemi üzerinden takip edilir: fonların kendi borsa hesabında kalır, senden şifre veya API anahtarı istemeyiz."
+          "title": "ExecutorBTC nedir?",
+          "body": "ExecutorBTC, BTC işlemi yapan tek bir algoritmik stratejidir. Binance veya Bybit'in copy trading sistemi üzerinden takip edilir: fonların kendi borsa hesabında kalır, senden şifre veya API anahtarı istemeyiz."
         },
         {
           "title": "Yaklaşımımız",
@@ -98,11 +98,11 @@
     },
     "risk": {
       "title": "Risk Bildirimi",
-      "description": "Executor Trading'i takip etmenin riskleri: kripto volatilitesi, kaldıraç ve likidasyon, strateji, borsa ve teknik riskler. Yatırım öncesi okuyun.",
+      "description": "ExecutorBTC'yi takip etmenin riskleri: kripto volatilitesi, kaldıraç ve likidasyon, strateji, borsa ve teknik riskler. Yatırım öncesi okuyun.",
       "sections": [
         {
           "title": "Yatırım tavsiyesi değildir",
-          "body": "Bu sitedeki bilgiler genel bilgilendirme amaçlıdır; yatırım, finans veya vergi tavsiyesi değildir. Executor Trading'i takip etme kararı tamamen sana aittir; gerekirse bağımsız danışmanlık al."
+          "body": "Bu sitedeki bilgiler genel bilgilendirme amaçlıdır; yatırım, finans veya vergi tavsiyesi değildir. ExecutorBTC'yi takip etme kararı tamamen sana aittir; gerekirse bağımsız danışmanlık al."
         },
         {
           "title": "Piyasa riski",
@@ -114,7 +114,7 @@
         },
         {
           "title": "Strateji riski",
-          "body": "Executor Trading, geçmiş veriyle geliştirilip test edilmiş algoritmik bir stratejidir. Piyasa koşulları değişebilir; geçmişte işe yarayan bir strateji gelecekte düşük performans gösterebilir veya zarar edebilir. Geçmiş performans gelecekteki sonuçların garantisi değildir."
+          "body": "ExecutorBTC, geçmiş veriyle geliştirilip test edilmiş algoritmik bir stratejidir. Piyasa koşulları değişebilir; geçmişte işe yarayan bir strateji gelecekte düşük performans gösterebilir veya zarar edebilir. Geçmiş performans gelecekteki sonuçların garantisi değildir."
         },
         {
           "title": "Senin sonucun farklı olabilir",
@@ -208,7 +208,7 @@
         },
         {
           "title": "Executor Trading nedir, ne değildir",
-          "body": "Executor Trading, Binance ve Bybit'in copy trading sistemleri üzerinden takip edebileceğin algoritmik bir stratejidir. Executor Trading bir borsa, aracı kurum, portföy yöneticisi veya yatırım danışmanı değildir; fonlarını tutmaz ve yönetmez. Copy trading hizmetini borsa sunar ve borsayla ilişkin borsanın kendi şartlarına tabidir."
+          "body": "ExecutorBTC, Binance ve Bybit'in copy trading sistemleri üzerinden takip edebileceğin algoritmik bir stratejidir. Executor Trading bir borsa, aracı kurum, portföy yöneticisi veya yatırım danışmanı değildir; fonlarını tutmaz ve yönetmez. Copy trading hizmetini borsa sunar ve borsayla ilişkin borsanın kendi şartlarına tabidir."
         },
         {
           "title": "Yatırım tavsiyesi değildir",

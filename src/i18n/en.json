@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Executor Trading — Transparent performance. Smart following.",
-    "description": "Executor Trading is a copy-trading bot that mirrors the trades of its algorithmic BTC strategy to your Binance or Bybit account in real time, transparently."
+    "description": "ExecutorBTC is a copy-trading bot that mirrors the trades of its algorithmic BTC strategy to your Binance or Bybit account in real time, transparently."
   },
   "nav": {
     "home": "Home",
@@ -20,7 +20,7 @@
     "steps": [
       {
         "title": "Follow on your exchange",
-        "body": "Start following Executor Trading from the copy-trading page of Binance or Bybit. No extra app, no API key."
+        "body": "Start following ExecutorBTC from the copy-trading page of Binance or Bybit. No extra app, no API key."
       },
       {
         "title": "Trades are copied automatically",
@@ -65,7 +65,7 @@
       },
       {
         "q": "Will new bots come for other assets?",
-        "a": "Yes. Work to improve the Executor's performance is ongoing, and new versions are rolled out at regular intervals. Strategies for altcoins and non-crypto assets are also planned."
+        "a": "Yes. Work to improve ExecutorBTC's performance is ongoing, and new versions are rolled out at regular intervals. Strategies for altcoins and non-crypto assets are also planned."
       }
     ]
   },
@@ -76,11 +76,11 @@
   "pages": {
     "about": {
       "title": "About",
-      "description": "Executor Trading is an algorithmic BTC copy-trading bot followed on Binance and Bybit. Our approach, transparency and roadmap.",
+      "description": "ExecutorBTC is an algorithmic BTC copy-trading bot followed on Binance and Bybit. Our approach, transparency and roadmap.",
       "sections": [
         {
-          "title": "What is Executor Trading?",
-          "body": "Executor Trading is a single algorithmic strategy that trades BTC. You follow it through the copy-trading system of Binance or Bybit: your funds stay in your own exchange account, and we never ask for your password or API key."
+          "title": "What is ExecutorBTC?",
+          "body": "ExecutorBTC is a single algorithmic strategy that trades BTC. You follow it through the copy-trading system of Binance or Bybit: your funds stay in your own exchange account, and we never ask for your password or API key."
         },
         {
           "title": "Our approach",
@@ -98,11 +98,11 @@
     },
     "risk": {
       "title": "Risk Disclosure",
-      "description": "Risks of following Executor Trading: crypto volatility, leverage and liquidation, strategy, exchange and technical risks. Please read before investing.",
+      "description": "Risks of following ExecutorBTC: crypto volatility, leverage and liquidation, strategy, exchange and technical risks. Please read before investing.",
       "sections": [
         {
           "title": "Not investment advice",
-          "body": "Information on this site is for general purposes only and is not investment, financial or tax advice. Every decision to follow Executor Trading is yours; seek independent advice if needed."
+          "body": "Information on this site is for general purposes only and is not investment, financial or tax advice. Every decision to follow ExecutorBTC is yours; seek independent advice if needed."
         },
         {
           "title": "Market risk",
@@ -114,7 +114,7 @@
         },
         {
           "title": "Strategy risk",
-          "body": "Executor Trading is an algorithmic strategy developed and tested on historical data. Market conditions can change, and a strategy that worked in the past may underperform or lose money in the future. Past performance is not a guarantee of future results."
+          "body": "ExecutorBTC is an algorithmic strategy developed and tested on historical data. Market conditions can change, and a strategy that worked in the past may underperform or lose money in the future. Past performance is not a guarantee of future results."
         },
         {
           "title": "Your result may differ",
@@ -208,7 +208,7 @@
         },
         {
           "title": "What Executor Trading is (and is not)",
-          "body": "Executor Trading is an algorithmic strategy that you can follow through the copy-trading systems of Binance and Bybit. Executor Trading is not an exchange, broker, portfolio manager or investment adviser, and it does not hold or manage your funds. Copy trading is provided by the exchange, and your relationship with it is governed by the exchange's own terms."
+          "body": "ExecutorBTC is an algorithmic strategy that you can follow through the copy-trading systems of Binance and Bybit. Executor Trading is not an exchange, broker, portfolio manager or investment adviser, and it does not hold or manage your funds. Copy trading is provided by the exchange, and your relationship with it is governed by the exchange's own terms."
         },
         {
           "title": "Not investment advice",
