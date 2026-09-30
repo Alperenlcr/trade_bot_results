@@ -1,11 +1,13 @@
-import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
+import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
+import { useTranslations, type Lang } from '../i18n/utils';
+import { parseCsv, parseTs } from './csv';
+import { groupPerf } from './perf';
 
 // data/ lives at the repo root (untouched — a daily external automation
-// updates data/tables/*.csv and pushes directly to it), two levels above
-// this file (src/lib/loadSiteData.ts -> src/ -> repo root).
-const ROOT = fileURLToPath(new URL('../../', import.meta.url));
+// updates data/tables/*.csv and pushes directly to it). Resolved from the
+// cwd, not import.meta.url: Astro 7 bundles this file into dist/.prerender/.
+const ROOT = process.cwd();
 const DATA_DIR = path.join(ROOT, 'data');
 
 export interface MonthlyRow { m: string; p: number; b: number }
@@ -20,28 +22,35 @@ export interface SiteInitialData {
   yearly: YearlyRow[];
   trades: TradeRow[];
   defaultTf: string;
-  defaultSeries: SeriesPoint[];
-  allSeries: SeriesPoint[];
-}
-
-function parseCsv(text: string): { head: string[]; rows: string[][] } {
-  const lines = text.trim().split('\n');
-  const head = lines[0].split(',');
-  const rows = new Array(lines.length - 1);
-  for (let i = 1; i < lines.length; i++) rows[i - 1] = lines[i].split(',');
-  return { head, rows };
+  allEnds: [SeriesPoint, SeriesPoint];
+  heroAnnual: number | null;
+  heroWorst1Y: number | null;
 }
 
 function readCsv(name: string): { head: string[]; rows: string[][] } {
-  const text = readFileSync(path.join(DATA_DIR, 'tables', name), 'utf-8');
-  return parseCsv(text);
+  return parseCsv(readFileSync(path.join(DATA_DIR, 'tables', name), 'utf-8'));
 }
 
 const DEFAULT_TF = '1y';
 
-export function loadSiteData(): SiteInitialData {
-  const i18n = JSON.parse(readFileSync(path.join(DATA_DIR, 'i18n.json'), 'utf-8'));
+// Yalnızca istenen dilin metinleri gömülür (island prop'u 4 dil taşımasın). SSS
+// ve takipçi kartı etiketleri sitenin geri kalanıyla aynı kaynaktan, src/i18n/{lang}.json'dan gelir.
+export function loadSiteData(lang: Lang): SiteInitialData {
+  const dash = JSON.parse(readFileSync(path.join(DATA_DIR, 'i18n.json'), 'utf-8'));
+  const site = useTranslations(lang);
+  const i18n = { [lang]: {
+    ...dash[lang], faq: site.faq.items,
+    stat_portfolio: site.hero.stats.portfolio, stat_followers: site.hero.stats.followers,
+  } };
   const config = JSON.parse(readFileSync(path.join(DATA_DIR, 'config.json'), 'utf-8'));
+  // Binance + Bybit AUM ve takipçi sayısı toplamı (scripts/fetch-{binance,bybit}-stats.mjs);
+  // hiçbir dosya yoksa takipçi kartı gizlenir.
+  const exchangeStats = ['binance.json', 'bybit.json'].map((f) => path.join(DATA_DIR, f)).filter(existsSync)
+    .map((f) => JSON.parse(readFileSync(f, 'utf-8')) as { portfolioUsd: number; followers: number });
+  if (exchangeStats.length) config.followerStats = {
+    portfolioUsd: exchangeStats.reduce((sum, x) => sum + x.portfolioUsd, 0),
+    followers: exchangeStats.reduce((sum, x) => sum + x.followers, 0),
+  };
 
   const monthly: MonthlyRow[] = readCsv('monthly.csv').rows.map((r) => ({ m: r[0], p: +r[1], b: +r[2] }));
   const yearly: YearlyRow[] = readCsv('yearly.csv').rows.map((r) => ({ y: r[0], p: +r[1], b: +r[2] }));
@@ -50,18 +59,14 @@ export function loadSiteData(): SiteInitialData {
     pnl: r[6] === '' ? null : +r[6],
   }));
 
-  const tfRows = readCsv(DEFAULT_TF + '.csv').rows;
-  const defaultSeries: SeriesPoint[] = tfRows.map((r) => ({ t: parseTs(r[0]), p: +r[1], b: +r[2] }));
-
-  // Always needed for the hero stats' annualized-return calc, independent of
-  // whichever timeframe tab is selected — mirrors the original's unconditional
-  // `all.csv` fetch in loadCore().
+  // Grafik serileri gömülmez (sayfanın ~%70'iydi); App bunları açılışta fetch eder.
+  // Hero istatistikleri yalnızca all.csv'nin ilk ve son noktasına bakar, SSR'da hazır olsun diye onlar gömülür.
   const allRows = readCsv('all.csv').rows;
-  const allSeries: SeriesPoint[] = allRows.map((r) => ({ t: parseTs(r[0]), p: +r[1], b: +r[2] }));
+  const pt = (r: string[]): SeriesPoint => ({ t: parseTs(r[0]), p: +r[1], b: +r[2] });
+  const allEnds: [SeriesPoint, SeriesPoint] = [pt(allRows[0]), pt(allRows[allRows.length - 1])];
 
-  return { i18n, config, monthly, yearly, trades, defaultTf: DEFAULT_TF, defaultSeries, allSeries };
-}
+  // Hero'daki yıllık getiri / en kötü 1 yıl da SSR'da hazır olsun (JS'siz ziyaretçi ve arama motorları '···' görmesin).
+  const { annual: heroAnnual, worst1Y: heroWorst1Y } = groupPerf(readCsv('performance.csv'));
 
-function parseTs(s: string): number {
-  return new Date(s.replace(' ', 'T') + (s.length <= 10 ? 'T00:00:00' : '')).getTime();
+  return { i18n, config, monthly, yearly, trades, defaultTf: DEFAULT_TF, allEnds, heroAnnual, heroWorst1Y };
 }

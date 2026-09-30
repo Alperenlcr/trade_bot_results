@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import App from './App';
+import HowItWorks from './sections/HowItWorks.astro';
+import { loadSiteData } from '../lib/loadSiteData';
+import { getPath, languages, useTranslations, type Lang } from '../i18n/utils';
+
+const { lang } = Astro.props as { lang: Lang };
+const t = useTranslations(lang);
+const url = new URL(getPath('home', lang), Astro.site).href;
+
+const schema = [
+  { '@context': 'https://schema.org', '@type': 'WebSite', name: 'Executor Trading', url, inLanguage: languages[lang].hreflang },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'Executor Trading',
+    applicationCategory: 'FinanceApplication',
+    operatingSystem: 'Web',
+    description: t.meta.description,
+  },
+];
+---
+<BaseLayout lang={lang} route="home" title={t.meta.title} description={t.meta.description} schema={schema}>
+  <App client:load locale={lang} initialData={loadSiteData(lang)}>
+    <HowItWorks slot="how" lang={lang} />
+  </App>
+</BaseLayout>

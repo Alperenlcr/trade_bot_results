@@ -1,0 +1,29 @@
+---
+import { getPath, langs, languages, useTranslations, type Lang, type RouteKey } from '../i18n/utils';
+
+interface Props { lang: Lang; route: RouteKey }
+const { lang, route } = Astro.props;
+---
+<details class="relative">
+  <summary class="cursor-pointer list-none whitespace-nowrap py-1 text-text-soft hover:text-text" aria-label={`${languages[lang].label} – ${useTranslations(lang).nav.language}`}>
+    {languages[lang].label}
+  </summary>
+  <ul class="absolute end-0 z-10 mt-2 min-w-32 rounded-m border border-border bg-surface py-1">
+    {langs.map((l) => (
+      <li>
+        <a href={getPath(route, l)} data-lang={l} hreflang={languages[l].hreflang} lang={languages[l].hreflang}
+          aria-current={l === lang ? 'page' : undefined}
+          class="block px-4 py-2 hover:text-accent aria-[current=page]:text-accent">
+          {languages[l].label}
+        </a>
+      </li>
+    ))}
+  </ul>
+</details>
+<script>
+  // Elle seçilen dil, kök adresin tarayıcı diline göre yönlendirmesini (BaseLayout.astro betiği) kapatır.
+  document.addEventListener('click', (e) => {
+    const l = (e.target as Element).closest<HTMLElement>('[data-lang]')?.dataset.lang;
+    if (l) document.cookie = `lang=${l}; path=/; max-age=31536000; samesite=lax`;
+  });
+</script>

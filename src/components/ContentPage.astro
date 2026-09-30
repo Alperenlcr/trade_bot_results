@@ -1,0 +1,27 @@
+---
+// Hakkında ve yasal sayfalar. Metin `pages.<route>.sections` içindeyse gösterilir,
+// yoksa placeholder.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { useTranslations, type Lang, type RouteKey } from '../i18n/utils';
+
+interface Props { lang: Lang; route: Exclude<RouteKey, 'home'> }
+const { lang, route } = Astro.props;
+const t = useTranslations(lang);
+const page = t.pages[route];
+const sections = 'sections' in page ? page.sections : null;
+---
+<BaseLayout lang={lang} route={route} title={`${page.title} — Executor Trading`} description={page.description}>
+  <article class="mx-auto max-w-3xl px-6 py-20">
+    <h1 class="text-4xl font-bold">{page.title}</h1>
+    {sections ? (
+      sections.map((s) => (
+        <section class="mt-10">
+          <h2 class="text-2xl font-bold">{s.title}</h2>
+          <p class="mt-4 leading-relaxed text-text-soft">{s.body}</p>
+        </section>
+      ))
+    ) : (
+      <p class="mt-8 text-text-soft">{t.placeholder}</p>
+    )}
+  </article>
+</BaseLayout>

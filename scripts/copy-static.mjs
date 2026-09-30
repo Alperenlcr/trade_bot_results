@@ -22,7 +22,6 @@ function copy(rel) {
 }
 
 copy('assets');
-copy('CNAME');
 copy('robots.txt');
 copy('llms.txt');
 // sitemap.xml is generated at build time by src/pages/sitemap.xml.ts (its
@@ -30,5 +29,7 @@ copy('llms.txt');
 
 // Large / lazily-fetched tables that are NOT embedded at build time — kept
 // as static files so the client fetches them at runtime exactly like today.
-const LAZY_TABLES = ['3m.csv', '6m.csv', '3y.csv', '5y.csv', 'all.csv', 'performance.csv'];
+const LAZY_TABLES = ['3m.csv', '6m.csv', '1y.csv', '3y.csv', '5y.csv', 'all.csv', 'performance.csv', 'daily.csv'];
 for (const f of LAZY_TABLES) copy(path.join('data', 'tables', f));
+copy(path.join('data', 'indices', 'daily.csv')); // chart index lines (older history)
+copy(path.join('data', 'indices', 'hourly.csv')); // chart index lines, last 2 years

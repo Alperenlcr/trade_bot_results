@@ -1,165 +1,51 @@
 ---
-export interface Props {
-  locale: 'tr' | 'en';
-  faq: { q: string; a: string }[];
-  /** Only set on the default ("/") route: bounce a returning visitor who
-   *  previously picked English (via localStorage) straight to /en/. The
-   *  flag is absent for first-time visitors and crawlers, so it never
-   *  affects SEO indexing of the default-locale page. */
-  bounceToEnIfPreferred?: boolean;
+import '../styles/global.css';
+import SEO from '../components/SEO.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import CookieConsent from '../components/CookieConsent.astro';
+import { languages, type Lang, type RouteKey } from '../i18n/utils';
+// Arapça metin fontu geç gelince paragraflar yeniden diziliyordu (Lighthouse CLS 0,16); ar sayfalarda önden yüklenir.
+import arabicFont from '@fontsource/ibm-plex-sans-arabic/files/ibm-plex-sans-arabic-arabic-400-normal.woff2?url';
+// Gövde ve başlık fontları CSS'ten sonra keşfedilince yenilemede önce sistem fontu görünüyordu (FOUT).
+import bodyFont from '@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-400-normal.woff2?url';
+import displayFont from '@fontsource/space-mono/files/space-mono-latin-700-normal.woff2?url';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  route?: RouteKey;
+  schema?: Record<string, unknown>[];
+  noindex?: boolean;
 }
-const { locale, faq, bounceToEnIfPreferred = false } = Astro.props as Props;
 
-// GitHub Pages 301-redirects the apex domain to www (confirmed via DNS/curl),
-// so www is the actual serving origin — canonical/OG/JSON-LD must point here
-// directly rather than at a URL that redirects.
-const SITE = 'https://www.executor-bot.com';
-const isTr = locale === 'tr';
-
-// TR title is keyword-targeted for Turkish search intent (bitcoin/kripto
-// trading botu, algoritmik trading, copy trading) — the original shipped
-// the English title on both locales, a missed opportunity for TR search
-// visibility. EN title is unchanged (it was already well-targeted).
-const title = isTr
-  ? 'Executor Bot | BTC Algoritmik Trading ve Copy Trading Botu'
-  : 'Executor Bot | BTC Trend Following Crypto Trading Bot';
-const description = isTr
-  ? 'Executor, BTC futures üzerinde 7/24 çalışan algoritmik trend-takip stratejisidir. Gerçek geçmiş veriye dayalı performans, işlem geçmişi ve analizleri inceleyin.'
-  : 'Executor is an algorithmic trend-following strategy that trades BTC futures 24/7. Review real historical performance, trade history and analysis based on actual data.';
-
-const path = isTr ? '/' : '/en/';
-const canonical = SITE + path;
-const ogLocale = isTr ? 'tr_TR' : 'en_US';
-const ogLocaleAlt = isTr ? 'en_US' : 'tr_TR';
-
-const faqJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: faq.map((f) => ({
-    '@type': 'Question',
-    name: f.q,
-    acceptedAnswer: { '@type': 'Answer', text: f.a },
-  })),
-};
+const { lang, route, ...seo } = Astro.props;
 ---
 <!doctype html>
-<html lang={locale}>
-<head>
-{bounceToEnIfPreferred && (
-  <script is:inline>
-    try {
-      if (localStorage.getItem('exec_lang') === 'en') {
-        location.replace('/en/' + location.hash);
-      }
-    } catch (e) {}
-  </script>
-)}
-<!-- Google tag (gtag.js) -->
-<script async is:inline src="https://www.googletagmanager.com/gtag/js?id=G-FFNNFDNLZQ"></script>
-<script is:inline>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){window.dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-FFNNFDNLZQ');
-</script>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{title}</title>
-<meta name="description" content={description}>
-<meta name="robots" content="index, follow">
-<link rel="canonical" href={canonical}>
-<link rel="alternate" hreflang="tr" href={`${SITE}/`}>
-<link rel="alternate" hreflang="en" href={`${SITE}/en/`}>
-<link rel="alternate" hreflang="x-default" href={`${SITE}/`}>
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Executor">
-<meta property="og:title" content={title}>
-<meta property="og:description" content={description}>
-<meta property="og:url" content={canonical}>
-<meta property="og:image" content={`${SITE}/assets/logos/logo_high_res.png`}>
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="1200">
-<meta property="og:locale" content={ogLocale}>
-<meta property="og:locale:alternate" content={ogLocaleAlt}>
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content={title}>
-<meta name="twitter:description" content={description}>
-<meta name="twitter:image" content={`${SITE}/assets/logos/logo_high_res.png`}>
-<link rel="icon" href="/assets/logos/favicon.ico" sizes="any">
-<link rel="icon" href="/assets/logos/logo.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="/assets/logos/logo_high_res.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<style is:global>
-  *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth}
-  body{font-family:'IBM Plex Sans',sans-serif;-webkit-font-smoothing:antialiased;background:#f4f6f7}
-  .app{
-    --bg:#f4f6f7;--bg-elev:#ffffff;--surface:#ffffff;--surface-2:#f1f3f5;
-    --border:#e4e7ea;--border-2:#d3d8dd;--text:#14181b;--text-dim:#586068;--text-mute:#8c949c;
-    --accent:#0f9e8d;--accent-2:#0b8174;--accent-contrast:#ffffff;
-    --pos:#1d9b66;--neg:#d24640;--btc:#bd7b10;--grid:#edf0f2;
-    --shadow:0 1px 2px rgba(20,30,40,.06),0 8px 24px rgba(20,30,40,.06);
-  }
-  .app[data-theme="dark"]{
-    --bg:#0a0c0e;--bg-elev:#0f1216;--surface:#13171c;--surface-2:#191e24;
-    --border:#222931;--border-2:#2d343c;--text:#e9edf0;--text-dim:#99a2aa;--text-mute:#646c75;
-    --accent:#33d6c4;--accent-2:#23a596;--accent-contrast:#04130f;
-    --pos:#48c08a;--neg:#e07069;--btc:#e3a23c;--grid:#1a1f25;
-    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.28);
-  }
-  ::selection{background:var(--accent);color:var(--accent-contrast)}
-  .app ::-webkit-scrollbar{height:10px;width:10px}
-  .app ::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:6px}
-  .app ::-webkit-scrollbar-track{background:transparent}
-  @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-  @keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
-  .lift{transition:transform .18s ease,border-color .18s ease,background .18s ease}
-  .lift:hover{transform:translateY(-2px)}
-  .app[data-theme="dark"]{color-scheme:dark}
-  .app[data-theme="light"]{color-scheme:light}
-  @media(min-width:900px){.cta-head{display:inline-flex !important}}
-  @media(max-width:880px){
-    .app nav{display:none !important}
-    .an-grid{grid-template-columns:1fr !important}
-  }
-  @media(max-width:760px){
-    .cta-grid{grid-template-columns:1fr !important}
-    .cta-grid > div:last-child{border-left:none !important;border-top:1px solid var(--border) !important}
-  }
-  @media(max-width:560px){
-    .app header > div{gap:10px !important}
-  }
-</style>
-<script type="application/ld+json" set:html={JSON.stringify({
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: 'Executor',
-  url: canonical,
-  description,
-  inLanguage: ['tr', 'en'],
-})} />
-<script type="application/ld+json" set:html={JSON.stringify({
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: 'Executor',
-  url: `${SITE}/`,
-  logo: `${SITE}/assets/logos/logo_high_res.png`,
-  email: 'alperenlcr@gmail.com',
-})} />
-<script type="application/ld+json" set:html={JSON.stringify({
-  '@context': 'https://schema.org',
-  '@type': 'SoftwareApplication',
-  name: 'Executor Bot',
-  applicationCategory: 'FinanceApplication',
-  operatingSystem: 'Web',
-  description: 'Executor is an automated, trend-following BTC futures trading system that trades with a maximum of 2x leverage, accessible via copy trading on Binance and Bybit.',
-  url: canonical,
-})} />
-<script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />
-</head>
-<body>
-<slot />
-</body>
+<html lang={languages[lang].hreflang} dir={languages[lang].dir}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {lang === 'en' && route === 'home' && (
+      // Kök adresin tarayıcı diline göre yönlendirmesi (GitHub Pages'te sunucu kuralı yok, bu yüzden istemcide).
+      // Dil menüsünden seçim yapılmışsa (lang çerezi) dokunmaz.
+      <script is:inline>
+        if (!/(^|; )lang=/.test(document.cookie)) {
+          var l = (navigator.language || '').slice(0, 2);
+          if (l === 'tr' || l === 'ar' || l === 'zh') location.replace('/' + l + '/' + location.search + location.hash);
+        }
+      </script>
+    )}
+    {lang === 'ar' && <link rel="preload" href={arabicFont} as="font" type="font/woff2" crossorigin />}
+    {lang !== 'ar' && <link rel="preload" href={bodyFont} as="font" type="font/woff2" crossorigin />}
+    {lang !== 'ar' && <link rel="preload" href={displayFont} as="font" type="font/woff2" crossorigin />}
+    <SEO lang={lang} route={route} {...seo} />
+  </head>
+  <body class="flex min-h-dvh flex-col">
+    <Header lang={lang} route={route} />
+    <main class="flex-1"><slot /></main>
+    <Footer lang={lang} />
+    <CookieConsent lang={lang} />
+  </body>
 </html>

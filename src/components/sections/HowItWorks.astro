@@ -1,0 +1,17 @@
+---
+import { useTranslations, type Lang } from '../../i18n/utils';
+const t = useTranslations(Astro.props.lang as Lang);
+---
+<!-- Rehber bölümünün (App.tsx › renderGuide) ilk alt başlığı; .caps-label/.tile sınıfları global.css › .app. -->
+<div style="margin-bottom:34px">
+  <div class="caps-label" style="margin-bottom:14px">{t.how.title}</div>
+  <ol class="grid gap-3.5 md:grid-cols-3">
+    {t.how.steps.map((step, i) => (
+      <li class="lift tile">
+        <span class="font-display text-accent">0{i + 1}</span>
+        <h3 style="font-family:var(--font-display);font-weight:600;font-size:17px;margin:9px 0;letter-spacing:-.3px">{step.title}</h3>
+        <p style="font-size:14px;color:var(--text-dim);line-height:1.62">{step.body}</p>
+      </li>
+    ))}
+  </ol>
+</div>

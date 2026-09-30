@@ -1,0 +1,56 @@
+---
+// Tek 404.html, her dil için bir blok. Sunucu hangi URL'de olursa olsun bu
+// dosyayı 404 koduyla döner; script URL önekine göre (/tr, /ar…) doğru dili
+// gösterir. Bloklar `langs`'tan üretildiği için yeni dil otomatik gelir.
+// JS kapalıysa varsayılan dil görünür.
+import '../styles/global.css';
+import SEO from '../components/SEO.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import CookieConsent from '../components/CookieConsent.astro';
+import { defaultLang, getPath, langs, languages, useTranslations } from '../i18n/utils';
+
+const title = (lang: typeof defaultLang) => `${useTranslations(lang).pages.notFound.title} — Executor Trading`;
+const t = useTranslations(defaultLang).pages.notFound;
+---
+<!doctype html>
+<html lang={languages[defaultLang].hreflang} dir={languages[defaultLang].dir}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <SEO lang={defaultLang} title={title(defaultLang)} description={t.description} noindex />
+  </head>
+  <body>
+    {langs.map((lang) => {
+      const nf = useTranslations(lang).pages.notFound;
+      return (
+        <div data-lang={lang} data-title={title(lang)} lang={languages[lang].hreflang} dir={languages[lang].dir}
+          hidden={lang !== defaultLang} class="flex min-h-dvh flex-col">
+          <Header lang={lang} />
+          <main class="flex-1">
+            <section class="mx-auto max-w-3xl px-6 py-32 text-center">
+              <p class="font-display text-6xl font-bold text-accent">404</p>
+              <h1 class="mt-6 text-2xl font-bold">{nf.title}</h1>
+              <p class="mt-2 text-text-soft">{nf.description}</p>
+              <a href={getPath('home', lang)} class="mt-8 inline-block text-accent underline">{nf.back}</a>
+            </section>
+          </main>
+          <Footer lang={lang} />
+          <CookieConsent lang={lang} />
+        </div>
+      );
+    })}
+
+    <script>
+      const seg = location.pathname.split('/')[1];
+      const blocks = [...document.querySelectorAll<HTMLElement>('[data-lang]')];
+      const match = blocks.find((el) => el.dataset.lang === seg);
+      if (match) {
+        blocks.forEach((el) => (el.hidden = el !== match));
+        document.documentElement.lang = match.lang;
+        document.documentElement.dir = match.dir;
+        document.title = match.dataset.title!;
+      }
+    </script>
+  </body>
+</html>

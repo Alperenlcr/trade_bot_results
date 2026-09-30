@@ -1,0 +1,18 @@
+---
+// Tüm dillerdeki tüm sayfalar src/i18n/utils.ts slug tablosundan üretilir.
+import HomePage from '../components/HomePage.astro';
+import ContentPage from '../components/ContentPage.astro';
+import { getPath, langs, routeKeys, type Lang, type RouteKey } from '../i18n/utils';
+
+export function getStaticPaths() {
+  return langs.flatMap((lang) =>
+    routeKeys.map((route) => ({
+      params: { path: getPath(route, lang).replace(/^\/|\/$/g, '') || undefined },
+      props: { lang, route },
+    })),
+  );
+}
+
+const { lang, route } = Astro.props as { lang: Lang; route: RouteKey };
+---
+{route === 'home' ? <HomePage lang={lang} /> : <ContentPage lang={lang} route={route} />}

@@ -1,0 +1,264 @@
+{
+  "meta": {
+    "title": "Executor Trading — Şeffaf performans. Akıllı takip.",
+    "description": "ExecutorBTC, algoritmik BTC stratejisinin işlemlerini gerçek zamanlı ve şeffaf şekilde Binance veya Bybit hesabına yansıtan copy-trading botudur."
+  },
+  "nav": {
+    "home": "Ana Sayfa",
+    "about": "Hakkımızda",
+    "cta": "İletişime Geç",
+    "language": "Dil"
+  },
+  "hero": {
+    "stats": {
+      "portfolio": "Yönetilen toplam varlık",
+      "followers": "Şu an kopyalayan yatırımcı"
+    }
+  },
+  "how": {
+    "title": "3 adımda başla",
+    "steps": [
+      {
+        "title": "Borsanda takip et",
+        "body": "Binance veya Bybit'in copy trading sayfasından ExecutorBTC'yi takip etmeye başla. Ek uygulama veya API anahtarı gerekmez."
+      },
+      {
+        "title": "İşlemler otomatik kopyalanır",
+        "body": "Stratejinin açıp kapattığı pozisyonlar, belirlediğin miktar ve kaldıraçla hesabına otomatik yansır."
+      },
+      {
+        "title": "Kontrol sende",
+        "body": "Ayarlarını değiştirebilir, kopyalamayı durdurabilir veya bakiyeni istediğin an borsan üzerinden çekebilirsin."
+      }
+    ]
+  },
+  "faq": {
+    "title": "Sıkça sorulan sorular",
+    "items": [
+      {
+        "q": "Kimler yatırım yapmalı?",
+        "a": "Uzun vadeli düşünebilen ve portföyünü çeşitlendirmek isteyenler için uygundur. Özellikle kısa vadede ihtiyaç duyulmayacak sermayenin bir kısmını değerlendirmek isteyenler için tasarlanmıştır. Backtest ve botun borsalarda canlı çalıştığı süre birlikte değerlendirildiğinde tarihsel ortalama yıllık getiri %100'ün üzerindedir. Bireysel sonuçlar takibe başlanan zamana göre değişir: kötü bir anda katılıp erken ayrılan bir takipçi zarar edebilir. Tüm takipçiler bazında toplam ROI bugüne kadar pozitiftir. Gelecekteki sonuçlar farklı olabilir."
+      },
+      {
+        "q": "Kimler yatırım yapmamalı?",
+        "a": "Kısa vadeli kazanç hedefleyen yatırımcılar için uygun olmayabilir. Strateji büyük hareketleri yakaladığından bazı pozisyonlar uzun süre açık kalır ve işlem sayısı düşük olabilir; birkaç haftalık/aylık sürelerde beklenen performans görülmeyebilir. Tarihsel olarak getiriler uzun sürelerde daha istikrarlıdır; bu nedenle tek seferde büyük miktar yerine düzenli aralıklarla (örneğin her ay) sermaye eklemek ve uzun vadeli yaklaşmak daha uygundur."
+      },
+      {
+        "q": "Riski nedir?",
+        "a": "Strateji geçmiş veriyle geliştirildi ve bugün canlıda çalışıyor. Yıllık kayan pencerelerle yapılan geriye dönük testlerde (backtest) incelenen dönemlerin hiçbirinde yıllık zarar görülmedi; ancak backtest bir simülasyondur, gerçek işlem sonucu değildir. Piyasa dinamikleri değişebilir. Grafikleri, işlemleri ve analizleri inceleyerek kendi değerlendirmenizi yapın."
+      },
+      {
+        "q": "Param güvende mi?",
+        "a": "Copy trading'de varlıklarınız kendi hesabınızda tutulur ve erişim yalnızca sizindir. Sistem yalnızca açılan/kapatılan işlemleri kopyalar. Yalnızca BTC işlemine izin vermek ve maksimum 2x kaldıraç gibi ek sınırlar tanımlayabilirsiniz."
+      },
+      {
+        "q": "Diğer copy trade liderlerinden farkı nedir?",
+        "a": "Bir portföyü değerlendirirken geçmiş performans, kaldıraç, işlem yapılan varlıklar ve maksimum düşüş oranlarını incelemeniz önerilir. Amaç, yüksek riskli kısa vadeli işlemler yerine kontrollü ve uzun vadeli bir yaklaşımdır."
+      },
+      {
+        "q": "Kendi kaldıraç oranımı belirleyebilir miyim?",
+        "a": "Evet. Platformlar kullanıcıların kendi belirlediği kaldıraç oranını kullanmasına izin verir. Fakat tavsiye edilen kaldıraç oranı 2x'tir ve tavsiye edilmeyen kaldıraç oranları ise 3x üzeridir."
+      },
+      {
+        "q": "Profit Share nedir?",
+        "a": "Copy trading platformları, takipçilerin elde ettiği kârın bir kısmını strateji yöneticisine aktarır. Bu oran genellikle minimum %10'dur ve sistem bu standart oranı kullanır. Kâr edilmediği dönemlerde kesinti uygulanmaz."
+      },
+      {
+        "q": "Farklı varlıklarda yeni botlar gelecek mi?",
+        "a": "Evet. ExecutorBTC'nin performansını geliştiren çalışmalar sürüyor ve belirli aralıklarla yeni sürümler devreye alınıyor. Gelecekte altcoinler ve kripto dışı varlıklar için de stratejiler planlanıyor."
+      }
+    ]
+  },
+  "footer": {
+    "risk": "Kripto varlık işlemleri yüksek risk içerir. Geçmiş performans gelecekteki sonuçların garantisi değildir.",
+    "legal": "Yasal"
+  },
+  "pages": {
+    "about": {
+      "title": "Hakkımızda",
+      "description": "Executor Trading, Binance ve Bybit'te takip edilebilen algoritmik trading stratejileri geliştirir. Biz kimiz, yaklaşımımız ve yol haritamız.",
+      "sections": [
+        {
+          "title": "Executor Trading nedir?",
+          "body": "Executor Trading, algoritmik trading stratejileri geliştirip bunları büyük borsaların copy trading sistemleri üzerinden erişilebilir kılar. Amacımız; sürekli ekran başında olmayı ya da duygusal kararlar vermeyi gerektirmeyen, kurala ve veriye dayalı stratejileri herkesin takip edebileceği hâle getirmek."
+        },
+        {
+          "title": "Yaklaşımımız",
+          "body": "Her strateji canlıya alınmadan önce geçmiş veriyle geliştirilir ve farklı piyasa koşullarında test edilir. Kısa vadeli kazanç yerine risk kontrolüne ve istikrara odaklanırız; stratejilerimizi sade, sistematik ve ölçülebilir tutarız."
+        },
+        {
+          "title": "Stratejilerimiz",
+          "body": "Şu an aktif olan stratejimiz ExecutorBTC'dir: yalnızca BTC işlemi yapar, 2x kaldıraç kullanır ve işlem sıklığını düşük tutarak büyük hareketleri yakalamayı hedefler."
+        },
+        {
+          "title": "Şeffaflık",
+          "body": "Stratejilerimizin işlem geçmişi borsaların copy trading sayfalarında herkese açıktır. Kâr payı yalnızca kârlı dönemlerde, borsanın standart oranıyla alınır; kâr olmayan dönemde kesinti yapılmaz."
+        },
+        {
+          "title": "Sırada ne var?",
+          "body": "Mevcut stratejilerimizi geliştirmeye devam ediyor ve belirli aralıklarla yeni sürümler yayınlıyoruz. Altcoinler ve kripto dışı varlıklar için de yeni stratejiler planlanıyor."
+        }
+      ]
+    },
+    "risk": {
+      "title": "Risk Bildirimi",
+      "description": "ExecutorBTC'yi takip etmenin riskleri: kripto volatilitesi, kaldıraç ve likidasyon, strateji, borsa ve teknik riskler. Yatırım öncesi okuyun.",
+      "sections": [
+        {
+          "title": "Yatırım tavsiyesi değildir",
+          "body": "Bu sitedeki bilgiler genel bilgilendirme amaçlıdır; yatırım, finans veya vergi tavsiyesi değildir. ExecutorBTC'yi takip etme kararı tamamen sana aittir; gerekirse bağımsız danışmanlık al."
+        },
+        {
+          "title": "Piyasa riski",
+          "body": "BTC dahil kripto varlıklar çok oynaktır. Fiyatlar kısa sürede sert değişebilir ve ayırdığın sermayenin bir kısmını veya tamamını kaybedebilirsin. Yalnızca kaybetmeyi göze alabileceğin parayla yatırım yap."
+        },
+        {
+          "title": "Kaldıraç ve likidasyon",
+          "body": "Kaldıraç hem kazancı hem kaybı büyütür. Açık pozisyonun aleyhine sert bir hareket likidasyona ve teminatın kaybına yol açabilir. Önerilen kaldıraç 2x'tir; daha yüksek kaldıraç bu riski belirgin şekilde artırır."
+        },
+        {
+          "title": "Strateji riski",
+          "body": "ExecutorBTC, geçmiş veriyle geliştirilip test edilmiş algoritmik bir stratejidir. Piyasa koşulları değişebilir; geçmişte işe yarayan bir strateji gelecekte düşük performans gösterebilir veya zarar edebilir. Geçmiş performans gelecekteki sonuçların garantisi değildir."
+        },
+        {
+          "title": "Senin sonucun farklı olabilir",
+          "body": "Takipçiler farklı zamanlarda katıldığı ve miktar ile kaldıracı kendileri belirlediği için her takipçinin sonucu farklıdır ve stratejinin yayımlanan performansından ayrılabilir. İşlem gecikmeleri ve fiyat farkları (slippage) da sonucu etkileyebilir."
+        },
+        {
+          "title": "Borsa ve teknik riskler",
+          "body": "Kopyalama Binance veya Bybit üzerinde yürür. Borsa kesintileri, bakım, kural değişiklikleri veya hesap kısıtlamaları işlemlerin zamanında kopyalanmasını ya da kapatılmasını engelleyebilir. Executor Trading borsaların işleyişinden sorumlu değildir."
+        },
+        {
+          "title": "Yasal ve vergisel yükümlülükler",
+          "body": "Kripto varlıklara ve copy trading'e erişim bazı ülkelerde kısıtlı olabilir. Sana uygulanan yasalara ve vergi yükümlülüklerine uymak senin sorumluluğundadır."
+        }
+      ]
+    },
+    "privacy": {
+      "title": "Gizlilik Politikası",
+      "description": "Executor Trading web sitesinin hangi kişisel verileri, neden ve ne süreyle işlediği, kimlerle paylaştığı ve KVKK/GDPR kapsamındaki hakların.",
+      "sections": [
+        {
+          "title": "Kapsam ve veri sorumlusu",
+          "body": "Bu politika Executor Trading web sitesini kapsar. Veri sorumlusu Executor Trading'dir; her sayfadaki \"İletişime Geç\" düğmesiyle bize ulaşabilirsiniz. Sitede üyelik, hesap veya ödeme yoktur; tek form isteğe bağlı referans formudur."
+        },
+        {
+          "title": "İşlediğimiz veriler",
+          "body": "Teknik istek verileri: siteyi ziyaret ettiğinizde barındırma sağlayıcımız GitHub (GitHub Pages), siteyi sunmak ve korumak için IP adresinizi, tarayıcı ve istek bilgilerinizi işler. Ölçüm: yalnızca onay verirseniz Google Analytics ve Microsoft Clarity sitenin nasıl kullanıldığını kaydeder (bkz. Çerez Politikası). Referans formu: formu gönderirseniz, referansı kaydetmek ve komisyon ödemek için e-posta adresinizi, borsa takma adlarını ve yönlendirenin borsa kimliğini (UID) işleriz. İletişim: bize yazarsanız adınızı, iletişim bilgilerinizi ve mesajınızı işleriz."
+        },
+        {
+          "title": "Amaç ve hukuki sebep",
+          "body": "Siteyi çalıştırmak ve güvenliğini sağlamak (meşru menfaat), ölçmek ve geliştirmek (yalnızca onayınızla), başvurduğunuz referans programını yürütmek (talebiniz) ve mesajlarınızı yanıtlamak (talebiniz / meşru menfaat) için. Verilerinizi satmayız ve reklam profili için kullanmayız."
+        },
+        {
+          "title": "Borsa hesabın",
+          "body": "Kopyalama Binance veya Bybit üzerinde yürür ve hesap verilerin borsa tarafından kendi gizlilik politikasına göre işlenir. Executor Trading şifreni veya API anahtarını istemez ve fonlarına erişemez. Yalnızca borsanın lider trader'a gösterdiği sınırlı bilgiyi görebiliriz ve bunu sadece stratejiyi yürütmek ve takipçi sayısı gibi toplu rakamları yayımlamak için kullanırız."
+        },
+        {
+          "title": "Hizmet sağlayıcılar ve yurt dışına aktarım",
+          "body": "GitHub Pages (barındırma), Google (onaylı Analytics; referans formu kayıtlarının saklanması) ve Microsoft (onaylı Clarity) hizmetlerini kullanıyoruz. Bu sağlayıcılar verileri ABD dahil ülkeniz dışında işleyebilir; bu aktarımlar sağlayıcıların sunduğu standart sözleşme maddeleri gibi güvencelere dayanır."
+        },
+        {
+          "title": "Saklama süreleri",
+          "body": "Teknik kayıtlar işletim ve güvenlik için GitHub tarafından kısa süre tutulur. Analytics ve Clarity verileri Google'ın ve Microsoft'un saklama sürelerine göre tutulur. Referans formu verileri referans ve komisyon süresi boyunca ve ödemelerin gerektirdiği kayıtlar için saklanır. İletişim mesajları, yasa aksini gerektirmedikçe yanıt için gereken süre boyunca tutulur ve sonra silinir."
+        },
+        {
+          "title": "Hakların",
+          "body": "Sana uygulanan mevzuata göre (KVKK md. 11 ve GDPR dahil) verilerine erişmeyi, düzeltilmesini veya silinmesini isteyebilir, işlemeye itiraz edebilir ya da kısıtlanmasını talep edebilir ve onayını \"Çerez ayarları\" üzerinden istediğin zaman geri çekebilirsin. Talepler için \"İletişime Geç\" butonunu kullan. Kişisel Verileri Koruma Kurulu'na veya ilgili veri koruma otoritesine şikâyet hakkın saklıdır."
+        },
+        {
+          "title": "Çocuklar ve değişiklikler",
+          "body": "Site 18 yaş altındaki kişilere yönelik değildir. Bu politikayı güncelleyebiliriz; güncel sürüm her zaman bu sayfadadır."
+        }
+      ]
+    },
+    "cookies": {
+      "title": "Çerez Politikası",
+      "description": "Executor Trading'in hangi çerezleri ve benzeri teknolojileri neden, ne süreyle kullandığı ve tercihini nasıl değiştirebileceğin.",
+      "sections": [
+        {
+          "title": "Kısaca",
+          "body": "Bu sitede üyelik veya hesap yoktur. Zorunlu olmayan teknolojiler yalnızca Google Analytics ve Microsoft Clarity ısı haritasıdır; ikisi de yalnızca çerez bandında kabul ederseniz yüklenir."
+        },
+        {
+          "title": "Zorunlu: tercihin",
+          "body": "Kabul veya ret seçimin, bandın tekrar gösterilmemesi için tarayıcının yerel depolamasında \"executor-trade-consent\" anahtarıyla saklanır. Kişisel veri içermez ve sen silene kadar kalır. Dil menüsünden bir dil seçersen, ana sayfanın seni tekrar tarayıcı diline yönlendirmemesi için bu seçim \"lang\" çerezinde 1 yıl saklanır; kişisel veri içermez."
+        },
+        {
+          "title": "Analiz (Google Analytics, onayla)",
+          "body": "Kabul ederseniz Google Analytics sayfa görüntülemelerini sayar ve sitenin nasıl kullanıldığını ölçer. _ga ve _ga_<ID> çerezlerini (en fazla 2 yıl) yerleştirir. Veriler Google tarafından kendi gizlilik politikasına göre işlenir."
+        },
+        {
+          "title": "Isı haritası (Microsoft Clarity, onayla)",
+          "body": "Kabul edersen Microsoft Clarity, siteyi iyileştirmemize yardımcı olmak için sitenin nasıl kullanıldığını (tıklamalar, kaydırma, fare hareketleri ve oturum kayıtları) kaydeder. _clck (1 yıl) ve _clsk (1 gün) gibi çerezler bırakır; Microsoft ayrıca MUID gibi kendi çerezlerini kullanabilir. Veriler Microsoft tarafından kendi gizlilik bildirimine göre işlenir."
+        },
+        {
+          "title": "Borsa bağlantıları",
+          "body": "Binance ve Bybit bağlantıları seni bu sitelere götürür; oralarda kendi çerez politikaları geçerlidir. Referans kodu bağlantının içinde taşınır, bunun için çerez bırakmayız."
+        },
+        {
+          "title": "Tercihini değiştirme",
+          "body": "Tercihinizi her sayfanın altındaki \"Çerez ayarları\" düğmesiyle istediğiniz zaman değiştirebilirsiniz. Onayı geri çekerseniz analiz çerezleri silinir; Google Analytics ve Clarity artık yüklenmez. Çerezleri ve site verilerini tarayıcı ayarlarınızdan da temizleyebilirsiniz."
+        }
+      ]
+    },
+    "terms": {
+      "title": "Kullanım Şartları",
+      "description": "Executor Trading web sitesi kullanım şartları: hizmetin niteliği, sorumlulukların, referans bağlantıları, sorumluluk sınırı ve değişiklikler.",
+      "sections": [
+        {
+          "title": "Kabul",
+          "body": "Executor Trading web sitesini kullanarak bu şartları kabul etmiş olursun. Site tanıtım ve bilgilendirme amaçlıdır; şartları kabul etmiyorsan lütfen kullanma."
+        },
+        {
+          "title": "Executor Trading nedir, ne değildir",
+          "body": "ExecutorBTC, Binance ve Bybit'in copy trading sistemleri üzerinden takip edebileceğin algoritmik bir stratejidir. Executor Trading bir borsa, aracı kurum, portföy yöneticisi veya yatırım danışmanı değildir; fonlarını tutmaz ve yönetmez. Copy trading hizmetini borsa sunar ve borsayla ilişkin borsanın kendi şartlarına tabidir."
+        },
+        {
+          "title": "Yatırım tavsiyesi değildir",
+          "body": "Bu sitedeki hiçbir içerik yatırım, finans, hukuk veya vergi tavsiyesi ya da herhangi bir varlığı alma/satma teklifi değildir. Kripto işlemleri yüksek risk içerir; yatırım yapmadan önce Risk Bildirimi'ni oku."
+        },
+        {
+          "title": "Senin sorumlulukların",
+          "body": "En az 18 yaşında olduğunu ve yaşadığın yerde kripto varlık ve copy trading kullanımının yasal olduğunu kabul edersin. Borsa hesabından, güvenliğinden ve seçtiğin miktar ile kaldıraçtan sen sorumlusun."
+        },
+        {
+          "title": "Performans bilgileri",
+          "body": "Sitedeki rakamlar (takipçi sayısı, portföy değeri veya geçmiş getiriler gibi) bilgilendirme amaçlıdır; gecikmeli veya yuvarlanmış olabilir ve senin sonucundan farklı olabilir. Esas olan borsada gösterilen veridir. Geçmiş performans gelecekteki sonuçların garantisi değildir."
+        },
+        {
+          "title": "Ücretler ve referans bağlantıları",
+          "body": "Siteyi kullanmak ücretsizdir. Kâr payı borsa tarafından, borsanın kurallarına göre ve yalnızca kârlı dönemlerde alınır. Binance ve Bybit bağlantıları referans bağlantılarıdır; bunları kullandığında Executor Trading borsadan komisyon alabilir, bu sana ek bir maliyet getirmez."
+        },
+        {
+          "title": "Stratejideki değişiklikler",
+          "body": "Strateji, olağan dışı piyasa koşullarında takipçileri korumak dahil, herhangi bir zamanda güncellenebilir, duraklatılabilir veya sonlandırılabilir. Kopyalamayı borsan üzerinden istediğin zaman durdurabilirsin."
+        },
+        {
+          "title": "Fikri mülkiyet",
+          "body": "Executor Trading adı, logosu, bu sitedeki metinler ve tasarımlar Executor Trading'e aittir; izinsiz kopyalanamaz veya kullanılamaz."
+        },
+        {
+          "title": "Sorumluluğun sınırı",
+          "body": "Yasaların izin verdiği ölçüde Executor Trading; işlem kayıplarından, kaçırılan veya geciken işlemlerden, borsa kesintilerinden ya da bu sitedeki bilgilere dayanarak verilen kararlardan sorumlu değildir. Bu şartlar, yasa gereği sınırlandırılamayan sorumluluğu sınırlamaz."
+        },
+        {
+          "title": "Değişiklikler ve iletişim",
+          "body": "Bu şartları güncelleyebiliriz; güncel sürüm her zaman bu sayfadadır. Soruların için \"İletişime Geç\" butonunu kullan."
+        }
+      ]
+    },
+    "notFound": {
+      "title": "Sayfa bulunamadı",
+      "description": "Aradığın sayfa mevcut değil.",
+      "back": "Ana sayfaya dön"
+    }
+  },
+  "placeholder": "İçerik hazırlanıyor.",
+  "cookie": {
+    "body": "Siteyi geliştirmek için analiz çerezleri kullanıyoruz.",
+    "accept": "Kabul et",
+    "decline": "Reddet",
+    "settings": "Çerez ayarları"
+  }
+}
