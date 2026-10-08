@@ -35,6 +35,7 @@ const social = Object.entries(config.social).filter(([, url]) => url);
     <nav aria-label={t.footer.legal} class="flex gap-12">
       <ul class="space-y-1">
         <li><a href={getPath('about', lang)} class="inline-block py-1 text-text-soft hover:text-text">{t.nav.about}</a></li>
+        <li><a href={getPath('blog', lang)} class="inline-block py-1 text-text-soft hover:text-text">{t.nav.blog}</a></li>
       </ul>
       <ul class="space-y-1">
         {legalRoutes.map((key) => (

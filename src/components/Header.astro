@@ -4,8 +4,8 @@ import LangSwitcher from './LangSwitcher.astro';
 import dash from '../../data/i18n.json';
 import { getPath, useTranslations, type Lang, type RouteKey } from '../i18n/utils';
 
-interface Props { lang: Lang; route?: RouteKey }
-const { lang, route = 'home' } = Astro.props;
+interface Props { lang: Lang; route?: RouteKey; alternates?: Partial<Record<Lang, string>> }
+const { lang, route = 'home', alternates } = Astro.props;
 const t = useTranslations(lang);
 const d = dash[lang];
 const sections = [
@@ -22,8 +22,9 @@ const sectionBase = Astro.props.route === 'home' ? '' : getPath('home', lang); /
       {sections.map(([id, label]) => <a href={`${sectionBase}#${id}`} class="text-text-soft hover:text-text">{label}</a>)}
     </div>
     <div class="flex items-center gap-3 text-sm sm:gap-6">
+      <a href={getPath('blog', lang)} class="hidden py-1 text-text-soft hover:text-text sm:inline-block">{t.nav.blog}</a>
       <a href={getPath('about', lang)} class="hidden py-1 text-text-soft hover:text-text sm:inline-block">{t.nav.about}</a>
-      <LangSwitcher lang={lang} route={route} />
+      <LangSwitcher lang={lang} route={route} alternates={alternates} />
       <a href={`${sectionBase}#contact`} class="whitespace-nowrap rounded-m bg-accent px-3 py-2 font-semibold text-on-accent sm:px-4">{t.nav.cta}</a>
     </div>
   </nav>

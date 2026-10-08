@@ -1,18 +1,26 @@
 ---
-// Tüm dillerdeki tüm sayfalar src/i18n/utils.ts slug tablosundan üretilir.
+// Tüm dillerdeki tüm sayfalar src/i18n/utils.ts slug tablosundan, blog yazıları src/content/blog'dan üretilir.
 import HomePage from '../components/HomePage.astro';
 import ContentPage from '../components/ContentPage.astro';
+import BlogIndex from '../components/BlogIndex.astro';
+import BlogPost from '../components/BlogPost.astro';
 import { getPath, langs, routeKeys, type Lang, type RouteKey } from '../i18n/utils';
+import { getPosts, postLang, postPath, type Post } from '../lib/blog';
 
-export function getStaticPaths() {
-  return langs.flatMap((lang) =>
-    routeKeys.map((route) => ({
-      params: { path: getPath(route, lang).replace(/^\/|\/$/g, '') || undefined },
-      props: { lang, route },
-    })),
-  );
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  const toParam = (path: string) => path.replace(/^\/|\/$/g, '') || undefined;
+  return [
+    ...langs.flatMap((lang) =>
+      routeKeys.map((route) => ({ params: { path: toParam(getPath(route, lang)) }, props: { lang, route, posts } })),
+    ),
+    ...posts.map((post) => ({ params: { path: toParam(postPath(post)) }, props: { lang: postLang(post), post, posts } })),
+  ];
 }
 
-const { lang, route } = Astro.props as { lang: Lang; route: RouteKey };
+const { lang, route, post, posts } = Astro.props as { lang: Lang; route?: RouteKey; post?: Post; posts: Post[] };
 ---
-{route === 'home' ? <HomePage lang={lang} /> : <ContentPage lang={lang} route={route} />}
+{post ? <BlogPost post={post} posts={posts} />
+  : route === 'home' ? <HomePage lang={lang} />
+  : route === 'blog' ? <BlogIndex lang={lang} posts={posts} />
+  : <ContentPage lang={lang} route={route!} />}

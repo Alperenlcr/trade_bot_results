@@ -27,6 +27,7 @@ export const useTranslations = (lang: Lang) => dictionaries[lang];
 const slugs = {
   home: '',
   about: 'about',
+  blog: 'blog',
   risk: 'legal/risk',
   privacy: 'legal/privacy',
   cookies: 'legal/cookies',

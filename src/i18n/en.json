@@ -6,6 +6,7 @@
   "nav": {
     "home": "Home",
     "about": "About",
+    "blog": "Blog",
     "cta": "Contact Us",
     "language": "Language"
   },
@@ -99,6 +100,10 @@
           "body": "We keep improving our existing strategies and release new versions at regular intervals. Strategies for altcoins and non-crypto assets are planned."
         }
       ]
+    },
+    "blog": {
+      "title": "Blog",
+      "description": "Articles on algorithmic BTC trading, copy trading on Binance and Bybit, risk management and ExecutorBTC performance."
     },
     "risk": {
       "title": "Risk Disclosure",
@@ -260,5 +265,10 @@
     "accept": "Accept",
     "decline": "Decline",
     "settings": "Cookie settings"
+  },
+  "blog": {
+    "updated": "Updated",
+    "cta": "See live performance",
+    "back": "Back to blog"
   }
 }

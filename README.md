@@ -28,6 +28,7 @@ npm run preview   # üretilen dist/'i yerel olarak sun
 │   │   ├── [...path].astro        # tüm dil × sayfa kombinasyonları (slug'lar: src/i18n/utils.ts)
 │   │   ├── 404.astro
 │   │   └── sitemap.xml.ts
+│   ├── content/blog/{lang}/*.md   # blog yazıları — yazım kuralları: BLOG.md
 │   ├── i18n/                      # site metinleri (en/tr/ar/zh.json) + getPath / useTranslations
 │   ├── data/                      # contact.ts (iletişim e-postası), exchanges.ts (affiliate linkleri)
 │   ├── styles/global.css          # Tailwind, fontlar, marka token'ları, dashboard CSS değişkenleri
