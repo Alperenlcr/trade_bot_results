@@ -2,9 +2,10 @@
 
 > ExecutorBTC is an algorithmic trend-following trading strategy that trades BTC futures with 2x leverage, 24/7. This site is its performance dashboard, built from real historical and live trading data (English, Turkish, Arabic, Simplified Chinese).
 
-The home page is a single-page dashboard, not a blog or docs site, available in four languages:
+The home page is a single-page dashboard, available in four languages:
 English at https://executortrading.com/, Turkish at /tr/, Arabic at /ar/ and Simplified Chinese at /zh/.
 About and legal pages (risk disclosure, privacy, cookies, terms) exist in every language.
+A blog with educational articles (copy trading, strategy, risk) lives at /blog/ (and /tr/blog/, /ar/blog/, /zh/blog/).
 Key sections (same structure in every language):
 
 - Performance: annual/monthly returns, rolling-window analysis, max drawdown, BTC benchmark comparison

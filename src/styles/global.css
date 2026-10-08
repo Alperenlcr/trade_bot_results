@@ -163,3 +163,20 @@
 .app .ref-label { font-size: 13px; font-weight: 600; color: var(--text) }
 .app .req { color: var(--neg) }
 .app .ref-input { height: 44px; padding: 0 14px; border-radius: 4px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); font-size: 14px; font-family: var(--font-body) }
+
+/* Blog yazılarının Markdown çıktısı (BlogPost.astro) */
+.prose { @apply leading-relaxed text-text-soft; }
+.prose > * + * { @apply mt-5; }
+.prose :is(h2, h3) { @apply font-bold text-text; }
+.prose h2 { @apply mt-12 text-2xl; }
+.prose h3 { @apply mt-8 text-xl; }
+.prose :is(strong, th) { @apply font-semibold text-text; }
+.prose a { @apply text-accent underline underline-offset-2; }
+.prose ul { @apply list-disc ps-6; }
+.prose ol { @apply list-decimal ps-6; }
+.prose li + li { @apply mt-2; }
+.prose blockquote { @apply border-s-2 border-accent ps-4 italic; }
+.prose code { @apply rounded-m bg-surface px-1 font-display text-sm; }
+.prose img { @apply rounded-l border border-border; }
+.prose table { @apply block overflow-x-auto text-sm; }
+.prose :is(th, td) { @apply border border-border px-3 py-2 text-start; }

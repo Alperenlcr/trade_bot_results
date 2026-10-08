@@ -6,6 +6,7 @@
   "nav": {
     "home": "Ana Sayfa",
     "about": "Hakkımızda",
+    "blog": "Blog",
     "cta": "İletişime Geç",
     "language": "Dil"
   },
@@ -99,6 +100,10 @@
           "body": "Mevcut stratejilerimizi geliştirmeye devam ediyor ve belirli aralıklarla yeni sürümler yayınlıyoruz. Altcoinler ve kripto dışı varlıklar için de yeni stratejiler planlanıyor."
         }
       ]
+    },
+    "blog": {
+      "title": "Blog",
+      "description": "Algoritmik BTC trade, Binance ve Bybit'te copy trading, risk yönetimi ve ExecutorBTC performansı üzerine yazılar."
     },
     "risk": {
       "title": "Risk Bildirimi",
@@ -260,5 +265,10 @@
     "accept": "Kabul et",
     "decline": "Reddet",
     "settings": "Çerez ayarları"
+  },
+  "blog": {
+    "updated": "Güncellendi",
+    "cta": "Canlı performansı gör",
+    "back": "Bloga dön"
   }
 }

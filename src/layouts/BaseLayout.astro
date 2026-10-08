@@ -18,6 +18,9 @@ interface Props {
   route?: RouteKey;
   schema?: Record<string, unknown>[];
   noindex?: boolean;
+  alternates?: Partial<Record<Lang, string>>;
+  image?: string;
+  published?: Date;
 }
 
 const { lang, route, ...seo } = Astro.props;
@@ -43,7 +46,7 @@ const { lang, route, ...seo } = Astro.props;
     <SEO lang={lang} route={route} {...seo} />
   </head>
   <body class="flex min-h-dvh flex-col">
-    <Header lang={lang} route={route} />
+    <Header lang={lang} route={route} alternates={seo.alternates} />
     <main class="flex-1"><slot /></main>
     <Footer lang={lang} />
     <CookieConsent lang={lang} />

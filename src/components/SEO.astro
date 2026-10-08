@@ -9,12 +9,19 @@ interface Props {
   route?: RouteKey;
   schema?: Record<string, unknown>[];
   noindex?: boolean;
+  /** Blog yazısı: çevirilerin adresleri (yoksa route'tan tüm diller), kapak görseli, yayın tarihi (og:type=article). */
+  alternates?: Partial<Record<Lang, string>>;
+  image?: string;
+  published?: Date;
 }
 
-const { title, description, lang, route, schema = [], noindex = false } = Astro.props;
+const { title, description, lang, route, schema = [], noindex = false, alternates: alts, image, published } = Astro.props;
 const site = Astro.site!;
 const abs = (path: string) => new URL(path, site).href;
-const canonical = route ? abs(getPath(route, lang)) : undefined;
+const alternates = alts ?? (route ? Object.fromEntries(langs.map((l) => [l, getPath(route, l)])) as Record<Lang, string> : {});
+const altLangs = langs.filter((l) => alternates[l]);
+const canonical = alternates[lang] && abs(alternates[lang]);
+const xDefault = alternates.en ?? alternates[altLangs[0]];
 
 const organization = {
   '@context': 'https://schema.org',
@@ -25,7 +32,7 @@ const organization = {
   sameAs: Object.values(config.social).filter(Boolean),
 };
 
-const breadcrumb = route && route !== 'home' && {
+const breadcrumb = route && route !== 'home' && !alts && {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
@@ -43,22 +50,23 @@ const jsonLd = [organization, breadcrumb, ...schema].filter(Boolean);
 <meta name="description" content={description} />
 {noindex && <meta name="robots" content="noindex" />}
 {canonical && <link rel="canonical" href={canonical} />}
-{route && (
+{xDefault && (
   <>
-    {langs.map((l) => <link rel="alternate" hreflang={languages[l].hreflang} href={abs(getPath(route, l))} />)}
-    <link rel="alternate" hreflang="x-default" href={abs(getPath(route, 'en'))} />
+    {altLangs.map((l) => <link rel="alternate" hreflang={languages[l].hreflang} href={abs(alternates[l]!)} />)}
+    <link rel="alternate" hreflang="x-default" href={abs(xDefault)} />
   </>
 )}
-<meta property="og:type" content="website" />
+<meta property="og:type" content={published ? 'article' : 'website'} />
+{published && <meta property="article:published_time" content={published.toISOString()} />}
 <meta property="og:site_name" content="Executor Trading" />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 {canonical && <meta property="og:url" content={canonical} />}
 <meta property="og:locale" content={languages[lang].ogLocale} />
-{langs.filter((l) => l !== lang).map((l) => <meta property="og:locale:alternate" content={languages[l].ogLocale} />)}
-<meta property="og:image" content={abs(`/og/${lang}.png`)} />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
+{altLangs.filter((l) => l !== lang).map((l) => <meta property="og:locale:alternate" content={languages[l].ogLocale} />)}
+<meta property="og:image" content={abs(image ?? `/og/${lang}.png`)} />
+{!image && <meta property="og:image:width" content="1200" />}
+{!image && <meta property="og:image:height" content="630" />}
 <meta property="og:image:alt" content={title} />
 <meta name="twitter:card" content="summary_large_image" />
 <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

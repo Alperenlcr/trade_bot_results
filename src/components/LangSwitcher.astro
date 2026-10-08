@@ -1,8 +1,9 @@
 ---
 import { getPath, langs, languages, useTranslations, type Lang, type RouteKey } from '../i18n/utils';
 
-interface Props { lang: Lang; route: RouteKey }
-const { lang, route } = Astro.props;
+// alternates: blog yazısının çevirileri; çevirisi olmayan dil o dilin `route` sayfasına (blog listesine) gider.
+interface Props { lang: Lang; route: RouteKey; alternates?: Partial<Record<Lang, string>> }
+const { lang, route, alternates } = Astro.props;
 ---
 <details class="relative">
   <summary class="cursor-pointer list-none whitespace-nowrap py-1 text-text-soft hover:text-text" aria-label={`${languages[lang].label} – ${useTranslations(lang).nav.language}`}>
@@ -11,7 +12,7 @@ const { lang, route } = Astro.props;
   <ul class="absolute end-0 z-10 mt-2 min-w-32 rounded-m border border-border bg-surface py-1">
     {langs.map((l) => (
       <li>
-        <a href={getPath(route, l)} data-lang={l} hreflang={languages[l].hreflang} lang={languages[l].hreflang}
+        <a href={alternates?.[l] ?? getPath(route, l)} data-lang={l} hreflang={languages[l].hreflang} lang={languages[l].hreflang}
           aria-current={l === lang ? 'page' : undefined}
           class="block px-4 py-2 hover:text-accent aria-[current=page]:text-accent">
           {languages[l].label}

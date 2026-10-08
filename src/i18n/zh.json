@@ -6,6 +6,7 @@
   "nav": {
     "home": "首页",
     "about": "关于我们",
+    "blog": "博客",
     "cta": "联系我们",
     "language": "语言"
   },
@@ -99,6 +100,10 @@
           "body": "我们持续改进现有策略，并定期发布新版本。未来还计划推出针对山寨币和非加密资产的策略。"
         }
       ]
+    },
+    "blog": {
+      "title": "博客",
+      "description": "关于算法化 BTC 交易、Binance 与 Bybit 跟单交易、风险管理以及 ExecutorBTC 表现的文章。"
     },
     "risk": {
       "title": "风险披露",
@@ -260,5 +265,10 @@
     "accept": "接受",
     "decline": "拒绝",
     "settings": "Cookie 设置"
+  },
+  "blog": {
+    "updated": "更新于",
+    "cta": "查看实时表现",
+    "back": "返回博客"
   }
 }

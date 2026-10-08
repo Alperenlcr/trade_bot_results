@@ -4,7 +4,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { useTranslations, type Lang, type RouteKey } from '../i18n/utils';
 
-interface Props { lang: Lang; route: Exclude<RouteKey, 'home'> }
+interface Props { lang: Lang; route: Exclude<RouteKey, 'home' | 'blog'> }
 const { lang, route } = Astro.props;
 const t = useTranslations(lang);
 const page = t.pages[route];

@@ -1,0 +1,58 @@
+---
+// Tek blog yazısı: Markdown gövdesi + BlogPosting/BreadcrumbList JSON-LD.
+import { render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getPath, languages, useTranslations } from '../i18n/utils';
+import { postAlternates, postLang, postPath, type Post } from '../lib/blog';
+
+interface Props { post: Post; posts: Post[] }
+const { post, posts } = Astro.props;
+const { title, description, pubDate, updatedDate, image } = post.data;
+const lang = postLang(post);
+const t = useTranslations(lang);
+const { Content } = await render(post);
+const date = new Intl.DateTimeFormat(languages[lang].hreflang, { dateStyle: 'long' });
+const abs = (path: string) => new URL(path, Astro.site).href;
+
+const publisher = { '@type': 'Organization', name: 'Executor Trading', url: abs('/'), logo: abs('/logo.png') };
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: title,
+    description,
+    inLanguage: languages[lang].hreflang,
+    datePublished: pubDate.toISOString(),
+    dateModified: (updatedDate ?? pubDate).toISOString(),
+    image: abs(image ?? `/og/${lang}.png`),
+    mainEntityOfPage: abs(postPath(post)),
+    author: publisher,
+    publisher,
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Executor Trading', item: abs(getPath('home', lang)) },
+      { '@type': 'ListItem', position: 2, name: t.pages.blog.title, item: abs(getPath('blog', lang)) },
+      { '@type': 'ListItem', position: 3, name: title, item: abs(postPath(post)) },
+    ],
+  },
+];
+---
+<BaseLayout lang={lang} route="blog" title={`${title} — Executor Trading`} description={description}
+  alternates={postAlternates(post, posts)} image={image} published={pubDate} schema={schema}>
+  <article class="mx-auto max-w-3xl px-6 py-20">
+    <a href={getPath('blog', lang)} class="text-sm text-text-soft hover:text-text"><span class="inline-block rtl:-scale-x-100">←</span> {t.blog.back}</a>
+    <h1 class="mt-6 text-4xl font-bold">{title}</h1>
+    <p class="mt-4 text-sm text-text-soft">
+      <time datetime={pubDate.toISOString()}>{date.format(pubDate)}</time>
+      {updatedDate && <> · {t.blog.updated}: <time datetime={updatedDate.toISOString()}>{date.format(updatedDate)}</time></>}
+    </p>
+    <div class="prose mt-10"><Content /></div>
+    <aside class="mt-16 border-t border-border pt-8">
+      <a href={getPath('home', lang)} class="inline-block rounded-m bg-accent px-4 py-2 font-semibold text-on-accent">{t.blog.cta}</a>
+      <p class="mt-6 text-sm text-text-soft">{t.footer.risk}</p>
+    </aside>
+  </article>
+</BaseLayout>
