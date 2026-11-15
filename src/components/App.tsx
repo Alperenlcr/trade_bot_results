@@ -132,6 +132,9 @@ export default class App extends React.Component<Props, State> {
     addEventListener('scroll', this.onScrollClose, { passive: true });
     addEventListener('hashchange', this.onHash);
     this.onHash();
+    this.restoreScroll();
+    let touched = false; const stop = () => { touched = true; };
+    addEventListener('wheel', stop, { once: true, passive: true }); addEventListener('touchstart', stop, { once: true, passive: true });
     // performance.csv ~7,5 MB ve yalnızca Analiz bölümü kullanıyor: bölüm görünüme yaklaşınca indirilir.
     const an = document.getElementById('analysis');
     if (an) {
@@ -146,6 +149,7 @@ export default class App extends React.Component<Props, State> {
     // Endeks dosyası gelmezse grafik yine çizilir, yalnız endeks çizgileri olmaz.
     await Promise.all([this.ensureTf(this.state.tf), this.loadIdx().catch(() => {})]);
     this.forceUpdate(() => this.drawChart());
+    if (!touched) { this.restoreScroll(); try { sessionStorage.removeItem('verScroll'); } catch { /* yok say */ } }
     // Hesaplayıcı tüm geçmişe ihtiyaç duyar; ilk grafik çizildikten sonra arka planda yüklenir.
     this.ensureTf('all').then(() => this.forceUpdate(), () => {});
   }
@@ -378,6 +382,27 @@ export default class App extends React.Component<Props, State> {
     if (found < 0) found = tr.findIndex((x) => x.start.slice(0, 10) >= sw.date);
     return found;
   }
+  // Sürüm değiştirirken (v6 ↔ v7) yeni sayfa kullanıcının bulunduğu bölümde ve aynı yükseklikte açılsın.
+  saveScroll = () => {
+    try {
+      const secs = Array.from(document.querySelectorAll<HTMLElement>('main section[id]'));
+      let cur: HTMLElement | null = null;
+      for (const el of secs) if (el.getBoundingClientRect().top <= 80) cur = el;
+      sessionStorage.setItem('verScroll', JSON.stringify({
+        id: cur?.id ?? null, off: cur ? 80 - cur.getBoundingClientRect().top : scrollY, at: Date.now(),
+      }));
+    } catch { /* sessionStorage kapalıysa sayfa başından açılır */ }
+  };
+  restoreScroll = () => {
+    try {
+      const raw = sessionStorage.getItem('verScroll'); if (!raw) return;
+      const { id, off, at } = JSON.parse(raw);
+      if (Date.now() - at > 30000) { sessionStorage.removeItem('verScroll'); return; }
+      const el = id ? document.getElementById(id) : null;
+      const top = el ? el.getBoundingClientRect().top + scrollY - 80 + off : off;
+      scrollTo({ top, behavior: 'instant' as ScrollBehavior }); // html{scroll-behavior:smooth} yüzünden 'instant'
+    } catch { /* yok say */ }
+  };
   onDocDown = (e: PointerEvent) => {
     if (!this.state.pop) return;
     if ((e.target as Element | null)?.closest?.('[data-vpop],[data-vtrig]')) return;
@@ -395,7 +420,7 @@ export default class App extends React.Component<Props, State> {
   renderVerPop() {
     const pop = this.state.pop, v = this.ver, t = this.t;
     const link = (id: string, label: string) => (
-      <a key={id} href={v.paths[id]} style={sx(`display:block;margin-top:10px;padding:8px 12px;border-radius:4px;background:var(--accent);color:var(--accent-contrast);font-weight:600;font-size:13px;text-align:center;text-decoration:none`)}>{label}</a>
+      <a key={id} href={v.paths[id]} onClick={this.saveScroll} style={sx(`display:block;margin-top:10px;padding:8px 12px;border-radius:4px;background:var(--accent);color:var(--accent-contrast);font-weight:600;font-size:13px;text-align:center;text-decoration:none`)}>{label}</a>
     );
     let title = '', body = '', links: React.ReactNode[] = [];
     if (pop?.id === 'banner') {
