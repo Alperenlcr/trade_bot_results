@@ -1105,8 +1105,8 @@ export default class App extends React.Component<Props, State> {
                   <tr key={i} style={sx(`border-top:1px solid var(--border);background:${r.rowBg}`)}>
                     <td>
                       <span style={sx(`display:inline-flex;align-items:center;gap:6px`)}>
-                        {r.sw != null && <button data-vtrig type="button" aria-label={t.ver_info_label} onClick={(e) => this.popBtn('trade:' + r.sw, e)} style={sx(`width:20px;height:20px;border-radius:50%;border:1px solid var(--accent);background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--accent);font-family:var(--font-body);font-weight:700;font-size:11px;line-height:1;cursor:pointer;padding:0`)}>V</button>}
                         <span style={sx(`display:inline-block;padding:3px 9px;border-radius:2px;font-size:11.5px;font-weight:600;font-family:var(--font-display);color:${r.dirColor};background:${r.dirBg}`)}>{r.dir}</span>
+                        {r.sw != null && <button data-vtrig type="button" aria-label={t.ver_info_label} onClick={(e) => this.popBtn('trade:' + r.sw, e)} style={sx(`width:20px;height:20px;border-radius:50%;border:1px solid var(--accent);background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--accent);font-family:var(--font-body);font-weight:700;font-size:11px;line-height:1;cursor:pointer;padding:0`)}>V</button>}
                       </span>
                     </td>
                     <td>{r.start}</td>
