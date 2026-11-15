@@ -26,6 +26,8 @@ interface Props {
 }
 
 interface Selection { a: number; b: number }
+// Sürüm bilgi kutusu: id = 'chart:i' | 'trade:i' | 'banner'; x/y viewport (fixed) konumu.
+interface VerPop { id: string; x: number; y: number }
 interface LightboxState { i: number }
 
 interface State {
@@ -45,6 +47,7 @@ interface State {
   refRefNick: string; refRefID: string; refNewNick: string; refEmail: string;
   refSubmitting: boolean; refDone: boolean; refErr: string;
   copied: boolean;
+  pop: VerPop | null;
   ctModal: boolean; ctName: string; ctEmail: string; ctMsg: string; ctSubmitting: boolean; ctDone: boolean; ctErr: string;
 }
 
@@ -77,6 +80,7 @@ export default class App extends React.Component<Props, State> {
   hoverI: number | null = null;
   _X: ((t: number) => number) | null = null;
   _Y: ((v: number) => number) | null = null;
+  _markers: { x: number; y: number; i: number }[] = [];
   _padL = 0; _plotW = 0; _yd: [number, number] = [0, 1];
 
   constructor(props: Props) {
@@ -111,18 +115,21 @@ export default class App extends React.Component<Props, State> {
       lb: null,
       refModal: false, refPlatform: 'binance', refRefNick: '', refRefID: '', refNewNick: '', refEmail: '',
       refSubmitting: false, refDone: false, refErr: '',
-      copied: false,
+      copied: false, pop: null,
       ctModal: false, ctName: '', ctEmail: '', ctMsg: '', ctSubmitting: false, ctDone: false, ctErr: '',
     };
   }
 
   get lang() { return this.props.locale; }
   get i18n() { return this.props.initialData.i18n; }
+  get ver() { return this.props.initialData.version; }
   get cfg() { return this.props.initialData.config; }
   get t(): any { return (this.i18n && this.i18n[this.lang]) || {}; }
 
   async componentDidMount() {
     addEventListener('keydown', this.onKey);
+    addEventListener('pointerdown', this.onDocDown);
+    addEventListener('scroll', this.onScrollClose, { passive: true });
     addEventListener('hashchange', this.onHash);
     this.onHash();
     // performance.csv ~7,5 MB ve yalnızca Analiz bölümü kullanıyor: bölüm görünüme yaklaşınca indirilir.
@@ -145,6 +152,8 @@ export default class App extends React.Component<Props, State> {
 
   componentWillUnmount() {
     removeEventListener('keydown', this.onKey);
+    removeEventListener('pointerdown', this.onDocDown);
+    removeEventListener('scroll', this.onScrollClose);
     removeEventListener('hashchange', this.onHash);
     clearTimeout(this.refTimer);
     clearTimeout(this.copyTimer);
@@ -154,7 +163,7 @@ export default class App extends React.Component<Props, State> {
   }
 
   onKey = (e: KeyboardEvent) => {
-    if (e.key === 'Escape') { if (this.state.lb) this.lbClose(); else if (this.state.refModal) this.closeRefModal(); else if (this.state.ctModal) this.closeCtModal(); }
+    if (e.key === 'Escape') { if (this.state.pop) this.setState({ pop: null }); else if (this.state.lb) this.lbClose(); else if (this.state.refModal) this.closeRefModal(); else if (this.state.ctModal) this.closeCtModal(); }
     else if (this.state.lb && e.key === 'ArrowLeft') this.lbPrev();
     else if (this.state.lb && e.key === 'ArrowRight') this.lbNext();
   };
@@ -183,7 +192,7 @@ export default class App extends React.Component<Props, State> {
     requestAnimationFrame(tick);
   }
 
-  async fetchCsv(name: string, dir = '/data/tables/') {
+  async fetchCsv(name: string, dir = `/data/${this.ver.dir}/`): Promise<{ head: string[]; rows: string[][] }> {
     const r = await fetch(dir + name);
     if (!r.ok) throw new Error(`${name}: HTTP ${r.status}`); // yoksa 404 sayfası CSV diye okunurdu
     return parseCsv(await r.text());
@@ -356,13 +365,81 @@ export default class App extends React.Component<Props, State> {
     this.setState({ lb: { i: (lb.i + 1) % n } });
   };
 
+  // ---- Bot sürümü geçişi (config.json › versions) ----
+  vfmt(tpl: string, vars: Record<string, string>) { return (tpl || '').replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? ''); }
+  switchBody(i: number) {
+    const sw = this.ver.switches[i];
+    return this.vfmt(this.t.ver_switch_body, { date: this.fmtDate(parseTs(sw.date)), from: sw.from, to: sw.to });
+  }
+  /** Geçiş anında açık olan işlem (yoksa sonraki ilk işlem); trades.csv sırası = eski → yeni. */
+  switchTradeIdx(sw: { date: string }) {
+    const tr = this.trades || []; let found = -1;
+    tr.forEach((x, i) => { if (x.start.slice(0, 10) <= sw.date && (x.pnl == null || x.end.slice(0, 10) >= sw.date)) found = i; });
+    if (found < 0) found = tr.findIndex((x) => x.start.slice(0, 10) >= sw.date);
+    return found;
+  }
+  onDocDown = (e: PointerEvent) => {
+    if (!this.state.pop) return;
+    if ((e.target as Element | null)?.closest?.('[data-vpop],[data-vtrig]')) return;
+    if (e.target === this.canvas) return; // grafik kendi pointerdown'ında açıp kapatır
+    this.setState({ pop: null });
+  };
+  onScrollClose = () => { if (this.state.pop && this.state.pop.id !== 'banner') this.setState({ pop: null }); };
+  togglePop(id: string, x: number, y: number) {
+    this.setState({ pop: this.state.pop?.id === id ? null : { id, x, y } });
+  }
+  popBtn = (id: string, e: React.MouseEvent<HTMLElement>) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    this.togglePop(id, r.left, r.bottom + 6);
+  };
+  renderVerPop() {
+    const pop = this.state.pop, v = this.ver, t = this.t;
+    const link = (id: string, label: string) => (
+      <a key={id} href={v.paths[id]} style={sx(`display:block;margin-top:10px;padding:8px 12px;border-radius:4px;background:var(--accent);color:var(--accent-contrast);font-weight:600;font-size:13px;text-align:center;text-decoration:none`)}>{label}</a>
+    );
+    let title = '', body = '', links: React.ReactNode[] = [];
+    if (pop?.id === 'banner') {
+      title = this.vfmt(t.ver_banner_title, { cur: v.current });
+      body = this.vfmt(t.ver_banner_body, { cur: v.current, latest: v.latest, date: v.retiredAt ? this.fmtDate(parseTs(v.retiredAt)) : '' });
+      links = [link(v.latest, this.vfmt(t.ver_go_latest, { latest: v.latest }))];
+    } else if (pop) {
+      const i = +pop.id.split(':')[1]; const sw = v.switches[i]; if (!sw) return null;
+      title = t.ver_switch_title; body = this.switchBody(i);
+      links = [sw.from, sw.to].filter((id) => id !== v.current).map((id) => link(id, this.vfmt(t.ver_view, { v: id })));
+    }
+    const box = pop ? (
+      <div data-vpop role="dialog" aria-label={title}
+        style={pop.id === 'banner'
+          ? sx(`position:fixed;z-index:150;inset-inline-start:20px;bottom:68px;width:min(320px,calc(100vw - 40px))`)
+          : sx(`position:fixed;z-index:150;left:${Math.max(8, Math.min(pop.x - 16, (typeof innerWidth === 'number' ? innerWidth : 1200) - 308))}px;top:${pop.y}px;width:300px`)}>
+        <div style={sx(`padding:14px 16px;border-radius:6px;background:var(--bg-elev);border:1px solid var(--accent);box-shadow:0 12px 40px rgba(0,0,0,.45);font-size:13px;line-height:1.5;color:var(--text-soft)`)}>
+          <div style={sx(`font-family:var(--font-display);font-weight:600;color:var(--text);margin-bottom:6px`)}>{title}</div>
+          {body}{links}
+        </div>
+      </div>
+    ) : null;
+    return (
+      <>
+        {box}
+        {!v.isLatest && (
+          <button data-vtrig type="button" aria-label={t.ver_info_label} aria-expanded={pop?.id === 'banner'}
+            onClick={() => this.togglePop('banner', 0, 0)}
+            style={sx(`position:fixed;z-index:149;inset-inline-start:20px;bottom:20px;width:40px;height:40px;border-radius:50%;border:2px solid var(--accent);background:var(--bg-elev);color:var(--accent);font-family:var(--font-body);font-weight:700;font-size:16px;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.4)`)}>V</button>
+        )}
+      </>
+    );
+  }
+
   buildTrades() {
     const tr = this.trades || []; const from = this.state.tFrom, to = this.state.tTo;
     let rows = tr.filter((x) => { const d = x.start.slice(0, 10); if (from && d < from) return false; if (to && d > to) return false; return true; });
     rows = rows.slice().sort((a, b) => (this.state.tNewest ? (a.start < b.start ? 1 : -1) : (a.start > b.start ? 1 : -1)));
     let win = 0, loss = 0, sum = 0, cnt = 0;
     rows.forEach((x) => { if (x.pnl == null) return; cnt++; sum += x.pnl; if (x.pnl >= 0) win++; else loss++; });
+    const swOf = new Map<number, number>();
+    this.ver.switches.forEach((sw, i) => { const k = this.switchTradeIdx(sw); if (k >= 0) swOf.set(k, i); });
     const view = rows.map((x) => {
+      const sw = swOf.get(tr.indexOf(x)) ?? null;
       const isLong = x.type === 'buy'; const open = x.pnl == null;
       const pnlColor = open ? 'var(--text-mute)' : (x.pnl! >= 0 ? 'var(--pos)' : 'var(--neg)');
       return {
@@ -375,6 +452,7 @@ export default class App extends React.Component<Props, State> {
         exit: open ? '-' : ('$' + this.fmtNum(x.exit, 0)),
         dur: x.dur + this.t.t_days,
         pnl: open ? '-' : this.fmtPct(x.pnl, 1), pnlColor,
+        sw,
         rowBg: open ? 'color-mix(in srgb,var(--accent) 7%,transparent)' : 'transparent',
       };
     });
@@ -609,6 +687,17 @@ export default class App extends React.Component<Props, State> {
     ctx.beginPath(); data.forEach((d, i) => { const x = X(d.t), y = Y(eq(d.p)); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
     ctx.lineTo(X(t1), padT + plotH); ctx.lineTo(X(t0), padT + plotH); ctx.closePath(); ctx.fillStyle = grad; ctx.fill();
     ctx.beginPath(); data.forEach((d, i) => { const x = X(d.t), y = Y(eq(d.p)); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }); ctx.strokeStyle = c.accent; ctx.lineWidth = 2; ctx.lineJoin = 'round'; ctx.stroke();
+    this._markers = [];
+    this.ver.switches.forEach((sw, i) => {
+      let ts = parseTs(sw.date);
+      if (ts > t1 && ts - t1 < 2 * 864e5) ts = t1; // arşiv sayfasında geçiş grafiğin sağ ucundadır
+      if (ts < t0 || ts > t1) return;
+      const x = X(ts), cy = 12;
+      ctx.strokeStyle = c.accent; ctx.lineWidth = 1.2; ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.moveTo(x, cy + 8); ctx.lineTo(x, padT + plotH); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle = c.accent; ctx.beginPath(); ctx.arc(x, cy, 8, 0, 7); ctx.fill();
+      ctx.fillStyle = c.bg || '#101826'; ctx.font = "bold 11px 'IBM Plex Sans', sans-serif"; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('V', x, cy + 0.5);
+      this._markers.push({ x, y: cy, i });
+    });
     const hi2 = this.hoverI;
     if (hi2 != null && data[hi2]) {
       const d = data[hi2]; const x = X(d.t); ctx.strokeStyle = c.border; ctx.lineWidth = 1; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.moveTo(x, padT); ctx.lineTo(x, padT + plotH); ctx.stroke(); ctx.setLineDash([]);
@@ -673,13 +762,18 @@ export default class App extends React.Component<Props, State> {
       let lo = 0, hi = data.length - 1; while (lo < hi) { const m = (lo + hi) >> 1; if (data[m].t < tt) lo = m + 1; else hi = m; }
       return Math.max(0, Math.min(data.length - 1, lo));
     };
+    const markerAt = (e: PointerEvent) => { const r = el.getBoundingClientRect(); const mx = e.clientX - r.left, my = e.clientY - r.top; return this._markers.find((m) => Math.hypot(m.x - mx, m.y - my) <= 11) ?? null; };
     let dragging = false, startI = 0;
-    const move = (e: PointerEvent) => { const cx = e.clientX; this.hoverI = idxAt(cx); if (dragging) { const cur = idxAt(cx); this.sel = { a: Math.min(startI, cur), b: Math.max(startI, cur) }; } this.drawChart(); };
+    const move = (e: PointerEvent) => { el.style.cursor = markerAt(e) ? 'pointer' : 'crosshair'; const cx = e.clientX; this.hoverI = idxAt(cx); if (dragging) { const cur = idxAt(cx); this.sel = { a: Math.min(startI, cur), b: Math.max(startI, cur) }; } this.drawChart(); };
     el.addEventListener('pointermove', move);
     el.addEventListener('pointerleave', () => { this.hoverI = null; this.drawChart(); });
     // touch-action:pan-y → dokunmatikte dikey kaydırma başlayınca tarayıcı pointercancel gönderir; seçim iptal.
     el.addEventListener('pointercancel', () => { dragging = false; this.sel = null; this.hoverI = null; this.drawChart(); });
-    el.addEventListener('pointerdown', (e) => { dragging = true; startI = idxAt(e.clientX); this.sel = { a: startI, b: startI }; el.setPointerCapture(e.pointerId); });
+    el.addEventListener('pointerdown', (e) => {
+      const m = markerAt(e);
+      if (m) { const r = el.getBoundingClientRect(); this.togglePop('chart:' + m.i, r.left + m.x, r.top + m.y + 14); return; }
+      if (this.state.pop) this.setState({ pop: null });
+      dragging = true; startI = idxAt(e.clientX); this.sel = { a: startI, b: startI }; el.setPointerCapture(e.pointerId); });
     el.addEventListener('pointerup', () => { dragging = false; if (this.sel && Math.abs(this.sel.b - this.sel.a) > 1) { this.setState({ selection: { ...this.sel } }); } else { this.sel = null; this.setState({ selection: null }); } this.drawChart(); });
   }
 
@@ -720,6 +814,7 @@ export default class App extends React.Component<Props, State> {
           {this.renderCta()}
         </div>
         {this.renderLightbox()}
+        {this.renderVerPop()}
         {this.renderReferralModal()}
         {this.renderContactModal()}
       </div>
@@ -1008,7 +1103,12 @@ export default class App extends React.Component<Props, State> {
               <tbody>
                 {tb.rows.map((r, i) => (
                   <tr key={i} style={sx(`border-top:1px solid var(--border);background:${r.rowBg}`)}>
-                    <td><span style={sx(`display:inline-block;padding:3px 9px;border-radius:2px;font-size:11.5px;font-weight:600;font-family:var(--font-display);color:${r.dirColor};background:${r.dirBg}`)}>{r.dir}</span></td>
+                    <td>
+                      <span style={sx(`display:inline-flex;align-items:center;gap:6px`)}>
+                        {r.sw != null && <button data-vtrig type="button" aria-label={t.ver_info_label} onClick={(e) => this.popBtn('trade:' + r.sw, e)} style={sx(`width:20px;height:20px;border-radius:50%;border:1px solid var(--accent);background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--accent);font-family:var(--font-body);font-weight:700;font-size:11px;line-height:1;cursor:pointer;padding:0`)}>V</button>}
+                        <span style={sx(`display:inline-block;padding:3px 9px;border-radius:2px;font-size:11.5px;font-weight:600;font-family:var(--font-display);color:${r.dirColor};background:${r.dirBg}`)}>{r.dir}</span>
+                      </span>
+                    </td>
                     <td>{r.start}</td>
                     <td className="num hi">{r.entry}</td>
                     <td>{r.end}</td>

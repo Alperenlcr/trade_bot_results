@@ -5,9 +5,9 @@ import HowItWorks from './sections/HowItWorks.astro';
 import { loadSiteData } from '../lib/loadSiteData';
 import { getPath, languages, useTranslations, type Lang } from '../i18n/utils';
 
-const { lang } = Astro.props as { lang: Lang };
+const { lang, version } = Astro.props as { lang: Lang; version?: string };
 const t = useTranslations(lang);
-const url = new URL(getPath('home', lang), Astro.site).href;
+const url = new URL(getPath('home', lang, version), Astro.site).href;
 
 const schema = [
   { '@context': 'https://schema.org', '@type': 'WebSite', name: 'Executor Trading', url, inLanguage: languages[lang].hreflang },
@@ -21,8 +21,8 @@ const schema = [
   },
 ];
 ---
-<BaseLayout lang={lang} route="home" title={t.meta.title} description={t.meta.description} schema={schema}>
-  <App client:load locale={lang} initialData={loadSiteData(lang)}>
+<BaseLayout lang={lang} route="home" title={t.meta.title} description={t.meta.description} schema={schema} version={version} noindex={!!version}>
+  <App client:load locale={lang} initialData={loadSiteData(lang, version)}>
     <HowItWorks slot="how" lang={lang} />
   </App>
 </BaseLayout>

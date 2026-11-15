@@ -48,9 +48,11 @@ const slugOverrides: Partial<Record<Lang, Partial<Record<RouteKey, string>>>> = 
 
 /** getPath('about', 'tr') → '/tr/hakkimizda/', getPath('home', 'en') → '/'
  *  Sondaki '/': GitHub Pages klasör adreslerini '/'suz istekte '/'lıya yönlendirir; linkler baştan '/'lı olsun. */
-export function getPath(route: RouteKey, lang: Lang) {
+export function getPath(route: RouteKey, lang: Lang, version?: string) {
   const slug = slugOverrides[lang]?.[route] ?? slugs[route];
   const prefix = lang === defaultLang ? '' : `/${lang}`;
+  // Arşivlenmiş bot sürümü yalnızca ana sayfada: /v6/, /tr/v6/ …
+  if (version && route === 'home') return `${prefix}/${version}/`;
   return `${prefix}/${slug}/`.replace(/\/+$/, '/');
 }
 

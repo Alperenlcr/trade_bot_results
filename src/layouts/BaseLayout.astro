@@ -21,9 +21,10 @@ interface Props {
   alternates?: Partial<Record<Lang, string>>;
   image?: string;
   published?: Date;
+  version?: string; // arşiv sürümü sayfası (ör. 'v6'): dil yönlendirmesi sürümü korur
 }
 
-const { lang, route, ...seo } = Astro.props;
+const { lang, route, version, ...seo } = Astro.props;
 ---
 <!doctype html>
 <html lang={languages[lang].hreflang} dir={languages[lang].dir}>
@@ -33,10 +34,10 @@ const { lang, route, ...seo } = Astro.props;
     {lang === 'en' && route === 'home' && (
       // Kök adresin tarayıcı diline göre yönlendirmesi (GitHub Pages'te sunucu kuralı yok, bu yüzden istemcide).
       // Dil menüsünden seçim yapılmışsa (lang çerezi) dokunmaz.
-      <script is:inline>
+      <script is:inline define:vars={{ vp: version ? version + '/' : '' }}>
         if (!/(^|; )lang=/.test(document.cookie)) {
           var l = (navigator.language || '').slice(0, 2);
-          if (l === 'tr' || l === 'ar' || l === 'zh') location.replace('/' + l + '/' + location.search + location.hash);
+          if (l === 'tr' || l === 'ar' || l === 'zh') location.replace('/' + l + '/' + vp + location.search + location.hash);
         }
       </script>
     )}
@@ -46,7 +47,7 @@ const { lang, route, ...seo } = Astro.props;
     <SEO lang={lang} route={route} {...seo} />
   </head>
   <body class="flex min-h-dvh flex-col">
-    <Header lang={lang} route={route} alternates={seo.alternates} />
+    <Header lang={lang} route={route} alternates={seo.alternates} version={version} />
     <main class="flex-1"><slot /></main>
     <Footer lang={lang} />
     <CookieConsent lang={lang} />

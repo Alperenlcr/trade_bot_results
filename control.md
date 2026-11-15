@@ -164,3 +164,10 @@ adresi (`src/data/contact.ts`) güncellendi. Canonical, hreflang, OG ve sitemap 
   geçer; diğerleri İngilizce kalır. Alt sayfalar ve paylaşılan linkler yönlenmez. Dil menüsünden seçim yapılınca
   `lang` çerezi (1 yıl) yazılır ve yönlendirme bir daha çalışmaz. GitHub Pages'te sunucu kuralı olmadığı için
   İngilizce ana sayfanın `<head>`'indeki betik yapar (`src/layouts/BaseLayout.astro`).
+
+## Yeni bot sürümüne geçiş (v7 → v8 …)
+
+1. `data/tables` klasörünü `data/tables_v7` olarak kopyala (bundan sonra elleme, donmuş arşiv olur).
+2. `data/config.json › versions` içinde v7 satırını `{ "id": "v7", "dir": "tables_v7", "retiredAt": "YYYY-AA-GG" }` yap.
+3. Sona `{ "id": "v8", "dir": "tables", "liveFrom": "YYYY-AA-GG" }` ekle (tarih = geçiş günü, retiredAt ile aynı).
+4. Bot `data/tables`'a yazmaya devam eder; kod değişikliği gerekmez. Arşiv sayfaları `/v7/`, `/tr/v7/` … adreslerinde yayınlanır.

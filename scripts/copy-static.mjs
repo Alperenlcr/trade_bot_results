@@ -5,7 +5,7 @@
 // (assets/guide/*.webp is generated into the source folder beforehand by
 // scripts/optimize-images.mjs, so the plain copy('assets') below carries it
 // into dist/ along with everything else — no separate step needed here.)
-import { cpSync, mkdirSync, existsSync } from 'node:fs';
+import { cpSync, mkdirSync, existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
@@ -30,6 +30,9 @@ copy('llms.txt');
 // Large / lazily-fetched tables that are NOT embedded at build time — kept
 // as static files so the client fetches them at runtime exactly like today.
 const LAZY_TABLES = ['3m.csv', '6m.csv', '1y.csv', '3y.csv', '5y.csv', 'all.csv', 'performance.csv', 'daily.csv'];
-for (const f of LAZY_TABLES) copy(path.join('data', 'tables', f));
+// Her bot sürümünün klasörü (data/config.json › versions): güncel = tables, arşivler = tables_v6 …
+const cfg = JSON.parse(readFileSync(path.join(ROOT, 'data', 'config.json'), 'utf-8'));
+const dirs = new Set([...(cfg.versions ?? []).map((v) => v.dir), 'tables']);
+for (const dir of dirs) for (const f of LAZY_TABLES) copy(path.join('data', dir, f));
 copy(path.join('data', 'indices', 'daily.csv')); // chart index lines (older history)
 copy(path.join('data', 'indices', 'hourly.csv')); // chart index lines, last 2 years
