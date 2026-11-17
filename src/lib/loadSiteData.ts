@@ -21,6 +21,7 @@ export interface VersionInfo {
   latest: string;           // güncel sürüm
   dir: string;              // CSV'lerin /data/<dir>/ klasörü
   isLatest: boolean;
+  leverage: number;
   retiredAt?: string;       // arşiv sayfasında: sürümün bırakıldığı gün
   paths: Record<string, string>; // sürüm id → bu dildeki sayfa adresi
   switches: { from: string; to: string; date: string }[];
@@ -54,13 +55,18 @@ export function loadSiteData(lang: Lang, versionId?: string): SiteInitialData {
   const dir = cur.dir;
   const readCsvV = (name: string) => readCsv(dir, name);
   const paths = Object.fromEntries(vs.map((v) => [v.id, getPath('home', lang, v.id === latest.id ? undefined : v.id)]));
-  const version: VersionInfo = { current: cur.id, latest: latest.id, dir, isLatest: cur.id === latest.id, retiredAt: cur.retiredAt, paths, switches: switchPoints(vs) };
+  const version: VersionInfo = { current: cur.id, latest: latest.id, dir, isLatest: cur.id === latest.id, leverage: cur.leverage ?? 2, retiredAt: cur.retiredAt, paths, switches: switchPoints(vs) };
   const dash = JSON.parse(readFileSync(path.join(DATA_DIR, 'i18n.json'), 'utf-8'));
   const site = useTranslations(lang);
-  const i18n = { [lang]: {
+  // {lev} = sürümün kaldıracı, {max} = tavsiye edilen üst sınır (lev+1); metinlerde sürüme göre doldurulur.
+  const levVars: Record<string, string> = { lev: String(version.leverage), max: String(version.leverage + 1) };
+  const fillLev = <T,>(v: T): T => typeof v === 'string' ? v.replace(/\{(lev|max)\}/g, (_, k) => levVars[k]) as T
+    : Array.isArray(v) ? v.map(fillLev) as T
+    : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, fillLev(x)])) as T : v;
+  const i18n = { [lang]: fillLev({
     ...dash[lang], faq: site.faq.items,
     stat_portfolio: site.hero.stats.portfolio, stat_followers: site.hero.stats.followers,
-  } };
+  }) };
   const config = JSON.parse(readFileSync(path.join(DATA_DIR, 'config.json'), 'utf-8'));
   // Binance + Bybit AUM ve takipçi sayısı toplamı (scripts/fetch-{binance,bybit}-stats.mjs);
   // hiçbir dosya yoksa takipçi kartı gizlenir.

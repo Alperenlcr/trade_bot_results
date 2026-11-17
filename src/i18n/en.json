@@ -50,7 +50,7 @@
       },
       {
         "q": "Is my money safe?",
-        "a": "In copy trading, your assets are held in your own account and only you have access. The system only copies opened and closed trades. You can set additional limits, such as allowing BTC trades only and a maximum of 2x leverage."
+        "a": "In copy trading, your assets are held in your own account and only you have access. The system only copies opened and closed trades. You can set additional limits, such as allowing BTC trades only and a maximum of {lev}x leverage."
       },
       {
         "q": "How is it different from other copy-trading leads?",
@@ -58,7 +58,7 @@
       },
       {
         "q": "Can I set my own leverage?",
-        "a": "Yes. Platforms let users apply the leverage they choose. However, the recommended leverage is 2x, and anything above 3x is not recommended."
+        "a": "Yes. Platforms let users apply the leverage they choose. However, the recommended leverage is {lev}x, and anything above {max}x is not recommended."
       },
       {
         "q": "What is profit share?",
@@ -89,7 +89,7 @@
         },
         {
           "title": "Our strategies",
-          "body": "Our currently active strategy is ExecutorBTC: it trades BTC only, uses 2x leverage and keeps trade frequency low, aiming to catch large moves."
+          "body": "Our currently active strategy is ExecutorBTC: it trades BTC only, uses 2x leverage in v6 and 3x in v7, and keeps trade frequency low, aiming to catch large moves."
         },
         {
           "title": "Transparency",
@@ -119,7 +119,7 @@
         },
         {
           "title": "Leverage and liquidation",
-          "body": "Leverage magnifies both gains and losses. A sharp move against an open position can lead to liquidation and loss of the margin. The recommended leverage is 2x; higher leverage increases this risk significantly."
+          "body": "Leverage magnifies both gains and losses. A sharp move against an open position can lead to liquidation and loss of the margin. The recommended leverage is 2x for v6 and 3x for v7; higher leverage increases this risk significantly."
         },
         {
           "title": "Strategy risk",

@@ -4,7 +4,7 @@ import path from 'node:path';
 // Bot sürümleri data/config.json › versions içinde sıralı tutulur (eski → yeni).
 // Sonuncusu güncel sürümdür: kök adreste yayınlanır ve data/tables'tan okunur (bot günceller).
 // Öncekiler donmuş klasörlerdir (data/tables_v6 …) ve /v6/ altında yayınlanır.
-export interface VersionDef { id: string; dir: string; liveFrom?: string; retiredAt?: string }
+export interface VersionDef { id: string; dir: string; liveFrom?: string; retiredAt?: string; leverage?: number }
 
 export function loadVersions(): VersionDef[] {
   const cfg = JSON.parse(readFileSync(path.join(process.cwd(), 'data', 'config.json'), 'utf-8'));

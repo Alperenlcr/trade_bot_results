@@ -468,7 +468,7 @@ export default class App extends React.Component<Props, State> {
       const isLong = x.type === 'buy'; const open = x.pnl == null;
       const pnlColor = open ? 'var(--text-mute)' : (x.pnl! >= 0 ? 'var(--pos)' : 'var(--neg)');
       return {
-        dir: isLong ? this.t.t_long : this.t.t_short,
+        dir: `${isLong ? this.t.t_long : this.t.t_short} ${this.ver.leverage}x`,
         dirColor: isLong ? 'var(--pos)' : 'var(--neg)',
         dirBg: isLong ? 'color-mix(in srgb,var(--pos) 14%,transparent)' : 'color-mix(in srgb,var(--neg) 14%,transparent)',
         start: this.fmtDate(parseTs(x.start)),

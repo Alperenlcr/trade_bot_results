@@ -7,7 +7,7 @@
     "nav_strategy": "Strategy",
     "nav_faq": "FAQ",
     "nav_guide": "Guide",
-    "hero_badge": "Live · BTC futures · 2x leverage",
+    "hero_badge": "Live · BTC futures · {lev}x leverage",
     "hero_title": "An algorithmic strategy that watches the BTC market for you, 24/7.",
     "hero_sub": "ExecutorBTC is a trend-following system built to capture major moves while keeping losses small. Every chart, trade and analysis below is based on real historical data - verify it yourself.",
     "hero_cta_primary": "Start Copy Trading",
@@ -140,8 +140,8 @@
         "b": "ExecutorBTC is a trend-following bot trading BTC. It aims to capture major market moves while keeping losses small. Trade frequency is low and some positions stay open for a long time, so maker/taker commissions and funding fees have stayed under ~5% per year in long-term live usage."
       },
       {
-        "t": "2x leverage, BTC only",
-        "b": "The system only trades BTC/USDT futures and typically uses 2x leverage. Backtests assume 100% capital usage; live usage typically uses ~85% capital to leave an extra safety margin."
+        "t": "{lev}x leverage, BTC only",
+        "b": "The system only trades BTC/USDT futures and typically uses {lev}x leverage. Backtests assume 100% capital usage; live usage typically uses ~85% capital to leave an extra safety margin."
       },
       {
         "t": "Rule-based, fully automated",
@@ -216,7 +216,7 @@
     "nav_strategy": "Strateji",
     "nav_faq": "SSS",
     "nav_guide": "Rehber",
-    "hero_badge": "Canlı · BTC futures · 2x kaldıraç",
+    "hero_badge": "Canlı · BTC futures · {lev}x kaldıraç",
     "hero_title": "BTC piyasasını sizin için 7/24 takip eden algoritmik bir strateji.",
     "hero_sub": "ExecutorBTC, büyük trendleri yakalamayı ve kayıpları küçük tutmayı hedefleyen bir trend-takip sistemidir. Aşağıdaki tüm grafikler, işlemler ve analizler gerçek tarihsel veriye dayanır - kendiniz inceleyin.",
     "hero_cta_primary": "Copy Trading'e Başla",
@@ -349,8 +349,8 @@
         "b": "ExecutorBTC, BTC üzerinde çalışan bir trend-takip botudur. Büyük piyasa hareketlerini yakalamayı hedeflerken kayıpları küçük tutar. İşlem sıklığı düşüktür ve bazı pozisyonlar uzun süre açık kalır; bu sayede maker/taker komisyonları ve funding ücretlerinin toplam etkisi uzun vadeli canlı kullanımda yıllık ~%5'in altında kalmıştır."
       },
       {
-        "t": "2x kaldıraç, yalnızca BTC",
-        "b": "Sistem sadece BTC/USDT futures işlemi yapar ve genellikle 2x kaldıraç kullanır. Backtestler %100 sermaye kullanımını varsayar; canlıda ek güvenlik payı için genellikle ~%85 sermaye kullanılır."
+        "t": "{lev}x kaldıraç, yalnızca BTC",
+        "b": "Sistem sadece BTC/USDT futures işlemi yapar ve genellikle {lev}x kaldıraç kullanır. Backtestler %100 sermaye kullanımını varsayar; canlıda ek güvenlik payı için genellikle ~%85 sermaye kullanılır."
       },
       {
         "t": "Kuralları belli, tamamen otomatik",
@@ -425,7 +425,7 @@
     "nav_strategy": "الاستراتيجية",
     "nav_faq": "الأسئلة الشائعة",
     "nav_guide": "الدليل",
-    "hero_badge": "مباشر · عقود BTC الآجلة · رافعة 2x",
+    "hero_badge": "مباشر · عقود BTC الآجلة · رافعة {lev}x",
     "hero_title": "استراتيجية خوارزمية تراقب سوق BTC نيابةً عنك على مدار الساعة.",
     "hero_sub": "ExecutorBTC نظام لتتبّع الاتجاه صُمّم لالتقاط التحركات الكبيرة مع إبقاء الخسائر صغيرة. كل الرسوم البيانية والصفقات والتحليلات أدناه مبنية على بيانات تاريخية حقيقية - تحقّق منها بنفسك.",
     "hero_cta_primary": "ابدأ نسخ التداول",
@@ -557,8 +557,8 @@
         "b": "ExecutorBTC بوت لتتبّع الاتجاه يتداول BTC. يهدف إلى التقاط تحركات السوق الكبيرة مع إبقاء الخسائر صغيرة. وتيرة التداول منخفضة وتبقى بعض المراكز مفتوحة لفترة طويلة، لذلك بقي الأثر الإجمالي لعمولات الصانع/الآخذ ورسوم التمويل دون ~5% سنويًا في الاستخدام المباشر طويل الأمد."
       },
       {
-        "t": "رافعة 2x، BTC فقط",
-        "b": "يتداول النظام عقود BTC/USDT الآجلة فقط ويستخدم عادةً رافعة 2x. تفترض الاختبارات الرجعية استخدام 100% من رأس المال؛ أما الاستخدام المباشر فيستخدم عادةً نحو 85% لترك هامش أمان إضافي."
+        "t": "رافعة {lev}x، BTC فقط",
+        "b": "يتداول النظام عقود BTC/USDT الآجلة فقط ويستخدم عادةً رافعة {lev}x. تفترض الاختبارات الرجعية استخدام 100% من رأس المال؛ أما الاستخدام المباشر فيستخدم عادةً نحو 85% لترك هامش أمان إضافي."
       },
       {
         "t": "قائم على قواعد، مؤتمت بالكامل",
@@ -634,7 +634,7 @@
     "nav_strategy": "策略",
     "nav_faq": "常见问题",
     "nav_guide": "指南",
-    "hero_badge": "实盘 · BTC 合约 · 2 倍杠杆",
+    "hero_badge": "实盘 · BTC 合约 · {lev} 倍杠杆",
     "hero_title": "一套全天候为您盯住 BTC 市场的算法策略。",
     "hero_sub": "ExecutorBTC 是一套趋势跟踪系统，旨在捕捉大行情并控制亏损。下方所有图表、交易和分析均基于真实历史数据——欢迎自行核验。",
     "hero_cta_primary": "开始跟单",
@@ -766,8 +766,8 @@
         "b": "ExecutorBTC 是一款交易 BTC 的趋势跟踪机器人，旨在捕捉市场大行情并控制亏损。交易频率较低，部分仓位会持有较长时间，因此在长期实盘中，挂单/吃单手续费和资金费率的总影响每年保持在约 5% 以下。"
       },
       {
-        "t": "2 倍杠杆，仅交易 BTC",
-        "b": "系统只交易 BTC/USDT 合约，通常使用 2 倍杠杆。回测假设使用 100% 资金；实盘通常使用约 85% 资金，以留出额外的安全边际。"
+        "t": "{lev} 倍杠杆，仅交易 BTC",
+        "b": "系统只交易 BTC/USDT 合约，通常使用 {lev} 倍杠杆。回测假设使用 100% 资金；实盘通常使用约 85% 资金，以留出额外的安全边际。"
       },
       {
         "t": "规则明确，全自动运行",

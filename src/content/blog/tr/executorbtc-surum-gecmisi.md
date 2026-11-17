@@ -18,10 +18,16 @@ Bu yazıda her sürümün yayın tarihini, her aşamanın neyle ilgili olduğunu
 | v3 | 14 Haziran 2025 | Performans iyileştirmeleri |
 | v4 | 29 Aralık 2025 | Performans iyileştirmeleri |
 | v5 | 11 Mart 2026 | Performans iyileştirmeleri; herkese açık portföyler başladı |
-| v6 | 30 Mayıs 2026 | Sistem ve güvenlik değişiklikleri |
-| v7 | 15 Kasım 2026 | Performans iyileştirmeleri |
+| v6 | 30 Mayıs 2026 | Sistem ve güvenlik değişiklikleri; 2x kaldıraç |
+| v7 | 15 Kasım 2026 | Performans iyileştirmeleri; kaldıraç 3x'e çıkarıldı |
 
 v1'den v5'e her yükseltme performans iyileştirmesi getirdi. v6 farklıydı: işlem sonuçlarından çok sistemin kendisini ve güvenliğini değiştirdi. v7 yeniden performans iyileştirmelerine odaklanıyor.
+
+## Kaldıraç değişti mi?
+
+Evet. **v6 2x kaldıraçla, v7 ise 3x kaldıraçla işlem yapar.** Kaldıraç, v7'nin performans iyileştirmeleriyle birlikte artırıldı. [İşlemler tablosunda](/tr/#trades) yön, görüntülenen sürümün kaldıracıyla etiketlenir (örneğin v6'da "Long 2x", v7'de "Long 3x").
+
+Yüksek kaldıraç hem kazancı hem kaybı büyütür: düşüşler daha derin olabilir ve likidasyon riski 2x'e göre daha yüksektir. Portföyü kopyalıyorsanız platformunuzda ayarladığınız kaldıracı kontrol edin ve yeni 3x seviyesini takip edip etmeyeceğinize karar verin.
 
 ## v5 ile ne değişti?
 

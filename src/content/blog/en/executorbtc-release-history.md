@@ -18,10 +18,16 @@ This post lists every release date, explains what each stage was about, and show
 | v3 | 14 June 2025 | Performance improvements |
 | v4 | 29 December 2025 | Performance improvements |
 | v5 | 11 March 2026 | Performance improvements; public copy-trade portfolios started |
-| v6 | 30 May 2026 | System and security changes |
-| v7 | 15 November 2026 | Performance improvements |
+| v6 | 30 May 2026 | System and security changes; 2x leverage |
+| v7 | 15 November 2026 | Performance improvements; leverage raised to 3x |
 
 Each upgrade from v1 to v5 brought performance improvements. v6 was different: it mainly changed the system itself and its security, not the trading results. v7 returns to performance improvements.
+
+## Did the leverage change?
+
+Yes. **v6 trades with 2x leverage; v7 trades with 3x leverage.** The leverage was raised together with the v7 performance improvements. Trades on the [trades table](/#trades) are labelled with the leverage of the version being viewed (for example "Long 2x" on v6 and "Long 3x" on v7).
+
+Higher leverage magnifies gains and losses alike: drawdowns can be deeper and the liquidation risk is higher than with 2x. If you copy the portfolio, check the leverage you have set on your platform and decide whether you want to follow the new 3x level.
 
 ## What changed with v5?
 

@@ -13,7 +13,7 @@ Copy trading'de fonlarınızı kimseye göndermezsiniz. Para **kendi Binance vey
 
 ## ExecutorBTC nasıl işlem yapar?
 
-- Yalnızca **BTC/USDT vadeli** işlem yapar, genellikle **2x kaldıraç** kullanır.
+- Yalnızca **BTC/USDT vadeli** işlem yapar, genellikle **v6'da 2x, v7'de 3x kaldıraç** kullanır.
 - **Trend-takip** sistemidir: büyük hareketleri yakalamayı hedefler, kayıpları küçük tutar.
 - Girişler ve çıkışlar sabit kurallarla verilir; elle müdahale yoktur.
 - İşlem sıklığı düşük olduğu için komisyon ve funding ücretlerinin toplam etkisi canlı kullanımda yıllık ~%5'in altında kalmıştır.

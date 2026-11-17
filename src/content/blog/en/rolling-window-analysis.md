@@ -111,4 +111,4 @@ If you want to know how copy trading works and where your money stays, read [wha
 
 ## Risks
 
-No strategy is risk-free. ExecutorBTC trades BTC futures, typically with 2x leverage; leverage can amplify losses and short-term drawdowns happen. Positive historical results in a rolling-window analysis do not guarantee future returns. Only trade with capital you can afford to lose. See the [risk disclosure](/legal/risk/) for details.
+No strategy is risk-free. ExecutorBTC trades BTC futures, typically with 2x leverage (v6) or 3x leverage (v7); leverage can amplify losses and short-term drawdowns happen. Positive historical results in a rolling-window analysis do not guarantee future returns. Only trade with capital you can afford to lose. See the [risk disclosure](/legal/risk/) for details.

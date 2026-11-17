@@ -1,6 +1,6 @@
 # Executor Trading
 
-> ExecutorBTC is an algorithmic trend-following trading strategy that trades BTC futures with 2x leverage, 24/7. This site is its performance dashboard, built from real historical and live trading data (English, Turkish, Arabic, Simplified Chinese).
+> ExecutorBTC is an algorithmic trend-following trading strategy that trades BTC futures with 2x leverage (v6) / 3x leverage (v7, current), 24/7. This site is its performance dashboard, built from real historical and live trading data (English, Turkish, Arabic, Simplified Chinese).
 
 The home page is a single-page dashboard, available in four languages:
 English at https://executortrading.com/, Turkish at /tr/, Arabic at /ar/ and Simplified Chinese at /zh/.
@@ -16,7 +16,7 @@ Key sections (same structure in every language):
 - Guide: step-by-step copy trading setup on Binance/Bybit
 
 ## Facts
-- Asset traded: BTC only, perpetual futures, max recommended leverage 2x
+- Asset traded: BTC only, perpetual futures, recommended leverage 2x (v6) / 3x (v7, current)
 - Access model: copy trading — funds stay in the user's own exchange account, the system only mirrors trade entries/exits
 - Profit share: typically 10% of realized profit, no fee on losing periods
 - Historical claim: no losing calendar year on record (per the Performance section data)

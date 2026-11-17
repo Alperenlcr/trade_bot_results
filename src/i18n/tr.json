@@ -50,7 +50,7 @@
       },
       {
         "q": "Param güvende mi?",
-        "a": "Copy trading'de varlıklarınız kendi hesabınızda tutulur ve erişim yalnızca sizindir. Sistem yalnızca açılan/kapatılan işlemleri kopyalar. Yalnızca BTC işlemine izin vermek ve maksimum 2x kaldıraç gibi ek sınırlar tanımlayabilirsiniz."
+        "a": "Copy trading'de varlıklarınız kendi hesabınızda tutulur ve erişim yalnızca sizindir. Sistem yalnızca açılan/kapatılan işlemleri kopyalar. Yalnızca BTC işlemine izin vermek ve maksimum {lev}x kaldıraç gibi ek sınırlar tanımlayabilirsiniz."
       },
       {
         "q": "Diğer copy trade liderlerinden farkı nedir?",
@@ -58,7 +58,7 @@
       },
       {
         "q": "Kendi kaldıraç oranımı belirleyebilir miyim?",
-        "a": "Evet. Platformlar kullanıcıların kendi belirlediği kaldıraç oranını kullanmasına izin verir. Fakat tavsiye edilen kaldıraç oranı 2x'tir ve tavsiye edilmeyen kaldıraç oranları ise 3x üzeridir."
+        "a": "Evet. Platformlar kullanıcıların kendi belirlediği kaldıraç oranını kullanmasına izin verir. Fakat tavsiye edilen kaldıraç oranı {lev}x'tir ve tavsiye edilmeyen kaldıraç oranları ise {max}x üzeridir."
       },
       {
         "q": "Profit Share nedir?",
@@ -89,7 +89,7 @@
         },
         {
           "title": "Stratejilerimiz",
-          "body": "Şu an aktif olan stratejimiz ExecutorBTC'dir: yalnızca BTC işlemi yapar, 2x kaldıraç kullanır ve işlem sıklığını düşük tutarak büyük hareketleri yakalamayı hedefler."
+          "body": "Şu an aktif olan stratejimiz ExecutorBTC'dir: yalnızca BTC işlemi yapar, v6'da 2x, v7'de 3x kaldıraç kullanır ve işlem sıklığını düşük tutarak büyük hareketleri yakalamayı hedefler."
         },
         {
           "title": "Şeffaflık",
@@ -119,7 +119,7 @@
         },
         {
           "title": "Kaldıraç ve likidasyon",
-          "body": "Kaldıraç hem kazancı hem kaybı büyütür. Açık pozisyonun aleyhine sert bir hareket likidasyona ve teminatın kaybına yol açabilir. Önerilen kaldıraç 2x'tir; daha yüksek kaldıraç bu riski belirgin şekilde artırır."
+          "body": "Kaldıraç hem kazancı hem kaybı büyütür. Açık pozisyonun aleyhine sert bir hareket likidasyona ve teminatın kaybına yol açabilir. Önerilen kaldıraç v6'da 2x, v7'de 3x'tir; daha yüksek kaldıraç bu riski belirgin şekilde artırır."
         },
         {
           "title": "Strateji riski",

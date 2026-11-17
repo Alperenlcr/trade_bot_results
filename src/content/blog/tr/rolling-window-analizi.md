@@ -111,4 +111,4 @@ Copy trading'in nasıl çalıştığını ve paranızın nerede durduğunu merak
 
 ## Riskler
 
-Hiçbir strateji risksiz değildir. ExecutorBTC genellikle 2x kaldıraçla BTC vadeli işlem yapar; kaldıraç kayıpları büyütebilir ve kısa vadede düşüşler olabilir. Rolling-window analizindeki olumlu tarihsel sonuçlar gelecekteki getirinin garantisi değildir. Yalnızca kaybetmeyi göze alabileceğiniz sermaye ile işlem yapın. Ayrıntılar için [risk bildirimini](/tr/yasal/risk/) okuyun.
+Hiçbir strateji risksiz değildir. ExecutorBTC genellikle v6'da 2x, v7'de 3x kaldıraçla BTC vadeli işlem yapar; kaldıraç kayıpları büyütebilir ve kısa vadede düşüşler olabilir. Rolling-window analizindeki olumlu tarihsel sonuçlar gelecekteki getirinin garantisi değildir. Yalnızca kaybetmeyi göze alabileceğiniz sermaye ile işlem yapın. Ayrıntılar için [risk bildirimini](/tr/yasal/risk/) okuyun.

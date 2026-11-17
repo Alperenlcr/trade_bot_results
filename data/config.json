@@ -7,7 +7,7 @@
   "calculator": { "deductProfitShare": true, "profitSharePct": 10 },
   "social": { "x": "", "tiktok": "", "threads": "", "youtube": "" },
   "versions": [
-    { "id": "v6", "dir": "tables_v6", "retiredAt": "2026-11-15" },
-    { "id": "v7", "dir": "tables", "liveFrom": "2026-11-15" }
+    { "id": "v6", "leverage": 2, "dir": "tables_v6", "retiredAt": "2026-11-15" },
+    { "id": "v7", "leverage": 3, "dir": "tables", "liveFrom": "2026-11-15" }
   ]
 }

@@ -13,7 +13,7 @@ With copy trading you don't send your funds to anyone. The money stays **in your
 
 ## How does ExecutorBTC trade?
 
-- It trades **BTC/USDT futures only**, usually with **2x leverage**.
+- It trades **BTC/USDT futures only**, usually with **2x leverage in v6 and 3x in v7**.
 - It is a **trend-following** system: it aims to catch large moves while keeping losses small.
 - Entries and exits follow fixed rules; there is no manual intervention.
 - Because it trades infrequently, the combined impact of fees and funding has stayed below ~5% per year in long-term live use.
